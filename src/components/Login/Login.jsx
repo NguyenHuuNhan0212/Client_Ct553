@@ -1,47 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Form, Input, Button, Typography, Card } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
-import authApi from '../../apis/authService';
-import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../redux/slices/authSlice';
 import Loading from '../Loading/Loading';
+import styles from './style.module.css';
 
 const { Title } = Typography;
 
 export default function Login() {
+  const { container } = styles;
   const [form] = Form.useForm();
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.auth);
+  console.log(loading);
   const onFinish = async (values) => {
-    setIsLoading(true);
-    const data = {
-      email: values.email,
-      password: values.password
-    };
-    try {
-      const res = await authApi.login(data);
-      console.log(res);
-      setIsLoading(false);
-      toast.success('Đăng nhập thành công');
+    const result = await dispatch(login(values));
+    if (login.fulfilled.match(result)) {
       navigate('/');
-    } catch (err) {
-      setIsLoading(false);
-      toast.error(err.response.data.message);
     }
   };
 
   return (
-    <Card
-      style={{
-        width: 420,
-        borderRadius: 20,
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
-        padding: '30px 25px',
-        background: 'rgba(255, 255, 255, 0.001)',
-        backdropFilter: 'blur(10px)'
-      }}
-      variant='borderless' // thay cho bordered={false}
-    >
+    <Card className={container} variant='borderless'>
       <Title
         level={3}
         style={{ textAlign: 'center', marginBottom: 25, fontWeight: 700 }}
@@ -56,10 +39,11 @@ export default function Login() {
         layout='vertical'
         requiredMark={false}
       >
-        {/* Email */}
         <Form.Item
           name='email'
-          label='Email'
+          label={
+            <span style={{ fontSize: '16px', fontWeight: '600' }}>Email</span>
+          }
           rules={[
             { type: 'email', message: 'Email không hợp lệ!' },
             { required: true, message: 'Vui lòng nhập email!' }
@@ -72,10 +56,13 @@ export default function Login() {
           />
         </Form.Item>
 
-        {/* Password */}
         <Form.Item
           name='password'
-          label='Mật khẩu'
+          label={
+            <span style={{ fontSize: '16px', fontWeight: '600' }}>
+              Mật khẩu
+            </span>
+          }
           rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
         >
           <Input.Password
@@ -97,7 +84,7 @@ export default function Login() {
               background: 'linear-gradient(90deg, #3b82f6, #2563eb)'
             }}
           >
-            {isLoading ? <Loading /> : 'Đăng nhập'}
+            {loading ? <Loading /> : 'Đăng nhập'}
           </Button>
         </Form.Item>
       </Form>

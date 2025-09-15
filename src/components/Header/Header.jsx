@@ -5,30 +5,57 @@ const { Header: AntHeader } = Layout;
 
 // Menu bên trái
 const leftMenuItems = [
-  { key: 'home', label: <Link to='/'>Trang chủ</Link> },
-  { key: 'about', label: <Link to='/about'>Giới thiệu</Link> },
-  { key: 'services', label: <Link to='/services'>Dịch vụ</Link> }
+  {
+    key: 'home',
+    label: (
+      <Link to='/' style={{ fontSize: '16px', fontWeight: '600' }}>
+        Trang chủ
+      </Link>
+    )
+  },
+  {
+    key: 'about',
+    label: (
+      <Link to='/about' style={{ fontSize: '16px', fontWeight: '600' }}>
+        Giới thiệu
+      </Link>
+    )
+  },
+  {
+    key: 'services',
+    label: (
+      <Link to='/services' style={{ fontSize: '16px', fontWeight: '600' }}>
+        Dịch vụ
+      </Link>
+    )
+  }
 ];
 
 // Menu bên phải
 const rightMenuItems = [
-  { key: 'login', label: <Link to='/login'>Đăng nhập</Link> },
-  { key: 'register', label: <Link to='/register'>Đăng ký</Link> }
+  {
+    key: 'login',
+    label: (
+      <Link to='/login' style={{ fontSize: '16px', fontWeight: '600' }}>
+        Đăng nhập
+      </Link>
+    )
+  },
+  {
+    key: 'register',
+    label: (
+      <Link to='/register' style={{ fontSize: '16px', fontWeight: '600' }}>
+        Đăng ký
+      </Link>
+    )
+  }
 ];
 
 export default function Header() {
-  const { container } = styles;
+  const { container, logo } = styles;
   return (
     <AntHeader className={container}>
-      {/* Logo */}
-      <div
-        style={{
-          color: 'white',
-          fontWeight: 'bold',
-          fontSize: 20,
-          marginRight: 30
-        }}
-      >
+      <div className={logo}>
         <Link to='/' style={{ color: 'white' }}>
           Vigo Travel
         </Link>

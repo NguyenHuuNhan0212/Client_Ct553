@@ -15,6 +15,10 @@ const routes = [
   {
     path: 'login',
     component: lazy(() => import('../pages/Login/Login'))
+  },
+  {
+    path: 'services',
+    component: lazy(() => import('../pages/Service/Service'))
   }
 ];
 

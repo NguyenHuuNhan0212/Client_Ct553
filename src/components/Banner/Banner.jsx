@@ -1,7 +1,7 @@
 import { Input, Carousel } from 'antd';
 import banner1 from '../../assets/images/wellcome.png';
-import banner2 from '../../assets/images/banner-2.jpg';
-import banner3 from '../../assets/images/banner.jpg';
+import banner2 from '../../assets/images/banner2.png';
+import banner3 from '../../assets/images/banner.png';
 import styles from './style.module.css';
 
 export default function Banner() {

@@ -5,9 +5,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import authApi from '../../apis/authService';
 import Loading from '../Loading/Loading';
 import { toast } from 'react-toastify';
+import styles from './style.module.css';
 const { Title } = Typography;
 
 export default function RegisterLogin() {
+  const { container } = styles;
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -31,17 +33,7 @@ export default function RegisterLogin() {
   };
 
   return (
-    <Card
-      style={{
-        width: 420,
-        borderRadius: 20,
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
-        padding: '30px 25px',
-        background: 'rgba(255, 255, 255, 0.001)',
-        backdropFilter: 'blur(10px)'
-      }}
-      variant='borderless'
-    >
+    <Card className={container} variant='borderless'>
       <Title
         level={3}
         style={{ textAlign: 'center', marginBottom: 25, fontWeight: 700 }}
@@ -58,7 +50,11 @@ export default function RegisterLogin() {
       >
         <Form.Item
           name='username'
-          label='Tên đăng nhập'
+          label={
+            <span style={{ fontSize: '16px', fontWeight: '600' }}>
+              Tên hiển thị
+            </span>
+          }
           rules={[
             { required: true, message: 'Vui lòng nhập tên đăng nhập!' },
             { min: 4, message: 'Tối thiểu 4 ký tự' }
@@ -66,14 +62,16 @@ export default function RegisterLogin() {
         >
           <Input
             prefix={<UserOutlined />}
-            placeholder='Tên đăng nhập'
+            placeholder='Tên hiển thị'
             size='large'
           />
         </Form.Item>
 
         <Form.Item
           name='email'
-          label='Email'
+          label={
+            <span style={{ fontSize: '16px', fontWeight: '600' }}>Email</span>
+          }
           rules={[
             { type: 'email', message: 'Email không hợp lệ!' },
             { required: true, message: 'Vui lòng nhập email!' }
@@ -84,7 +82,11 @@ export default function RegisterLogin() {
 
         <Form.Item
           name='password'
-          label='Mật khẩu'
+          label={
+            <span style={{ fontSize: '16px', fontWeight: '600' }}>
+              Mật khẩu
+            </span>
+          }
           rules={[
             { required: true, message: 'Vui lòng nhập mật khẩu!' },
             { min: 6, message: 'Mật khẩu tối thiểu 6 ký tự' }
@@ -100,7 +102,11 @@ export default function RegisterLogin() {
 
         <Form.Item
           name='confirm'
-          label='Xác nhận mật khẩu'
+          label={
+            <span style={{ fontSize: '16px', fontWeight: '600' }}>
+              Xác nhận mật khẩu
+            </span>
+          }
           dependencies={['password']}
           hasFeedback
           rules={[
