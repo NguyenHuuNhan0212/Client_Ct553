@@ -15,7 +15,6 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
-  console.log(loading);
   const onFinish = async (values) => {
     const result = await dispatch(login(values));
     if (login.fulfilled.match(result)) {

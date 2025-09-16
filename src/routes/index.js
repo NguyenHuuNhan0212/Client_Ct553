@@ -27,6 +27,10 @@ const routes = [
   {
     path: 'reset-password/:token',
     component: lazy(() => import('../pages/ResetPassword/ResetPassword'))
+  },
+  {
+    path: 'profile',
+    component: lazy(() => import('../pages/Profile/Profile'))
   }
 ];
 
