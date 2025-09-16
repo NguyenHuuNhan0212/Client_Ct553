@@ -19,6 +19,14 @@ const routes = [
   {
     path: 'services',
     component: lazy(() => import('../pages/Service/Service'))
+  },
+  {
+    path: 'forgot-password',
+    component: lazy(() => import('../pages/ForgotPassword/ForgotPassword'))
+  },
+  {
+    path: 'reset-password/:token',
+    component: lazy(() => import('../pages/ResetPassword/ResetPassword'))
   }
 ];
 

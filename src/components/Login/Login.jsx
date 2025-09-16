@@ -71,6 +71,21 @@ export default function Login() {
             size='large'
           />
         </Form.Item>
+        <Form.Item>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'flex-end'
+            }}
+          >
+            <Link
+              to='/forgot-password'
+              style={{ color: '#2563eb', fontWeight: 500 }}
+            >
+              Quên mật khẩu?
+            </Link>
+          </div>
+        </Form.Item>
 
         <Form.Item>
           <Button

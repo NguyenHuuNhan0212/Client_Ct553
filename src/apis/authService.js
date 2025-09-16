@@ -6,6 +6,12 @@ const authApi = {
   },
   login(data) {
     return axiosClient.post('/auth/login', data);
+  },
+  forgotPassword(data) {
+    return axiosClient.post('/auth/forgot-password', data);
+  },
+  resetPassword(data) {
+    return axiosClient.post(`/auth/reset-password/${data.token}`, data);
   }
 };
 export default authApi;
