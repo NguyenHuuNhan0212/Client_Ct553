@@ -4,67 +4,109 @@ import {
   DownOutlined,
   UserOutlined,
   LogoutOutlined,
-  LoginOutlined
+  ScheduleOutlined,
+  FileDoneOutlined,
+  CreditCardOutlined,
+  AppstoreOutlined,
+  BarChartOutlined
 } from '@ant-design/icons';
 import styles from './style.module.css';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../redux/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getInfoUser, logout } from '../../redux/slices/authSlice';
+import { useEffect } from 'react';
 
 const { Header: AntHeader } = Layout;
-
-// Menu bên trái
-const leftMenuItems = [
-  {
-    key: 'home',
-    label: (
-      <Link to='/' style={{ fontSize: '16px', fontWeight: '600' }}>
-        Trang chủ
-      </Link>
-    )
-  },
-  {
-    key: 'about',
-    label: (
-      <Link to='/about' style={{ fontSize: '16px', fontWeight: '600' }}>
-        Giới thiệu
-      </Link>
-    )
-  },
-  {
-    key: 'services',
-    label: (
-      <Link to='/services' style={{ fontSize: '16px', fontWeight: '600' }}>
-        Dịch vụ
-      </Link>
-    )
-  }
-];
 
 export default function Header() {
   const { container, logo } = styles;
   const navigate = useNavigate();
   // Giả sử bạn có state user lấy từ localStorage hoặc context
-  const user = JSON.parse(localStorage.getItem('user')) || null;
+  const username = JSON.parse(localStorage.getItem('username')) || null;
+
+  const { token, user, avatar } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
     navigate('/');
   };
-
+  // Menu bên trái
+  const leftMenuItems = [
+    {
+      key: 'home',
+      label: (
+        <Link to='/' style={{ fontSize: '16px', fontWeight: '600' }}>
+          Trang chủ
+        </Link>
+      )
+    },
+    {
+      key: 'about',
+      label: (
+        <Link to='/about' style={{ fontSize: '16px', fontWeight: '600' }}>
+          Giới thiệu
+        </Link>
+      )
+    },
+    {
+      key: 'services',
+      label: (
+        <Link to='/services' style={{ fontSize: '16px', fontWeight: '600' }}>
+          Dịch vụ
+        </Link>
+      )
+    }
+  ];
   const userMenu = {
     items: [
       {
-        key: 'profile',
+        key: 'info',
         icon: <UserOutlined />,
-        label: <Link to='/profile'>Thông tin cá nhân</Link>
+        label: <Link to='/profile?tab=1'>Thông tin cá nhân</Link>
+      },
+      {
+        key: 'itinerary',
+        icon: <ScheduleOutlined />,
+        label: <Link to='/profile?tab=2'>Lịch trình</Link>
+      },
+      {
+        key: 'booking',
+        icon: <FileDoneOutlined />,
+        label: <Link to='/profile?tab=3'>Đơn đặt dịch vụ</Link>
+      },
+      {
+        key: 'payment',
+        icon: <CreditCardOutlined />,
+        label: <Link to='/profile?tab=4'>Thanh toán</Link>
+      },
+      ...(user?.role === 'provider'
+        ? [
+            {
+              key: 'services',
+              icon: <AppstoreOutlined />,
+              label: <Link to='/profile?tab=5'>Dịch vụ của tôi</Link>
+            },
+            {
+              key: 'stats',
+              icon: <BarChartOutlined />,
+              label: <Link to='/profile?tab=6'>Thống kê dịch vụ</Link>
+            }
+          ]
+        : []),
+      {
+        type: 'divider'
       },
       {
         key: 'logout',
-        icon: <LogoutOutlined />,
+        icon: <LogoutOutlined style={{ color: 'red' }} />,
         label: <span onClick={handleLogout}>Đăng xuất</span>
       }
     ]
   };
+  useEffect(() => {
+    if (token && !user) {
+      dispatch(getInfoUser());
+    }
+  }, [token, user, dispatch]);
 
   return (
     <AntHeader className={container}>
@@ -88,8 +130,32 @@ export default function Header() {
       {/* Menu phải */}
       {user ? (
         <Dropdown menu={userMenu} placement='bottomRight'>
-          <span style={{ color: 'white', cursor: 'pointer', fontWeight: 600 }}>
-            {user.fullName} <DownOutlined />
+          <span
+            style={{
+              color: 'white',
+              cursor: 'pointer',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8
+            }}
+          >
+            <img
+              src={
+                avatar
+                  ? `http://localhost:3000${avatar}`
+                  : 'http://localhost:3000/uploads/default-avatar.jpg'
+              }
+              alt='avatar'
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '2px solid #fff'
+              }}
+            />
+            {username} <DownOutlined />
           </span>
         </Dropdown>
       ) : (

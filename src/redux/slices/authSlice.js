@@ -28,20 +28,43 @@ export const getInfoUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await userApi.getUserById();
-      localStorage.setItem('user', JSON.stringify(res));
+      localStorage.setItem('username', JSON.stringify(res.fullName));
       return res;
     } catch (err) {
       return rejectWithValue(err.response?.data);
     }
   }
 );
-
+export const uploadAvatar = createAsyncThunk(
+  'auth/avatar',
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await userApi.uploadAvatar(data);
+      return res;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await userApi.updateProfile(data);
+      return res;
+    } catch (err) {
+      return rejectWithValue(err);
+    }
+  }
+);
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
     token: localStorage.getItem('token') || null,
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    loading: false
+    username: JSON.parse(localStorage.getItem('username')) || null,
+    loading: false,
+    user: null,
+    avatar: null
   },
   reducers: {
     logout: (state) => {
@@ -49,7 +72,7 @@ const authSlice = createSlice({
       state.user = null;
       localStorage.removeItem('token');
       localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user');
+      localStorage.removeItem('username');
       toast.success('Đăng xuất thành công!');
     }
   },
@@ -70,9 +93,17 @@ const authSlice = createSlice({
       // GET USER INFO
       .addCase(getInfoUser.fulfilled, (state, action) => {
         state.user = action.payload;
+        state.avatar = action.payload.avatarUrl;
       })
       .addCase(getInfoUser.rejected, (state) => {
         state.user = null;
+      })
+      // AVATAR
+      .addCase(uploadAvatar.fulfilled, (state, action) => {
+        state.avatar = action.payload.avatarUrl;
+        if (state.user) {
+          state.user.avatarUrl = action.payload.avatarUrl;
+        }
       });
   }
 });
