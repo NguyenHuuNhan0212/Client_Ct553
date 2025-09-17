@@ -1,6 +1,44 @@
-.containerInfo {
+.container {
   border-radius: 16px;
   box-shadow: 2px 2px rgba(0, 0, 0, 0.08);
   text-align: center;
+  display: flex;
+  justify-content: center;
   padding: 24px;
+}
+
+.title {
+  margin-bottom: 50px !important;
+}
+
+.avatar {
+  border: 2px solid #f0f0f0;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.iconCamera {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: #00000080;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  color: white;
+}
+.info {
+  width: 100%;
+  max-width: 280px;
+  margin: 20 auto;
+}
+.text {
+  font-size: 20px;
+}
+.btnBlock {
+  display: flex;
+  width: 600px;
+  margin-top: 30px;
+  justify-content: space-around;
+  gap: 20px;
 }

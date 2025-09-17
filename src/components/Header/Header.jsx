@@ -12,8 +12,10 @@ import {
 } from '@ant-design/icons';
 import styles from './style.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { getInfoUser, logout } from '../../redux/slices/authSlice';
 import { useEffect } from 'react';
+import { getInfoUser } from '../../redux/slices/userSlice';
+import { logout } from '../../redux/slices/authSlice';
+import { capitalizeName } from '../../utils/capitalize';
 
 const { Header: AntHeader } = Layout;
 
@@ -23,7 +25,8 @@ export default function Header() {
   // Giả sử bạn có state user lấy từ localStorage hoặc context
   const username = JSON.parse(localStorage.getItem('username')) || null;
 
-  const { token, user, avatar } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth);
+  const { user, avatar } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
@@ -155,7 +158,7 @@ export default function Header() {
                 border: '2px solid #fff'
               }}
             />
-            {username} <DownOutlined />
+            {capitalizeName(username)} <DownOutlined />
           </span>
         </Dropdown>
       ) : (

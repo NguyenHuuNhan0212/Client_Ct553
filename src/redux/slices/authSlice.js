@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authApi from '../../apis/authService';
-import userApi from '../../apis/userService';
 import { toast } from 'react-toastify';
+import { getInfoUser } from './userSlice';
 
 // === LOGIN ===
 export const login = createAsyncThunk(
@@ -22,58 +22,21 @@ export const login = createAsyncThunk(
     }
   }
 );
-
-export const getInfoUser = createAsyncThunk(
-  'auth/getInfoUser',
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await userApi.getUserById();
-      localStorage.setItem('username', JSON.stringify(res.fullName));
-      return res;
-    } catch (err) {
-      return rejectWithValue(err.response?.data);
-    }
-  }
-);
-export const uploadAvatar = createAsyncThunk(
-  'auth/avatar',
-  async (data, { rejectWithValue }) => {
-    try {
-      const res = await userApi.uploadAvatar(data);
-      return res;
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
-export const updateProfile = createAsyncThunk(
-  'auth/updateProfile',
-  async (data, { rejectWithValue }) => {
-    try {
-      const res = await userApi.updateProfile(data);
-      return res;
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
     token: localStorage.getItem('token') || null,
     username: JSON.parse(localStorage.getItem('username')) || null,
-    loading: false,
-    user: null,
-    avatar: null
+    loading: false
   },
   reducers: {
-    logout: (state) => {
+    logout(state) {
       state.token = null;
-      state.user = null;
+      state.username = null;
       localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
       localStorage.removeItem('username');
-      toast.success('Đăng xuất thành công!');
+      localStorage.removeItem('refreshToken');
+      window.location.replace('/');
     }
   },
   extraReducers: (builder) => {
@@ -88,22 +51,6 @@ const authSlice = createSlice({
       })
       .addCase(login.rejected, (state) => {
         state.loading = false;
-      })
-
-      // GET USER INFO
-      .addCase(getInfoUser.fulfilled, (state, action) => {
-        state.user = action.payload;
-        state.avatar = action.payload.avatarUrl;
-      })
-      .addCase(getInfoUser.rejected, (state) => {
-        state.user = null;
-      })
-      // AVATAR
-      .addCase(uploadAvatar.fulfilled, (state, action) => {
-        state.avatar = action.payload.avatarUrl;
-        if (state.user) {
-          state.user.avatarUrl = action.payload.avatarUrl;
-        }
       });
   }
 });

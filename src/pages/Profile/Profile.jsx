@@ -1,95 +1,173 @@
-import React, { useEffect } from 'react';
-import { Tabs, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Layout, Menu, Typography } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  UserOutlined,
+  CalendarOutlined,
+  ShoppingCartOutlined,
+  CreditCardOutlined,
+  AppstoreOutlined,
+  BarChartOutlined
+} from '@ant-design/icons';
+
 import Info from '../../components/Profile/Info';
-import Itinerary from '../../components/Profile/Itinerary';
-import Booking from '../../components/Profile/Booking';
 import Payment from '../../components/Profile/Payment';
+import Booking from '../../components/Profile/Booking';
+import ItineraryComponent from '../../components/Profile/Itinerary';
 import ServiceProvide from '../../components/Profile/ServiceOfUser';
 import ServiceBookingList from '../../components/Profile/ServiceBookingList';
 import Header from '../../components/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
-import { getInfoUser } from '../../redux/slices/authSlice';
-
+import styles from './style.module.css';
+import { getInfoUser } from '../../redux/slices/userSlice';
 const { Title } = Typography;
+const { Content, Sider } = Layout;
 
 export default function Profile() {
-  const { user, token } = useSelector((state) => state.auth);
+  const { container, sidebar, content } = styles;
+  const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const activeKey = params.get('tab') || '1';
 
-  const tabItems = [
-    {
-      key: '1',
-      label: 'Thông tin cá nhân',
-      children: (
-        <Info
-          fullName={user?.fullName}
-          email={user?.email}
-          role={user?.role}
-          avatarUrl={
-            user?.avatarUrl ? user?.avatarUrl : '/uploads/default-avatar.jpg'
-          }
-        />
-      )
-    },
-    {
-      key: '2',
-      label: 'Lịch trình',
-      children: <Itinerary />
-    },
-    {
-      key: '3',
-      label: 'Đơn đặt dịch vụ',
-      children: <Booking />
-    },
-    {
-      key: '4',
-      label: 'Thanh toán',
-      children: <Payment />
-    }
+  // Lấy key menu từ query
+  const defaultKey = params.get('tab') || '1';
+  const [selectedKey, setSelectedKey] = useState(defaultKey);
+
+  const menuItems = [
+    { key: '1', icon: <UserOutlined />, label: 'Thông tin cá nhân' },
+    { key: '2', icon: <CalendarOutlined />, label: 'Lịch trình' },
+    { key: '3', icon: <ShoppingCartOutlined />, label: 'Đơn đặt dịch vụ' },
+    { key: '4', icon: <CreditCardOutlined />, label: 'Thanh toán' }
   ];
 
   if (user?.role === 'provider') {
-    tabItems.push(
-      {
-        key: '5',
-        label: 'Dịch vụ của tôi',
-        children: <ServiceProvide />
-      },
-      {
-        key: '6',
-        label: 'Thống kê dịch vụ',
-        children: <ServiceBookingList />
-      }
+    menuItems.push(
+      { key: '5', icon: <AppstoreOutlined />, label: 'Dịch vụ của tôi' },
+      { key: '6', icon: <BarChartOutlined />, label: 'Thống kê dịch vụ' }
     );
   }
-
-  const handleTabChange = (key) => {
-    navigate(`/profile?tab=${key}`);
+  // Gia lap
+  const mockItinerary = {
+    itineraryId: 1,
+    title: 'Hành trình Hà Nội - Hạ Long',
+    numDays: 3,
+    details: [
+      {
+        detailId: 1,
+        visitDay: 1,
+        note: 'Khởi hành từ Hà Nội',
+        places: [
+          {
+            name: 'Văn Miếu',
+            type: 'Historical',
+            description: 'Trường đại học đầu tiên của Việt Nam',
+            imageUrl:
+              'https://media-cdn.tripadvisor.com/media/photo-s/15/41/05/9d/temple-of-literature.jpg'
+          },
+          {
+            name: 'Hồ Gươm',
+            type: 'Nature',
+            description: 'Trái tim thủ đô',
+            imageUrl: 'https://static.vinwonders.com/2022/05/ho-hoan-kiem-1.jpg'
+          }
+        ]
+      },
+      {
+        detailId: 2,
+        visitDay: 2,
+        note: 'Tham quan và nghỉ đêm trên du thuyền',
+        places: [
+          {
+            name: 'Vịnh Hạ Long',
+            type: 'Nature',
+            description: 'Kỳ quan thiên nhiên thế giới',
+            imageUrl:
+              'https://ik.imagekit.io/tvlk/blog/2022/08/vinh-ha-long-3.jpg'
+          },
+          {
+            name: 'Hang Sửng Sốt',
+            type: 'Cave',
+            description: 'Một trong những hang đẹp nhất Hạ Long',
+            imageUrl:
+              'https://cdn.vntrip.vn/cam-nang/wp-content/uploads/2017/08/18.jpg'
+          }
+        ]
+      },
+      {
+        detailId: 3,
+        visitDay: 3,
+        note: 'Mua sắm và trở về',
+        places: [
+          {
+            name: 'Chợ đêm Hạ Long',
+            type: 'Shopping',
+            description: 'Địa điểm mua quà lưu niệm nổi tiếng',
+            imageUrl:
+              'https://ik.imagekit.io/tvlk/blog/2022/07/cho-dem-ha-long-2.jpg'
+          }
+        ]
+      }
+    ]
   };
+
+  const renderContent = () => {
+    switch (selectedKey) {
+      case '1':
+        return (
+          <Info
+            fullName={user?.fullName}
+            email={user?.email}
+            role={user?.role}
+            avatarUrl={user?.avatarUrl || '/uploads/default-avatar.jpg'}
+          />
+        );
+      case '2':
+        return <ItineraryComponent itinerary={mockItinerary} />;
+      case '3':
+        return <Booking />;
+      case '4':
+        return <Payment />;
+      case '5':
+        return <ServiceProvide />;
+      case '6':
+        return <ServiceBookingList />;
+      default:
+        return null;
+    }
+  };
+
+  const handleMenuClick = (e) => {
+    setSelectedKey(e.key);
+    navigate(`/profile?tab=${e.key}`);
+  };
+
   useEffect(() => {
     if (token && !user) {
       dispatch(getInfoUser());
     }
   }, [user, token, dispatch]);
+  useEffect(() => {
+    setSelectedKey(params.get('tab'));
+  }, [params]);
   return (
     <>
       <Header />
-      <div style={{ maxWidth: 1000, margin: '30px auto' }}>
-        <Title level={2} style={{ textAlign: 'center', marginBottom: 30 }}>
-          Trang thông tin cá nhân
-        </Title>
-        <Tabs
-          activeKey={activeKey}
-          onChange={handleTabChange}
-          items={tabItems}
-          type='card'
-        />
-      </div>
+      <Layout className={container}>
+        <Sider className={sidebar}>
+          <Menu
+            mode='inline'
+            selectedKeys={[selectedKey]}
+            onClick={handleMenuClick}
+            items={menuItems}
+          />
+        </Sider>
+        <Layout>
+          <Content className={content}>{renderContent()}</Content>
+        </Layout>
+      </Layout>
     </>
   );
 }

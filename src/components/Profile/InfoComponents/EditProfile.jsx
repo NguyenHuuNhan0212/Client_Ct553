@@ -1,12 +1,12 @@
 import { Modal, Form, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateProfile, getInfoUser } from '../../../redux/slices/authSlice';
 import { toast } from 'react-toastify';
+import { getInfoUser, updateProfile } from '../../../redux/slices/userSlice';
 //import { useEffect } from 'react';
 
 function EditProfile({ open, onClose }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.user.user);
 
   const [form] = Form.useForm();
 

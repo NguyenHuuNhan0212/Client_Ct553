@@ -12,6 +12,12 @@ const userApi = {
   },
   updateProfile(data) {
     return axiosClient.patch('/update-profile', data);
+  },
+  changePassword(data) {
+    return axiosClient.post('/change-password', data);
+  },
+  upgradeToProvider(data) {
+    return axiosClient.post('/upgrade-to-provider', data);
   }
 };
 export default userApi;
