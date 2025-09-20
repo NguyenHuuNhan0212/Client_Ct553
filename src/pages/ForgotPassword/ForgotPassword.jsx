@@ -22,6 +22,7 @@ export default function LoginPage() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          marginTop: 64,
           minHeight: 'calc(100vh - 64px)' // trừ chiều cao header
         }}
       >

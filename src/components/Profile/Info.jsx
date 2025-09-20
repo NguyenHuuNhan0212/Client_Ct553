@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Card, Button, Avatar, Typography, Space } from 'antd';
+import { Card, Button, Avatar, Typography, Space, Divider } from 'antd';
 import {
   EditOutlined,
   UserOutlined,
   MailOutlined,
   IdcardOutlined,
   CameraOutlined,
-  FormOutlined
+  FormOutlined,
+  PhoneOutlined,
+  CreditCardOutlined,
+  BankOutlined,
+  WalletOutlined
 } from '@ant-design/icons';
 import styles from './style.module.css';
 import { toast } from 'react-toastify';
@@ -18,9 +22,10 @@ import RegisterProviderModal from './InfoComponents/RegisterProviderModal';
 import { capitalizeName } from '../../utils/capitalize';
 const { Title, Text } = Typography;
 
-function Info({ fullName, email, role, avatarUrl }) {
+function Info({ user }) {
+  console.log(user);
   const { container, title, avatar, iconCamera, info, text, btnBlock } = styles;
-  const [preview, setPreview] = useState(avatarUrl);
+  const [preview, setPreview] = useState(user?.avatarUrl);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
   const [isRegisterProvider, setIsRegisterProvider] = useState(false);
@@ -44,10 +49,10 @@ function Info({ fullName, email, role, avatarUrl }) {
   };
 
   useEffect(() => {
-    if (avatarUrl) {
-      setPreview(`http://localhost:3000${avatarUrl}`);
+    if (user?.avatarUrl) {
+      setPreview(`http://localhost:3000${user?.avatarUrl}`);
     }
-  }, [avatarUrl]);
+  }, [user?.avatarUrl]);
   return (
     <Card className={container}>
       <Title level={3} className={title}>
@@ -73,24 +78,53 @@ function Info({ fullName, email, role, avatarUrl }) {
           onChange={handleAvatarChange}
         />
       </div>
-
       {/* Tên */}
       <Title level={4} style={{ marginBottom: 12 }}>
-        {capitalizeName(fullName)}
+        {capitalizeName(user?.fullName)}
       </Title>
-
       {/* Các thông tin với icon */}
+
       <Space direction='vertical' size={6} className={info}>
+        <Divider style={{ borderColor: '#7cb305' }}>Thông tin chung</Divider>
         <Text className={text}>
           <MailOutlined style={{ marginRight: 8, color: '#1890ff' }} />
-          Email: {email}
+          Email: {user?.email}
         </Text>
         <Text className={text}>
           <IdcardOutlined style={{ marginRight: 8, color: '#52c41a' }} />
-          Vai trò: {role === 'user' ? 'Người dùng' : 'Nhà cung cấp'}
+          Vai trò: {user?.role === 'user' ? 'Người dùng' : 'Nhà cung cấp'}
         </Text>
-      </Space>
 
+        {user?.role === 'provider' && (
+          <>
+            <Divider style={{ borderColor: '#7cb305' }}>
+              Thông tin nhà cung cấp
+            </Divider>
+            <Text className={text}>
+              <PhoneOutlined style={{ marginRight: 8, color: '#faad14' }} />
+              Số điện thoại: {user?.phone}
+            </Text>
+            <Text className={text}>
+              <CreditCardOutlined
+                style={{ marginRight: 8, color: '#13c2c2' }}
+              />
+              Số thẻ: {user?.cardNumber}
+            </Text>
+            <Text className={text}>
+              <UserOutlined style={{ marginRight: 8, color: '#722ed1' }} />
+              Chủ thẻ: {user?.cardHolderName}
+            </Text>
+            <Text className={text}>
+              <BankOutlined style={{ marginRight: 8, color: '#eb2f96' }} />
+              Ngân hàng: {user?.bankName}
+            </Text>
+            <Text className={text}>
+              <WalletOutlined style={{ marginRight: 8, color: '#2f54eb' }} />
+              Số tài khoản: {user?.bankAccount}
+            </Text>
+          </>
+        )}
+      </Space>
       <div className={btnBlock}>
         <Button
           type='primary'
@@ -107,7 +141,7 @@ function Info({ fullName, email, role, avatarUrl }) {
         >
           Đổi mật khẩu
         </Button>
-        {role === 'user' && (
+        {user?.role === 'user' && (
           <Button
             color='cyan'
             variant='solid'

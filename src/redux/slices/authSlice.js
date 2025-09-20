@@ -9,8 +9,8 @@ export const login = createAsyncThunk(
   async (data, { dispatch, rejectWithValue }) => {
     try {
       const res = await authApi.login(data);
-      localStorage.setItem('token', res.token);
-      localStorage.setItem('refreshToken', res.refreshToken);
+      sessionStorage.setItem('token', res.token);
+      sessionStorage.setItem('refreshToken', res.refreshToken);
 
       await dispatch(getInfoUser());
 
@@ -25,17 +25,17 @@ export const login = createAsyncThunk(
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    token: localStorage.getItem('token') || null,
-    username: JSON.parse(localStorage.getItem('username')) || null,
+    token: sessionStorage.getItem('token') || null,
+    username: JSON.parse(sessionStorage.getItem('username')) || null,
     loading: false
   },
   reducers: {
     logout(state) {
       state.token = null;
       state.username = null;
-      localStorage.removeItem('token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('refreshToken');
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('username');
+      sessionStorage.removeItem('refreshToken');
       window.location.replace('/');
     }
   },

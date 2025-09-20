@@ -7,7 +7,7 @@ export const getInfoUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await userApi.getUserById();
-      localStorage.setItem('username', JSON.stringify(res.fullName));
+      sessionStorage.setItem('username', JSON.stringify(res.fullName));
       return res;
     } catch (err) {
       return rejectWithValue(err.response?.data);

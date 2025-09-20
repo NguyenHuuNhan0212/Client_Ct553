@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Typography } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line
 import {
   UserOutlined,
   CalendarOutlined,
@@ -20,7 +21,6 @@ import Header from '../../components/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './style.module.css';
 import { getInfoUser } from '../../redux/slices/userSlice';
-const { Title } = Typography;
 const { Content, Sider } = Layout;
 
 export default function Profile() {
@@ -116,14 +116,7 @@ export default function Profile() {
   const renderContent = () => {
     switch (selectedKey) {
       case '1':
-        return (
-          <Info
-            fullName={user?.fullName}
-            email={user?.email}
-            role={user?.role}
-            avatarUrl={user?.avatarUrl || '/uploads/default-avatar.jpg'}
-          />
-        );
+        return <Info user={user} />;
       case '2':
         return <ItineraryComponent itinerary={mockItinerary} />;
       case '3':
@@ -165,7 +158,19 @@ export default function Profile() {
           />
         </Sider>
         <Layout>
-          <Content className={content}>{renderContent()}</Content>
+          <Content className={content}>
+            <AnimatePresence mode='wait'>
+              <motion.div
+                key={selectedKey}
+                initial={{ opacity: 0, y: 10 }} // trạng thái ban đầu
+                animate={{ opacity: 1, y: 0 }} // animation khi xuất hiện
+                exit={{ opacity: 0, y: -10 }} // animation khi biến mất
+                transition={{ duration: 0.25 }} // tốc độ
+              >
+                {renderContent()}
+              </motion.div>
+            </AnimatePresence>
+          </Content>
         </Layout>
       </Layout>
     </>

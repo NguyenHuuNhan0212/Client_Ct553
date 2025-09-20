@@ -3,6 +3,7 @@ import banner1 from '../../assets/images/wellcome.png';
 import banner2 from '../../assets/images/banner2.png';
 import banner3 from '../../assets/images/banner.png';
 import styles from './style.module.css';
+import SearchBar from '../Search/Search';
 
 export default function Banner() {
   const { container, heroOverlay, heroContent, title, des, searchBox } = styles;
@@ -35,7 +36,10 @@ export default function Banner() {
           <div key={item.id}>
             <div
               className={container}
-              style={{ backgroundImage: `url(${item.image})` }}
+              style={{
+                backgroundImage: `url(${item.image})`,
+                marginTop: 57
+              }}
             >
               <div className={heroOverlay}></div>
               <div className={heroContent}>
@@ -49,11 +53,7 @@ export default function Banner() {
 
       {/* search box nằm đè lên banner */}
       <div className={searchBox}>
-        <Input.Search
-          placeholder='Tìm kiếm dịch vụ...'
-          enterButton
-          style={{ width: 400 }}
-        />
+        <SearchBar />
       </div>
     </div>
   );

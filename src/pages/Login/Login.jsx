@@ -19,6 +19,7 @@ export default function LoginPage() {
       {/* Form đăng ký căn giữa */}
       <div
         style={{
+          marginTop: 64,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',

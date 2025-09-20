@@ -9,8 +9,8 @@ const axiosClient = axios.create({
   timeout: 10000 // 10s
 });
 
-const getAccessToken = () => localStorage.getItem('token');
-const getRefreshToken = () => localStorage.getItem('refreshToken');
+const getAccessToken = () => sessionStorage.getItem('token');
+const getRefreshToken = () => sessionStorage.getItem('refreshToken');
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -75,7 +75,7 @@ axiosClient.interceptors.response.use(
 
         const newAccessToken = res.data.token;
 
-        localStorage.setItem('token', newAccessToken);
+        sessionStorage.setItem('token', newAccessToken);
 
         axiosClient.defaults.headers.Authorization = 'Bearer ' + newAccessToken;
 
@@ -84,8 +84,8 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('refreshToken');
         window.location.href = '/login';
         return Promise.reject(err);
       } finally {

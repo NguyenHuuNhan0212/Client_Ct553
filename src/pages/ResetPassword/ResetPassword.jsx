@@ -18,6 +18,7 @@ export default function LoginPage() {
 
       <div
         style={{
+          marginTop: 64,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',

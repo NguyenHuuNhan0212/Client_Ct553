@@ -22,9 +22,7 @@ const { Header: AntHeader } = Layout;
 export default function Header() {
   const { container, logo } = styles;
   const navigate = useNavigate();
-  // Giả sử bạn có state user lấy từ localStorage hoặc context
-  const username = JSON.parse(localStorage.getItem('username')) || null;
-
+  const username = JSON.parse(sessionStorage.getItem('username')) || null;
   const { token } = useSelector((state) => state.auth);
   const { user, avatar } = useSelector((state) => state.user);
   const dispatch = useDispatch();

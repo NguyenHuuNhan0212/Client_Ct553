@@ -1,0 +1,33 @@
+.searchLocationContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -60px;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 50px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  padding: 8px 16px;
+  gap: 10px;
+  border: 2px solid rgb(103, 171, 234);
+  background-color: transparent;
+}
+
+.searchSelect {
+  min-width: 160px;
+  border-radius: 30px !important;
+}
+
+.searchInput {
+  border-radius: 30px !important;
+  width: 250px;
+}
+
+.searchBtn {
+  border-radius: 30px !important;
+  font-weight: 500;
+}

@@ -3,7 +3,7 @@
   background-position: center;
   background-repeat: no-repeat;
   height: 500px; /* thêm px */
-  width: 100%;
+  width: 100vw;
   display: flex;
   margin-top: 1px;
   align-items: center;
@@ -39,7 +39,7 @@
 }
 .searchBox {
   position: absolute;
-  bottom: 150px;
+  bottom: 120px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;

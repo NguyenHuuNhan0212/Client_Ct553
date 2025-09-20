@@ -28,6 +28,20 @@ function RegisterProviderModal({ open, onClose }) {
         initialValues={{}}
       >
         <Form.Item
+          name='phone'
+          label='Số điện thoại'
+          rules={[
+            { required: true, message: 'Vui lòng nhập số điện thoại' },
+            {
+              pattern: /^(0|\+84)(\d{9})$/,
+              message:
+                'Số điện thoại không hợp lệ (VD: 0349414282 hoặc +84349414282)'
+            }
+          ]}
+        >
+          <Input placeholder='Nhập số điện thoại' maxLength={12} />
+        </Form.Item>
+        <Form.Item
           name='cardHolderName'
           label='Tên chủ thẻ'
           rules={[{ required: true, message: 'Vui lòng nhập tên chủ thẻ' }]}
