@@ -31,6 +31,10 @@ const routes = [
   {
     path: 'profile',
     component: lazy(() => import('../pages/Profile/Profile'))
+  },
+  {
+    path: 'add-place',
+    component: lazy(() => import('../pages/AddPlace/AddPlace'))
   }
 ];
 

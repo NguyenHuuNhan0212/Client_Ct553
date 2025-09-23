@@ -55,7 +55,22 @@ export default function Header() {
           Dịch vụ
         </Link>
       )
-    }
+    },
+    ...(user?.role === 'provider'
+      ? [
+          {
+            key: 'addPlace',
+            label: (
+              <Link
+                to='/add-place'
+                style={{ fontSize: '16px', fontWeight: '600' }}
+              >
+                Thêm dịch vụ
+              </Link>
+            )
+          }
+        ]
+      : [])
   ];
   const userMenu = {
     items: [

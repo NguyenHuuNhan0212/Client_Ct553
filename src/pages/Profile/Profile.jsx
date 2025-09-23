@@ -21,6 +21,7 @@ import Header from '../../components/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './style.module.css';
 import { getInfoUser } from '../../redux/slices/userSlice';
+import Footer from '../../components/Footer/Footer';
 const { Content, Sider } = Layout;
 
 export default function Profile() {

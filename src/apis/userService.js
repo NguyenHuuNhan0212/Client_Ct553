@@ -4,7 +4,7 @@ const userApi = {
     return axiosClient.get('/my-profile');
   },
   uploadAvatar(data) {
-    return axiosClient.post('http://localhost:3000/api/avatar', data, {
+    return axiosClient.post('/avatar', data, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
