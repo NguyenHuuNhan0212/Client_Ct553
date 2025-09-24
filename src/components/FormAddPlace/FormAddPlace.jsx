@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Card, Tabs, Typography } from 'antd';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,13 @@ import ServiceTab from './ServiceTab';
 import RoomTypeTab from './RoomTypeTab';
 import styles from './style.module.css';
 const { Title } = Typography;
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
 const FormAddPlace = () => {
   const { container, btn } = styles;
   const [form] = Form.useForm();
@@ -15,11 +22,15 @@ const FormAddPlace = () => {
   const [roomTypes, setRoomTypes] = useState([]);
   const [services, setServices] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
   const [activeKey, setActiveKey] = useState('1');
   const navigate = useNavigate();
 
   // Submit
   const onFinish = async (values) => {
+    const address = `${values.ward}, ${values.province}`;
+    const payload = { ...values, address };
     if (type === 'hotel') {
       if (!roomTypes.length) {
         return toast.error('Bạn phải nhập ít nhất 1 loại phòng');
@@ -32,8 +43,8 @@ const FormAddPlace = () => {
       }
     }
     const formData = new FormData();
-    Object.keys(values).forEach((key) => {
-      formData.append(key, values[key]);
+    Object.keys(payload).forEach((key) => {
+      formData.append(key, payload[key]);
     });
     fileList.forEach((file) => {
       formData.append('images', file.originFileObj);
@@ -57,16 +68,11 @@ const FormAddPlace = () => {
   // Upload handlers
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
   const handlePreview = async (file) => {
-    let src = file.url;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
     }
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(`<img src="${src}" style="max-width:100%"/>`);
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
   };
 
   // Room handlers
@@ -107,6 +113,10 @@ const FormAddPlace = () => {
           handleChange={handleChange}
           handlePreview={handlePreview}
           setType={setType}
+          previewImage={previewImage}
+          setPreviewImage={setPreviewImage}
+          previewOpen={previewOpen}
+          setPreviewOpen={setPreviewOpen}
         />
       )
     },
@@ -148,6 +158,8 @@ const FormAddPlace = () => {
       setActiveKey(nextKey);
     }
   };
+
+  useEffect(() => {});
   return (
     <Card className={container}>
       <Title level={2} style={{ textAlign: 'center' }}>

@@ -7,6 +7,9 @@ const placeApi = {
         'Content-Type': 'multipart/form-data'
       }
     });
+  },
+  getAllPlaceOfUser() {
+    return axiosClient.get('/places');
   }
 };
 export default placeApi;

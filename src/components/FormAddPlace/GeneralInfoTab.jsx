@@ -1,10 +1,29 @@
 import React from 'react';
-import { Form, Input, Select, InputNumber, Upload, Row, Col } from 'antd';
+import {
+  Form,
+  Input,
+  Select,
+  InputNumber,
+  Upload,
+  Row,
+  Col,
+  Image
+} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import AddressSelector from './AddressSelector';
 
 const { Option } = Select;
 
-const GeneralInfoTab = ({ fileList, handleChange, handlePreview, setType }) => (
+const GeneralInfoTab = ({
+  fileList,
+  handleChange,
+  handlePreview,
+  setType,
+  previewImage,
+  previewOpen,
+  setPreviewImage,
+  setPreviewOpen
+}) => (
   <>
     <Row gutter={16}>
       <Col span={12}>
@@ -33,10 +52,10 @@ const GeneralInfoTab = ({ fileList, handleChange, handlePreview, setType }) => (
       </Col>
     </Row>
 
-    <Form.Item name='address' label='Địa chỉ' rules={[{ required: true }]}>
+    {/* <Form.Item name='address' label='Địa chỉ' rules={[{ required: true }]}>
       <Input placeholder='Nhập địa chỉ' />
-    </Form.Item>
-
+    </Form.Item> */}
+    <AddressSelector />
     <Form.Item name='description' label='Mô tả'>
       <Input.TextArea rows={3} placeholder='Nhập mô tả' />
     </Form.Item>
@@ -59,6 +78,17 @@ const GeneralInfoTab = ({ fileList, handleChange, handlePreview, setType }) => (
           <div style={{ marginTop: 8 }}>Tải ảnh</div>
         </div>
       </Upload>
+      {previewImage && (
+        <Image
+          wrapperStyle={{ display: 'none' }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage('')
+          }}
+          src={previewImage}
+        />
+      )}
     </Form.Item>
   </>
 );
