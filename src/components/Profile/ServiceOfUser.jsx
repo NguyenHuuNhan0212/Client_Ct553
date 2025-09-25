@@ -1,5 +1,10 @@
 import { Card, Table, Tag, Button, Typography, Space } from 'antd';
-import { EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  DeleteFilled,
+  EditOutlined,
+  EyeOutlined,
+  PlusOutlined
+} from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getAllPlaceOfUser } from '../../redux/slices/placeSlice';
@@ -7,7 +12,9 @@ import { useNavigate } from 'react-router-dom';
 const { Title } = Typography;
 function ServiceProvide() {
   const dispatch = useDispatch();
-  const { places: services, loading } = useSelector((state) => state.place);
+  const { placesOffUser: services, loading } = useSelector(
+    (state) => state.place
+  );
   const navigate = useNavigate();
   const handleAddService = () => {
     navigate('/add-place');
@@ -64,7 +71,8 @@ function ServiceProvide() {
                   style={{ cursor: 'pointer' }}
                   onClick={() => handleClickSeeDetail(record)}
                 />
-                <EditOutlined style={{ cursor: 'pointer' }} />
+                <EditOutlined style={{ color: 'blue', cursor: 'pointer' }} />
+                <DeleteFilled style={{ color: 'red', cursor: 'pointer' }} />
               </Space>
             )
           }

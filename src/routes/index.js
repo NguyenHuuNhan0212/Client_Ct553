@@ -38,7 +38,7 @@ const routes = [
   },
   {
     path: 'place/:id',
-    component: lazy(() => import('../pages/Place/PlaceDetail'))
+    component: lazy(() => import('../pages/Place/PlaceDetailPage'))
   }
 ];
 

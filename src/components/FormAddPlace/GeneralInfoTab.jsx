@@ -60,10 +60,6 @@ const GeneralInfoTab = ({
       <Input.TextArea rows={3} placeholder='Nhập mô tả' />
     </Form.Item>
 
-    <Form.Item name='avgPrice' label='Giá trung bình'>
-      <InputNumber style={{ width: '100%' }} min={0} />
-    </Form.Item>
-
     <Form.Item label='Ảnh địa điểm' required style={{ marginBottom: 40 }}>
       <Upload
         multiple

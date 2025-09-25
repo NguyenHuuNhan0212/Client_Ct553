@@ -23,9 +23,21 @@ export const getOnePlace = createAsyncThunk(
     }
   }
 );
+export const getAllPlace = createAsyncThunk(
+  'place/getAllPlace',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await placeApi.getAll();
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
 const placeSlice = createSlice({
   name: 'place',
   initialState: {
+    placesOffUser: [],
     places: [],
     currentPlace: null,
     loading: false
@@ -38,11 +50,11 @@ const placeSlice = createSlice({
       })
       .addCase(getAllPlaceOfUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.places = action.payload.places;
+        state.placesOffUser = action.payload.places;
       })
       .addCase(getAllPlaceOfUser.rejected, (state) => {
         state.loading = false;
-        state.places = [];
+        state.placesOffUser = [];
       })
       .addCase(getOnePlace.pending, (state) => {
         state.loading = true;
@@ -50,6 +62,17 @@ const placeSlice = createSlice({
       .addCase(getOnePlace.fulfilled, (state, action) => {
         state.loading = false;
         state.currentPlace = action.payload;
+      })
+      .addCase(getAllPlace.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAllPlace.fulfilled, (state, action) => {
+        state.loading = false;
+        state.places = action.payload;
+      })
+      .addCase(getAllPlace.rejected, (state) => {
+        state.loading = false;
+        state.places = [];
       });
   }
 });

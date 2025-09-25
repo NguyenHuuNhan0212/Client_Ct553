@@ -9,10 +9,18 @@ const placeApi = {
     });
   },
   getAllPlaceOfUser() {
-    return axiosClient.get('/places');
+    return axiosClient.get('/places/user');
   },
   getOnePlace(placeId) {
     return axiosClient.get(`/places/${placeId}`);
+  },
+  getAll() {
+    return axiosClient.get('/places');
+  },
+  getPlaceRelative(data) {
+    return axiosClient.get(
+      `/places/relative?id=${data._id}&type=${data.type}&address=${data.address}`
+    );
   }
 };
 export default placeApi;

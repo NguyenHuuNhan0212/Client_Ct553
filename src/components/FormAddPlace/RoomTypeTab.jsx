@@ -43,7 +43,7 @@ const RoomTypeTab = ({
         }
         style={{ marginBottom: 10, border: 'solid 1px blue' }}
       >
-        <Text strong>Tên phòng</Text>
+        <Text strong>Tên loại phòng</Text>
         <Input
           placeholder='Tên phòng'
           value={rt.name}
