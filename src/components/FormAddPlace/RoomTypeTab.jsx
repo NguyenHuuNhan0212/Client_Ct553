@@ -1,7 +1,16 @@
 import React from 'react';
-import { Card, Button, Input, InputNumber, Row, Col, Form } from 'antd';
+import {
+  Card,
+  Button,
+  Input,
+  InputNumber,
+  Row,
+  Col,
+  Form,
+  Typography
+} from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-
+const { Text } = Typography;
 const RoomTypeTab = ({
   roomTypes,
   addRoomType,
@@ -21,7 +30,9 @@ const RoomTypeTab = ({
       <Card
         key={i}
         size='small'
-        title={`Loại phòng ${i + 1}`}
+        title={
+          <div style={{ textAlign: 'center' }}>{`Loại phòng ${i + 1}`}</div>
+        }
         extra={
           <Button
             danger
@@ -30,8 +41,9 @@ const RoomTypeTab = ({
             onClick={() => removeRoomType(i)}
           />
         }
-        style={{ marginBottom: 10 }}
+        style={{ marginBottom: 10, border: 'solid 1px blue' }}
       >
+        <Text strong>Tên phòng</Text>
         <Input
           placeholder='Tên phòng'
           value={rt.name}
@@ -39,6 +51,7 @@ const RoomTypeTab = ({
         />
         <Row gutter={8} style={{ marginTop: 8 }}>
           <Col span={8}>
+            <Text strong>Sức chứa tối đa (số người/phòng)</Text>
             <InputNumber
               placeholder='Sức chứa'
               min={1}
@@ -48,6 +61,7 @@ const RoomTypeTab = ({
             />
           </Col>
           <Col span={8}>
+            <Text strong>Số lượng phòng</Text>
             <InputNumber
               placeholder='Số lượng'
               min={1}
@@ -57,6 +71,7 @@ const RoomTypeTab = ({
             />
           </Col>
           <Col span={8}>
+            <Text strong>Giá thuê VND (Giá/đêm)</Text>
             <InputNumber
               placeholder='Giá/đêm'
               min={0}

@@ -79,7 +79,7 @@ const FormAddPlace = () => {
   const addRoomType = () =>
     setRoomTypes([
       ...roomTypes,
-      { name: '', capacity: 0, totalRooms: 0, pricePerNight: 0 }
+      { name: '', capacity: 1, totalRooms: 1, pricePerNight: 100 }
     ]);
   const updateRoomType = (i, field, value) => {
     const newRooms = [...roomTypes];

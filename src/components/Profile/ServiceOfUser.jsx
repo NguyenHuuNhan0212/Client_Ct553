@@ -1,5 +1,5 @@
-import { Card, Table, Tag, Button, Typography } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Card, Table, Tag, Button, Typography, Space } from 'antd';
+import { EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getAllPlaceOfUser } from '../../redux/slices/placeSlice';
@@ -12,6 +12,11 @@ function ServiceProvide() {
   const handleAddService = () => {
     navigate('/add-place');
   };
+
+  const handleClickSeeDetail = (value) => {
+    navigate(`/place/${value._id}`);
+  };
+
   useEffect(() => {
     dispatch(getAllPlaceOfUser()).unwrap();
   }, [dispatch]);
@@ -31,11 +36,12 @@ function ServiceProvide() {
         rowKey='_id'
         loading={loading}
         columns={[
-          { title: 'Tên địa điểm', dataIndex: 'name' },
-          { title: 'Loại địa điểm', dataIndex: 'type' },
+          { title: 'Tên địa điểm', align: 'center', dataIndex: 'name' },
+          { title: 'Loại địa điểm', align: 'center', dataIndex: 'type' },
           {
             title: 'Trạng thái hoạt động',
             dataIndex: 'isActive',
+            align: 'center',
             render: (value) =>
               value ? (
                 <Tag color='green'>Đang hoạt động</Tag>
@@ -43,7 +49,25 @@ function ServiceProvide() {
                 <Tag color='red'>Ngừng hoạt động</Tag>
               )
           },
-          { title: 'Các dịch vụ', dataIndex: 'totalServices' }
+          {
+            title: 'Số lượng dịch vụ',
+            align: 'center',
+            dataIndex: 'totalServices'
+          },
+          {
+            title: 'Hành động',
+            key: 'action',
+            align: 'center',
+            render: (_, record) => (
+              <Space size='large' style={{ fontSize: 20 }}>
+                <EyeOutlined
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleClickSeeDetail(record)}
+                />
+                <EditOutlined style={{ cursor: 'pointer' }} />
+              </Space>
+            )
+          }
         ]}
         pagination={{ pageSize: 5 }}
       />

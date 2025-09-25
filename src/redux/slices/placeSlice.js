@@ -12,11 +12,22 @@ export const getAllPlaceOfUser = createAsyncThunk(
     }
   }
 );
-
+export const getOnePlace = createAsyncThunk(
+  'place/getOnePlace',
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await placeApi.getOnePlace(id);
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
 const placeSlice = createSlice({
   name: 'place',
   initialState: {
     places: [],
+    currentPlace: null,
     loading: false
   },
   reducers: [],
@@ -32,6 +43,13 @@ const placeSlice = createSlice({
       .addCase(getAllPlaceOfUser.rejected, (state) => {
         state.loading = false;
         state.places = [];
+      })
+      .addCase(getOnePlace.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getOnePlace.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentPlace = action.payload;
       });
   }
 });

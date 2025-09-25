@@ -10,6 +10,9 @@ const placeApi = {
   },
   getAllPlaceOfUser() {
     return axiosClient.get('/places');
+  },
+  getOnePlace(placeId) {
+    return axiosClient.get(`/places/${placeId}`);
   }
 };
 export default placeApi;

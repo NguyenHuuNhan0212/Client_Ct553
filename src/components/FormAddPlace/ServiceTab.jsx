@@ -17,7 +17,7 @@ const ServiceTab = ({ services, addService, updateService, removeService }) => (
             onClick={() => removeService(i)}
           />
         }
-        style={{ marginBottom: 10 }}
+        style={{ marginBottom: 10, border: 'solid 1px blue' }}
       >
         <Text strong>Tên dịch vụ</Text>
         <Input
