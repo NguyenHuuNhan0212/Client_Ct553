@@ -16,8 +16,7 @@ function PlaceRelative({ currentPlace }) {
       setPlaces(res.places);
     };
     fetchData(data);
-  }, [currentPlace]);
-  console.log(places);
+  }, [currentPlace]); //eslint-disable-line
   return (
     <>
       <Divider style={{ fontSize: '24px' }}>Địa điểm tương tự</Divider>

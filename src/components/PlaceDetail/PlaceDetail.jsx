@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-
-import { Typography, List, Row, Col, Divider, Layout } from 'antd';
+import DOMPurify from 'dompurify';
+import { Typography, List, Row, Col, Divider, Layout, Tag } from 'antd';
 import { capitalizeName } from '../../utils/capitalize';
 import PlaceRelative from './PlaceRelative';
 const { Content } = Layout;
@@ -96,10 +96,20 @@ function PlaceDetail({ currentPlace }) {
           </Paragraph>
           <Paragraph style={{ fontSize: '16px', paddingRight: '50px' }}>
             <b>Trạng thái hoạt động: </b>{' '}
-            {place?.isActive ? 'Đang hoạt động' : 'Ngừng hoạt động'}
+            <Tag
+              style={{ fontSize: '16px' }}
+              color={place?.isActive ? 'green' : 'red'}
+            >
+              {place?.isActive ? 'Đang hoạt động' : 'Ngừng hoạt động'}
+            </Tag>
           </Paragraph>
           <Paragraph style={{ fontSize: '16px', paddingRight: '50px' }}>
-            <b>Giới thiệu địa điểm: </b> {place?.description}
+            <b>Giới thiệu địa điểm: </b>
+            <span
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(place?.description || '')
+              }}
+            />
           </Paragraph>
         </Col>
         <Col span={8}>
@@ -116,7 +126,7 @@ function PlaceDetail({ currentPlace }) {
       {/* Loại phòng */}
       {roomTypes?.length > 0 && (
         <>
-          <Divider style={{ fontSize: '20px' }}>Loại phòng</Divider>
+          <Divider style={{ fontSize: '20px' }}>Các loại phòng</Divider>
           <List
             dataSource={roomTypes}
             bordered
@@ -132,7 +142,9 @@ function PlaceDetail({ currentPlace }) {
       {/* Dịch vụ */}
       {services?.length > 0 && (
         <>
-          <Divider style={{ fontSize: '20px' }}>Dịch vụ đi kèm</Divider>
+          <Divider style={{ fontSize: '20px' }}>
+            Các dịch vụ địa điểm cung cấp
+          </Divider>
           <List
             dataSource={services}
             bordered

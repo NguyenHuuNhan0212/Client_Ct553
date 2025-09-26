@@ -15,8 +15,7 @@ export default function Home() {
   const { places } = useSelector((state) => state.place);
   useEffect(() => {
     dispatch(getAllPlace());
-  }, []);
-  console.log(places);
+  }, []); //eslint-disable-line
   return (
     <Layout>
       <Header />

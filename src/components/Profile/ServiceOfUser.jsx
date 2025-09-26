@@ -1,27 +1,64 @@
-import { Card, Table, Tag, Button, Typography, Space } from 'antd';
+import { Card, Table, Tag, Button, Typography, Space, Modal } from 'antd';
 import {
-  DeleteFilled,
+  DeleteOutlined,
   EditOutlined,
   EyeOutlined,
   PlusOutlined
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getAllPlaceOfUser } from '../../redux/slices/placeSlice';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import placeApi from '../../apis/placeService';
 const { Title } = Typography;
 function ServiceProvide() {
+  const [open, setOpen] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState(null); // lưu record chọn
   const dispatch = useDispatch();
   const { placesOffUser: services, loading } = useSelector(
     (state) => state.place
   );
   const navigate = useNavigate();
+
   const handleAddService = () => {
     navigate('/add-place');
   };
 
-  const handleClickSeeDetail = (value) => {
-    navigate(`/place/${value._id}`);
+  const handleClickSeeDetail = (record) => {
+    navigate(`/place/${record._id}`);
+  };
+
+  const showModal = (record) => {
+    setSelectedPlace(record);
+    setOpen(true);
+  };
+
+  const handleRemovePlace = async () => {
+    if (!selectedPlace) return;
+    try {
+      const res = await placeApi.deletePlace(selectedPlace._id); //eslint-disable-line
+      await dispatch(getAllPlaceOfUser()).unwrap();
+      setOpen(false);
+      toast.success(`Đã xóa "${selectedPlace.name}" thành công.`);
+    } catch (err) {
+      toast.error(err.response?.data);
+    }
+  };
+  const handleToggleStatus = async (record) => {
+    try {
+      await placeApi.updateStatusActive(record._id);
+      await dispatch(getAllPlaceOfUser()).unwrap();
+      toast.success(
+        `Cập nhật trạng thái hoạt động của ${record.name} thành công`
+      );
+    } catch (err) {
+      toast.error(err.response?.data);
+    }
+  };
+  const handleCancel = () => {
+    setOpen(false);
+    setSelectedPlace(null);
   };
 
   useEffect(() => {
@@ -33,7 +70,7 @@ function ServiceProvide() {
       variant='borderless'
       title={
         <Title level={2} style={{ textAlign: 'center' }}>
-          {'Dịch vụ của tôi'}
+          Dịch vụ của tôi
         </Title>
       }
       style={{ borderRadius: 10, padding: 20 }}
@@ -43,18 +80,34 @@ function ServiceProvide() {
         rowKey='_id'
         loading={loading}
         columns={[
+          {
+            title: 'STT',
+            dataIndex: 'index',
+            align: 'center',
+            render: (_, __, index) => index + 1
+          },
           { title: 'Tên địa điểm', align: 'center', dataIndex: 'name' },
           { title: 'Loại địa điểm', align: 'center', dataIndex: 'type' },
           {
             title: 'Trạng thái hoạt động',
             dataIndex: 'isActive',
             align: 'center',
-            render: (value) =>
-              value ? (
-                <Tag color='green'>Đang hoạt động</Tag>
-              ) : (
-                <Tag color='red'>Ngừng hoạt động</Tag>
-              )
+            render: (value, record) => (
+              <Space>
+                <Tag color={value ? 'green' : 'red'}>
+                  {value ? 'Đang hoạt động' : 'Ngưng hoạt động'}
+                </Tag>
+                <Button
+                  type={value ? 'default' : 'primary'}
+                  color={value ? 'danger' : ''}
+                  variant={value ? 'solid' : ''}
+                  size='small'
+                  onClick={() => handleToggleStatus(record)}
+                >
+                  {value ? 'Ngưng' : 'Kích hoạt'}
+                </Button>
+              </Space>
+            )
           },
           {
             title: 'Số lượng dịch vụ',
@@ -68,25 +121,55 @@ function ServiceProvide() {
             render: (_, record) => (
               <Space size='large' style={{ fontSize: 20 }}>
                 <EyeOutlined
-                  style={{ cursor: 'pointer' }}
+                  style={{ color: 'blue', cursor: 'pointer' }}
                   onClick={() => handleClickSeeDetail(record)}
                 />
-                <EditOutlined style={{ color: 'blue', cursor: 'pointer' }} />
-                <DeleteFilled style={{ color: 'red', cursor: 'pointer' }} />
+                <EditOutlined
+                  style={{ color: '#ebca48ff', cursor: 'pointer' }}
+                />
+                <DeleteOutlined
+                  style={{ color: 'red', cursor: 'pointer' }}
+                  onClick={() => showModal(record)}
+                />
               </Space>
             )
           }
         ]}
         pagination={{ pageSize: 5 }}
       />
-      <Button
-        type='primary'
-        onClick={handleAddService}
-        icon={<PlusOutlined />}
-        style={{ marginTop: 20 }}
+
+      {/* Tổng số dịch vụ */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}
       >
-        Thêm dịch vụ
-      </Button>
+        <Button
+          type='primary'
+          onClick={handleAddService}
+          icon={<PlusOutlined />}
+          style={{ marginTop: 20 }}
+        >
+          Thêm dịch vụ
+        </Button>
+        <div style={{ fontWeight: 'bold' }}>
+          Tổng số dịch vụ: {services?.length || 0}
+        </div>
+      </div>
+      <Modal
+        title='Xác nhận xóa địa điểm'
+        open={open}
+        onOk={handleRemovePlace}
+        onCancel={handleCancel}
+      >
+        <p>
+          {selectedPlace
+            ? `Bạn chắc chắn xóa địa điểm: ${selectedPlace.name}`
+            : ''}
+        </p>
+      </Modal>
     </Card>
   );
 }

@@ -21,6 +21,12 @@ const placeApi = {
     return axiosClient.get(
       `/places/relative?id=${data._id}&type=${data.type}&address=${data.address}`
     );
+  },
+  deletePlace(placeId) {
+    return axiosClient.delete(`/places/${placeId}`);
+  },
+  updateStatusActive(placeId) {
+    return axiosClient.patch(`/places/${placeId}`);
   }
 };
 export default placeApi;
