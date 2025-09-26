@@ -26,7 +26,10 @@ const placeApi = {
     return axiosClient.delete(`/places/${placeId}`);
   },
   updateStatusActive(placeId) {
-    return axiosClient.patch(`/places/${placeId}`);
+    return axiosClient.patch(`/places/update-status-active/${placeId}`);
+  },
+  updatePlace(placeId, data) {
+    return axiosClient.put(`/places/${placeId}`, data);
   }
 };
 export default placeApi;

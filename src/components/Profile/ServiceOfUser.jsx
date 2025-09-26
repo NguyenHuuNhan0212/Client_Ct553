@@ -11,10 +11,13 @@ import { getAllPlaceOfUser } from '../../redux/slices/placeSlice';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import placeApi from '../../apis/placeService';
+import FormUpdatePlace from '../FormAddPlace/FormUpdatePlace';
 const { Title } = Typography;
 function ServiceProvide() {
   const [open, setOpen] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState(null); // lưu record chọn
+  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [editingPlace, setEditingPlace] = useState(null);
   const dispatch = useDispatch();
   const { placesOffUser: services, loading } = useSelector(
     (state) => state.place
@@ -24,7 +27,15 @@ function ServiceProvide() {
   const handleAddService = () => {
     navigate('/add-place');
   };
+  const handleEdit = (record) => {
+    setEditingPlace(record);
+    setOpenEdit(true);
+  };
 
+  const handleCloseEdit = () => {
+    setEditingPlace(null);
+    setOpenEdit(false);
+  };
   const handleClickSeeDetail = (record) => {
     navigate(`/place/${record._id}`);
   };
@@ -110,6 +121,18 @@ function ServiceProvide() {
             )
           },
           {
+            title: 'Trạng thái phê duyệt',
+            dataIndex: 'isApprove',
+            align: 'center',
+            render: (value) => (
+              <Space>
+                <Tag color={value ? 'green' : 'red'}>
+                  {value ? 'Đã duyệt' : 'Đang chờ phê duyệt'}
+                </Tag>
+              </Space>
+            )
+          },
+          {
             title: 'Số lượng dịch vụ',
             align: 'center',
             dataIndex: 'totalServices'
@@ -126,6 +149,7 @@ function ServiceProvide() {
                 />
                 <EditOutlined
                   style={{ color: '#ebca48ff', cursor: 'pointer' }}
+                  onClick={() => handleEdit(record)}
                 />
                 <DeleteOutlined
                   style={{ color: 'red', cursor: 'pointer' }}
@@ -169,6 +193,25 @@ function ServiceProvide() {
             ? `Bạn chắc chắn xóa địa điểm: ${selectedPlace.name}`
             : ''}
         </p>
+      </Modal>
+
+      <Modal
+        title='Cập nhật địa điểm'
+        open={openEdit}
+        onCancel={handleCloseEdit}
+        footer={null}
+        width={800} // rộng hơn để form đẹp
+      >
+        {editingPlace && (
+          <FormUpdatePlace
+            placeId={editingPlace._id}
+            onSuccess={() => {
+              dispatch(getAllPlaceOfUser()).unwrap();
+              handleCloseEdit();
+            }}
+            onCancel={handleCloseEdit}
+          />
+        )}
       </Modal>
     </Card>
   );

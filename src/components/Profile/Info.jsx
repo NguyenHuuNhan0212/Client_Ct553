@@ -23,7 +23,6 @@ import { capitalizeName } from '../../utils/capitalize';
 const { Title, Text } = Typography;
 
 function Info({ user }) {
-  console.log(user);
   const { container, title, avatar, iconCamera, info, text, btnBlock } = styles;
   const [preview, setPreview] = useState(user?.avatarUrl);
   const [isEditOpen, setIsEditOpen] = useState(false);
