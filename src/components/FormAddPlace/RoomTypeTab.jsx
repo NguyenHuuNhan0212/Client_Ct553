@@ -18,14 +18,6 @@ const RoomTypeTab = ({
   removeRoomType
 }) => (
   <>
-    <Form.Item
-      name='commissionPerCentage'
-      label='Hoa hồng (%) cho quản trị'
-      rules={[{ required: true }]}
-    >
-      <InputNumber style={{ width: '100%' }} min={0} max={100} />
-    </Form.Item>
-
     {roomTypes.map((rt, i) => (
       <Card
         key={i}

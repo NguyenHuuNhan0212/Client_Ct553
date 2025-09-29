@@ -54,7 +54,7 @@ function Info({ user }) {
   }, [user?.avatarUrl]);
   return (
     <Card className={container}>
-      <Title level={3} className={title}>
+      <Title level={1} className={title}>
         Trang thông tin cá nhân
       </Title>
       {/* Avatar có thể đổi */}

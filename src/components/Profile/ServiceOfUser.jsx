@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import placeApi from '../../apis/placeService';
 import FormUpdatePlace from '../FormAddPlace/FormUpdatePlace';
+import { capitalizeName } from '../../utils/capitalize';
 const { Title } = Typography;
 function ServiceProvide() {
   const [open, setOpen] = useState(false);
@@ -37,7 +38,11 @@ function ServiceProvide() {
     setOpenEdit(false);
   };
   const handleClickSeeDetail = (record) => {
-    navigate(`/place/${record._id}`);
+    if (record.type === 'hotel') {
+      return navigate(`/hotel/${record._id}`);
+    } else {
+      return navigate(`/place/${record._id}`);
+    }
   };
 
   const showModal = (record) => {
@@ -80,7 +85,7 @@ function ServiceProvide() {
     <Card
       variant='borderless'
       title={
-        <Title level={2} style={{ textAlign: 'center' }}>
+        <Title level={1} style={{ textAlign: 'center' }}>
           Dịch vụ của tôi
         </Title>
       }
@@ -97,7 +102,12 @@ function ServiceProvide() {
             align: 'center',
             render: (_, __, index) => index + 1
           },
-          { title: 'Tên địa điểm', align: 'center', dataIndex: 'name' },
+          {
+            title: 'Tên địa điểm',
+            align: 'center',
+            dataIndex: 'name',
+            render: (value) => <Title level={5}>{capitalizeName(value)}</Title>
+          },
           { title: 'Loại địa điểm', align: 'center', dataIndex: 'type' },
           {
             title: 'Trạng thái hoạt động',
@@ -204,6 +214,7 @@ function ServiceProvide() {
       >
         {editingPlace && (
           <FormUpdatePlace
+            typeCurrent={editingPlace.type}
             placeId={editingPlace._id}
             onSuccess={() => {
               dispatch(getAllPlaceOfUser()).unwrap();

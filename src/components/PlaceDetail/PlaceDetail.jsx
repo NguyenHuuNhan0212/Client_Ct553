@@ -9,12 +9,12 @@ const { Title, Paragraph } = Typography;
 function PlaceDetail({ currentPlace }) {
   const [mainImage, setMainImage] = useState(null);
 
-  const { place, services, roomTypes, ownerInfo } = currentPlace;
+  const { info, services, roomTypes, ownerInfo } = currentPlace;
   useEffect(() => {
-    if (place?.images?.length > 0) {
-      setMainImage(`http://localhost:3000/${place.images[0]}`);
+    if (info?.images?.length > 0) {
+      setMainImage(`http://localhost:3000/${info.images[0]}`);
     }
-  }, [place]);
+  }, [info]);
   return (
     <Content
       style={{
@@ -34,7 +34,7 @@ function PlaceDetail({ currentPlace }) {
             marginRight: 10
           }}
         >
-          {place?.images?.map((img, idx) => (
+          {info?.images?.map((img, idx) => (
             <img
               key={idx}
               src={`http://localhost:3000/${img}`}
@@ -80,17 +80,17 @@ function PlaceDetail({ currentPlace }) {
       <Row gutter={5}>
         {/* Thông tin chung */}
         <Col span={16}>
-          <Title level={2}>{capitalizeName(place?.name)}</Title>
+          <Title level={2}>{capitalizeName(info?.name)}</Title>
           <Paragraph style={{ fontSize: '16px' }}>
-            <b>Địa chỉ:</b> {place?.address}
+            <b>Địa chỉ:</b> {info?.address}
           </Paragraph>
           <Paragraph style={{ fontSize: '16px', paddingRight: '50px' }}>
             <b>Loại địa điểm: </b>{' '}
-            {place?.type === 'hotel'
+            {info?.type === 'hotel'
               ? 'Khách sạn, nhà nghĩ'
-              : place?.type === 'touristSpot'
+              : info?.type === 'touristSpot'
               ? 'Địa điểm du lịch'
-              : place?.type === 'cafe'
+              : info?.type === 'cafe'
               ? 'Quán cafe'
               : 'Địa điểm ăn uống'}
           </Paragraph>
@@ -98,16 +98,16 @@ function PlaceDetail({ currentPlace }) {
             <b>Trạng thái hoạt động: </b>{' '}
             <Tag
               style={{ fontSize: '16px' }}
-              color={place?.isActive ? 'green' : 'red'}
+              color={info?.isActive ? 'green' : 'red'}
             >
-              {place?.isActive ? 'Đang hoạt động' : 'Ngừng hoạt động'}
+              {info?.isActive ? 'Đang hoạt động' : 'Ngừng hoạt động'}
             </Tag>
           </Paragraph>
           <Paragraph style={{ fontSize: '16px', paddingRight: '50px' }}>
             <b>Giới thiệu địa điểm: </b>
             <span
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(place?.description || '')
+                __html: DOMPurify.sanitize(info?.description || '')
               }}
             />
           </Paragraph>
@@ -156,7 +156,7 @@ function PlaceDetail({ currentPlace }) {
           />
         </>
       )}
-      <PlaceRelative currentPlace={place} />
+      <PlaceRelative currentPlace={info} />
     </Content>
   );
 }

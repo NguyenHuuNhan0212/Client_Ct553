@@ -7,6 +7,7 @@ import GeneralInfoTab from './GeneralInfoTab';
 import ServiceTab from './ServiceTab';
 import RoomTypeTab from './RoomTypeTab';
 import styles from './style.module.css';
+import hotelApi from '../../apis/hotelService';
 const { Title } = Typography;
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -53,7 +54,12 @@ const FormAddPlace = () => {
     formData.append('services', JSON.stringify(services));
 
     try {
-      await placeApi.addPlace(formData);
+      if (type === 'hotel') {
+        await hotelApi.addHotel(formData);
+      } else {
+        await placeApi.addPlace(formData);
+      }
+
       form.resetFields();
       setRoomTypes([]);
       setServices([]);

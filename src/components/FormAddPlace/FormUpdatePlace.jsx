@@ -6,13 +6,14 @@ import GeneralInfoTab from './GeneralInfoTab';
 import ServiceTab from './ServiceTab';
 import RoomTypeTab from './RoomTypeTab';
 import styles from './style.module.css';
+import hotelApi from '../../apis/hotelService';
 
 const { Title } = Typography;
 const BASE_URL = 'http://localhost:3000';
-const FormUpdatePlace = ({ placeId, onSuccess }) => {
+const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
   const { container, btn } = styles;
   const [form] = Form.useForm();
-  const [type, setType] = useState('touristSpot');
+  const [type, setType] = useState(typeCurrent);
   const [roomTypes, setRoomTypes] = useState([]);
   const [services, setServices] = useState([]);
   const [fileList, setFileList] = useState([]);
@@ -21,21 +22,34 @@ const FormUpdatePlace = ({ placeId, onSuccess }) => {
   // Load dữ liệu
   useEffect(() => {
     const fetchData = async () => {
+      let place = null;
       try {
-        const res = await placeApi.getOnePlace(placeId);
-        const place = res.place;
-        form.setFieldsValue({
-          name: place.name,
-          description: place.description,
-          province: place.address?.split(',')[1]?.trim(),
-          ward: place.address?.split(',')[0]?.trim(),
-          type: place.type,
-          commissionPerCentage: res.hotel?.commissionPerCentage
-        });
+        if (typeCurrent === 'hotel') {
+          const res = await hotelApi.getOneHotel(placeId);
+          place = res.info;
+          setServices(res.services || []);
+          setRoomTypes(res.roomTypes || []);
+          setType('hotel');
+          form.setFieldsValue({
+            name: place.name,
+            description: place.description,
+            province: place.address?.split(',')[1]?.trim(),
+            ward: place.address?.split(',')[0]?.trim()
+          });
+        } else {
+          const res = await placeApi.getOnePlace(placeId);
+          place = res.info;
+          setServices(res.services || []);
+          setRoomTypes(res.roomTypes || []);
+          setType(place.type);
+          form.setFieldsValue({
+            name: place.name,
+            description: place.description,
+            province: place.address?.split(',')[1]?.trim(),
+            ward: place.address?.split(',')[0]?.trim()
+          });
+        }
 
-        setType(place.type);
-        setServices(res.services || []);
-        setRoomTypes(res.roomTypes || []);
         setFileList(
           (place.images || []).map((path, i) => ({
             uid: String(i),
@@ -50,7 +64,7 @@ const FormUpdatePlace = ({ placeId, onSuccess }) => {
       }
     };
     fetchData();
-  }, [placeId, form]);
+  }, [placeId, typeCurrent, form]);
 
   const onFinish = async (values) => {
     const address = `${values.ward}, ${values.province}`;
@@ -72,7 +86,12 @@ const FormUpdatePlace = ({ placeId, onSuccess }) => {
     formData.append('services', JSON.stringify(services));
 
     try {
-      await placeApi.updatePlace(placeId, formData);
+      if (type === 'hotel') {
+        await hotelApi.updateHotel(placeId, formData);
+      } else {
+        await placeApi.updatePlace(placeId, formData);
+      }
+
       toast.success('Cập nhật địa điểm thành công!');
       onSuccess();
     } catch (err) {
@@ -87,6 +106,7 @@ const FormUpdatePlace = ({ placeId, onSuccess }) => {
       label: 'Thông tin chung',
       children: (
         <GeneralInfoTab
+          isHotel={type === 'hotel'}
           fileList={fileList}
           handleChange={({ fileList }) => setFileList(fileList)}
           setType={setType}

@@ -39,6 +39,10 @@ const routes = [
   {
     path: 'place/:id',
     component: lazy(() => import('../pages/Place/PlaceDetailPage'))
+  },
+  {
+    path: 'hotel/:id',
+    component: lazy(() => import('../pages/Place/HotelDetailPage'))
   }
 ];
 
