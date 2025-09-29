@@ -3,7 +3,7 @@ import banner1 from '../../assets/images/wellcome.png';
 import banner2 from '../../assets/images/banner2.png';
 import banner3 from '../../assets/images/banner.png';
 import styles from './style.module.css';
-import SearchBar from '../Search/Search';
+import SearchBar from '../SearchHome/Search';
 
 export default function Banner() {
   const { container, heroOverlay, heroContent, title, des, searchBox } = styles;

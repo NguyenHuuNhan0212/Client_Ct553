@@ -2,32 +2,44 @@ import { Col, Divider, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import placeApi from '../../apis/placeService';
 import ServiceCard from '../Service/ServiceCard';
-function PlaceRelative({ currentPlace }) {
+import hotelApi from '../../apis/hotelService';
+function PlaceRelative({ currentPlace, isHotel = false }) {
   const province = currentPlace.address.split(',')[1];
   const [places, setPlaces] = useState([]);
   const data = {
     _id: currentPlace._id,
-    type: currentPlace.type,
+    type: !isHotel ? currentPlace.type : '',
     address: province
   };
   useEffect(() => {
     const fetchData = async (data) => {
-      const res = await placeApi.getPlaceRelative(data);
-      setPlaces(res.places);
+      if (!isHotel) {
+        const res = await placeApi.getPlaceRelative(data);
+        setPlaces(res.places);
+      } else {
+        const res = await hotelApi.getHotelsRelative(data);
+        setPlaces(res.hotels);
+      }
     };
     fetchData(data);
   }, [currentPlace]); //eslint-disable-line
   return (
     <>
-      <Divider style={{ fontSize: '24px' }}>Địa điểm tương tự</Divider>
-      {places?.length > 0 && (
-        <Row gutter={[16, 16]} style={{ marginBottom: '20px' }}>
-          {places?.map((s) => (
-            <Col key={s._id} xs={24} sm={12} md={8} lg={6}>
-              <ServiceCard {...s} />
-            </Col>
-          ))}
-        </Row>
+      {places?.length === 0 ? (
+        ''
+      ) : (
+        <>
+          <Divider style={{ fontSize: '24px' }}>Địa điểm tương tự</Divider>
+          {places?.length > 0 && (
+            <Row gutter={[16, 16]} style={{ marginBottom: '20px' }}>
+              {places?.map((s) => (
+                <Col key={s._id} xs={24} sm={12} md={8} lg={6}>
+                  <ServiceCard {...s} isHotel={isHotel} />
+                </Col>
+              ))}
+            </Row>
+          )}
+        </>
       )}
     </>
   );

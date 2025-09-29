@@ -13,18 +13,23 @@ import { toast } from 'react-toastify';
 import placeApi from '../../apis/placeService';
 import FormUpdatePlace from '../FormAddPlace/FormUpdatePlace';
 import { capitalizeName } from '../../utils/capitalize';
-const { Title } = Typography;
+import hotelApi from '../../apis/hotelService';
+import SearchBar from '../SearchBar/SearchBar';
+const { Title, Text } = Typography;
 function ServiceProvide() {
   const [open, setOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [openEdit, setOpenEdit] = useState(false);
   const [editingPlace, setEditingPlace] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState('');
   const dispatch = useDispatch();
   const { placesOffUser: services, loading } = useSelector(
     (state) => state.place
   );
   const navigate = useNavigate();
-
+  const filteredServices = services?.filter((item) =>
+    item.name.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
   const handleAddService = () => {
     navigate('/add-place');
   };
@@ -53,7 +58,11 @@ function ServiceProvide() {
   const handleRemovePlace = async () => {
     if (!selectedPlace) return;
     try {
-      const res = await placeApi.deletePlace(selectedPlace._id); //eslint-disable-line
+      if (selectedPlace.type === 'hotel') {
+        await hotelApi.deleteHotel(selectedPlace._id);
+      } else {
+        await placeApi.deletePlace(selectedPlace._id);
+      }
       await dispatch(getAllPlaceOfUser()).unwrap();
       setOpen(false);
       toast.success(`Đã xóa "${selectedPlace.name}" thành công.`);
@@ -63,7 +72,11 @@ function ServiceProvide() {
   };
   const handleToggleStatus = async (record) => {
     try {
-      await placeApi.updateStatusActive(record._id);
+      if (record.type === 'hotel') {
+        await hotelApi.updateStatusActive(record._id);
+      } else {
+        await placeApi.updateStatusActive(record._id);
+      }
       await dispatch(getAllPlaceOfUser()).unwrap();
       toast.success(
         `Cập nhật trạng thái hoạt động của ${record.name} thành công`
@@ -91,8 +104,20 @@ function ServiceProvide() {
       }
       style={{ borderRadius: 10, padding: 20 }}
     >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginBottom: 16
+        }}
+      >
+        <SearchBar
+          placeholder='Tìm kiếm theo tên địa điểm...'
+          onSearch={setSearchKeyword}
+        />
+      </div>
       <Table
-        dataSource={services}
+        dataSource={filteredServices}
         rowKey='_id'
         loading={loading}
         columns={[
@@ -108,26 +133,46 @@ function ServiceProvide() {
             dataIndex: 'name',
             render: (value) => <Title level={5}>{capitalizeName(value)}</Title>
           },
-          { title: 'Loại địa điểm', align: 'center', dataIndex: 'type' },
+          {
+            title: 'Loại địa điểm',
+            align: 'center',
+            dataIndex: 'type',
+            render: (value) => (
+              <Text>
+                {value === 'hotel'
+                  ? 'Khách sạn, nhà nghĩ'
+                  : value === 'cafe'
+                  ? 'Quán cafe'
+                  : value === 'restaurant'
+                  ? 'Quán ăn'
+                  : 'Địa điểm du lịch'}
+              </Text>
+            )
+          },
           {
             title: 'Trạng thái hoạt động',
             dataIndex: 'isActive',
             align: 'center',
+            render: (value) => (
+              <Tag color={value ? 'green' : 'red'}>
+                {value ? 'Đang hoạt động' : 'Ngưng hoạt động'}
+              </Tag>
+            )
+          },
+          {
+            title: 'Cập nhật trạng thái hoạt động',
+            dataIndex: 'isActive',
+            align: 'center',
             render: (value, record) => (
-              <Space>
-                <Tag color={value ? 'green' : 'red'}>
-                  {value ? 'Đang hoạt động' : 'Ngưng hoạt động'}
-                </Tag>
-                <Button
-                  type={value ? 'default' : 'primary'}
-                  color={value ? 'danger' : ''}
-                  variant={value ? 'solid' : ''}
-                  size='small'
-                  onClick={() => handleToggleStatus(record)}
-                >
-                  {value ? 'Ngưng' : 'Kích hoạt'}
-                </Button>
-              </Space>
+              <Button
+                type={value ? 'default' : 'primary'}
+                color={value ? 'danger' : ''}
+                variant={value ? 'solid' : ''}
+                size='small'
+                onClick={() => handleToggleStatus(record)}
+              >
+                {value ? 'Ngưng' : 'Kích hoạt'}
+              </Button>
             )
           },
           {

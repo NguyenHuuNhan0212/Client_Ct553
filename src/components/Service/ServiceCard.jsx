@@ -4,7 +4,14 @@ import { capitalizeName } from '../../utils/capitalize';
 import { EnvironmentOutlined } from '@ant-design/icons';
 const { Meta } = Card;
 
-export default function ServiceCard({ _id, name, images, address, type }) {
+export default function ServiceCard({
+  _id,
+  name,
+  images,
+  address,
+  type,
+  isHotel = false
+}) {
   return (
     <Card
       hoverable
@@ -39,7 +46,7 @@ export default function ServiceCard({ _id, name, images, address, type }) {
         }
       />
       <Link
-        to={`/place/${_id}`}
+        to={isHotel ? `/hotel/${_id}` : `/place/${_id}`}
         style={{ color: '#1890ff', display: 'block', marginTop: 10 }}
       >
         Xem chi tiết

@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify';
 import { Typography, List, Row, Col, Divider, Layout, Tag } from 'antd';
 import { capitalizeName } from '../../utils/capitalize';
 import PlaceRelative from './PlaceRelative';
+import HotelNearPlace from './HotelNearPlace';
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
@@ -156,7 +157,8 @@ function PlaceDetail({ currentPlace }) {
           />
         </>
       )}
-      <PlaceRelative currentPlace={info} />
+      <PlaceRelative currentPlace={info} isHotel={!info.type} />
+      {info.type && <HotelNearPlace currentPlace={info} />}
     </Content>
   );
 }

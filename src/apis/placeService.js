@@ -9,7 +9,7 @@ const placeApi = {
     });
   },
   getAllPlaceOfUser() {
-    return axiosClient.get('/places/user');
+    return axiosClient.get('/places/my-services');
   },
   getOnePlace(placeId) {
     return axiosClient.get(`/places/${placeId}`);
