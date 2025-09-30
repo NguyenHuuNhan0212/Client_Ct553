@@ -1,5 +1,5 @@
 import { Layout, Menu, Dropdown } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   DownOutlined,
   UserOutlined,
@@ -22,6 +22,7 @@ const { Header: AntHeader } = Layout;
 export default function Header() {
   const { container, logo } = styles;
   const navigate = useNavigate();
+  const location = useLocation();
   const username = JSON.parse(sessionStorage.getItem('username')) || null;
   const { token } = useSelector((state) => state.auth);
   const { user, avatar } = useSelector((state) => state.user);
@@ -41,10 +42,10 @@ export default function Header() {
       )
     },
     {
-      key: 'about',
+      key: 'hotel',
       label: (
-        <Link to='/about' style={{ fontSize: '16px', fontWeight: '600' }}>
-          Giới thiệu
+        <Link to='/hotel' style={{ fontSize: '16px', fontWeight: '600' }}>
+          Khách sạn
         </Link>
       )
     },
@@ -59,7 +60,7 @@ export default function Header() {
     ...(user?.role === 'provider'
       ? [
           {
-            key: 'addPlace',
+            key: 'add-place',
             label: (
               <Link
                 to='/add-place'
@@ -137,6 +138,7 @@ export default function Header() {
         theme='dark'
         mode='horizontal'
         items={leftMenuItems}
+        selectedKeys={[location.pathname.split('/')[1] || 'home']}
         style={{
           background: 'transparent',
           flex: 1

@@ -24,7 +24,9 @@ const { Title, Text } = Typography;
 
 function Info({ user }) {
   const { container, title, avatar, iconCamera, info, text, btnBlock } = styles;
-  const [preview, setPreview] = useState(user?.avatarUrl);
+  const [preview, setPreview] = useState(
+    user?.avatarUrl || 'default-avatar.jpg'
+  );
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
   const [isRegisterProvider, setIsRegisterProvider] = useState(false);

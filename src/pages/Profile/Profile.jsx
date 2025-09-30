@@ -29,7 +29,7 @@ export default function Profile() {
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.user);
   const { search } = useLocation();
-  const params = new URLSearchParams(search);
+  const params = new URLSearchParams(search); // eslint-disable-line
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
