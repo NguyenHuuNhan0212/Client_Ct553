@@ -38,7 +38,13 @@ const FormAddPlace = () => {
       }
     } else {
       for (let rt of roomTypes) {
-        if (!rt.name || !rt.capacity || !rt.totalRooms || !rt.pricePerNight) {
+        if (
+          !rt.name ||
+          !rt.capacity ||
+          !rt.totalRooms ||
+          !rt.pricePerNight ||
+          rt.devices.length === 0
+        ) {
           return toast.error('Vui lòng điền đầy đủ thông tin loại phòng!');
         }
       }
@@ -52,7 +58,6 @@ const FormAddPlace = () => {
     });
     formData.append('roomTypes', JSON.stringify(roomTypes));
     formData.append('services', JSON.stringify(services));
-
     try {
       if (type === 'hotel') {
         await hotelApi.addHotel(formData);
@@ -85,7 +90,7 @@ const FormAddPlace = () => {
   const addRoomType = () =>
     setRoomTypes([
       ...roomTypes,
-      { name: '', capacity: 1, totalRooms: 1, pricePerNight: 100 }
+      { name: '', capacity: 1, totalRooms: 1, pricePerNight: 100, devices: [] }
     ]);
   const updateRoomType = (i, field, value) => {
     const newRooms = [...roomTypes];

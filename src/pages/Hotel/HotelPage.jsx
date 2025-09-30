@@ -6,17 +6,26 @@ import Chatbot from '../../components/Chatbot/Chatbot';
 import Footer from '../../components/Footer/Footer';
 import { Content } from 'antd/es/layout/layout';
 import styles from './style.module.css';
-import { useState } from 'react';
 import SearchResult from '../../components/Hotel/SearchResult/SearchResult';
+import { useDispatch, useSelector } from 'react-redux';
+import { searchHotels } from '../../redux/slices/hotelSlice';
 const { Title } = Typography;
 
 function HotelPage() {
   const { content, popularDestinations, banner } = styles;
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const dispatch = useDispatch();
+  const { searchResults, hasSearched } = useSelector((state) => state.hotel);
   const handleSearch = (data) => {
-    console.log('Search data:', data);
-    // TODO: gọi API tìm khách sạn tại đây
-    setIsSearchVisible(true);
+    const { location, dateRange, guests } = data;
+    const [checkIn, checkOut] = dateRange;
+    dispatch(
+      searchHotels({
+        location,
+        checkIn: checkIn.format('YYYY-MM-DD'),
+        checkOut: checkOut.format('YYYY-MM-DD'),
+        guests
+      })
+    );
   };
 
   return (
@@ -33,8 +42,8 @@ function HotelPage() {
 
         {/* Điểm đến phổ biến */}
         <div className={popularDestinations}>
-          {!isSearchVisible && <PopularDestinations />}
-          {isSearchVisible && <SearchResult />}
+          {hasSearched && <SearchResult hotels={searchResults} />}
+          <PopularDestinations />
         </div>
       </Content>
       <Footer />

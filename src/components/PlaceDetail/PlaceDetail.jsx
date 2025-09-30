@@ -87,13 +87,13 @@ function PlaceDetail({ currentPlace }) {
           </Paragraph>
           <Paragraph style={{ fontSize: '16px', paddingRight: '50px' }}>
             <b>Loại địa điểm: </b>{' '}
-            {info?.type === 'hotel'
-              ? 'Khách sạn, nhà nghĩ'
-              : info?.type === 'touristSpot'
+            {info?.type === 'touristSpot'
               ? 'Địa điểm du lịch'
               : info?.type === 'cafe'
               ? 'Quán cafe'
-              : 'Địa điểm ăn uống'}
+              : info?.type === 'restaurant'
+              ? 'Địa điểm ăn uống'
+              : 'Khách sạn, nhà nghĩ'}
           </Paragraph>
           <Paragraph style={{ fontSize: '16px', paddingRight: '50px' }}>
             <b>Trạng thái hoạt động: </b>{' '}

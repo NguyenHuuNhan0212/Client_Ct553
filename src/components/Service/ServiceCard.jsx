@@ -1,4 +1,4 @@
-import { Card } from 'antd';
+import { Button, Card } from 'antd';
 import { Link } from 'react-router-dom';
 import { capitalizeName } from '../../utils/capitalize';
 import { EnvironmentOutlined } from '@ant-design/icons';
@@ -34,22 +34,21 @@ export default function ServiceCard({
             </div>
             <div>
               Loại:{' '}
-              {type === 'hotel'
-                ? 'Khách sạn, nhà nghĩ'
-                : type === 'touristSpot'
+              {type === 'touristSpot'
                 ? 'Địa điểm du lịch'
                 : type === 'cafe'
                 ? 'Quán cafe'
-                : 'Địa điểm ăn uống'}
+                : type === 'restaurant'
+                ? 'Địa điểm ăn uống'
+                : 'Khách sạn, nhà nghĩ'}
             </div>
           </>
         }
       />
-      <Link
-        to={isHotel ? `/hotel/${_id}` : `/place/${_id}`}
-        style={{ color: '#1890ff', display: 'block', marginTop: 10 }}
-      >
-        Xem chi tiết
+      <Link to={isHotel ? `/hotel/${_id}` : `/place/${_id}`}>
+        <Button type='primary' block style={{ marginTop: 12 }}>
+          Xem chi tiết
+        </Button>
       </Link>
     </Card>
   );

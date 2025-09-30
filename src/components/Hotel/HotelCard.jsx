@@ -1,5 +1,5 @@
 import { Card, Rate, Tag, Button } from 'antd';
-import { DollarOutlined } from '@ant-design/icons';
+import { DollarOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
 const { Meta } = Card;
@@ -37,7 +37,6 @@ export default function HotelCard({ hotel }) {
         description={
           <div>
             <div
-              dangerouslySetInnerHTML={{ __html: hotel.description }}
               style={{
                 color: '#555',
                 fontSize: 14,
@@ -45,7 +44,9 @@ export default function HotelCard({ hotel }) {
                 maxHeight: 50,
                 overflow: 'hidden'
               }}
-            />
+            >
+              <EnvironmentOutlined /> {hotel.address}{' '}
+            </div>
             <div
               style={{
                 display: 'flex',
@@ -55,10 +56,10 @@ export default function HotelCard({ hotel }) {
               }}
             >
               <Tag color='green' style={{ fontSize: 14 }}>
-                <DollarOutlined /> {hotel.minPricePerNight}$/đêm
+                <DollarOutlined /> {hotel.minPricePerNight}K/đêm
               </Tag>
               <span style={{ fontWeight: 600 }}>
-                Tổng: {hotel.minTotal}$ ({hotel.nights} đêm)
+                Tổng: {hotel.minTotal}K/ ({hotel.nights} đêm)
               </span>
             </div>
             <div style={{ marginTop: 10, display: 'flex', gap: 10 }}>

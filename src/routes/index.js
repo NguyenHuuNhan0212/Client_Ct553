@@ -42,7 +42,7 @@ const routes = [
   },
   {
     path: 'hotel/:id',
-    component: lazy(() => import('../pages/Place/HotelDetailPage'))
+    component: lazy(() => import('../pages/Hotel/HotelDetailPage'))
   }
 ];
 

@@ -108,7 +108,6 @@ export default function SearchForm({ onSearch }) {
             style={{ width: '100%' }}
             value={formData.guests}
             min={1}
-            max={10}
             onChange={(val) => handleChange('guests', val)}
           />
         </Col>

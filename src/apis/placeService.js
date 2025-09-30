@@ -29,7 +29,11 @@ const placeApi = {
     return axiosClient.patch(`/places/update-status-active/${placeId}`);
   },
   updatePlace(placeId, data) {
-    return axiosClient.put(`/places/${placeId}`, data);
+    return axiosClient.put(`/places/${placeId}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   }
 };
 export default placeApi;

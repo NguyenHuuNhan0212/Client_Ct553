@@ -75,16 +75,21 @@ const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
       formData.append(key, payload[key]);
     });
 
-    // chỉ thêm ảnh mới
+    // Lấy danh sách ảnh cuối cùng (sau khi user chỉnh sửa trên Upload)
     fileList.forEach((file) => {
       if (file.originFileObj) {
+        // Ảnh mới upload -> gửi file để multer xử lý
         formData.append('images', file.originFileObj);
+      } else if (file.url) {
+        // Ảnh cũ còn giữ lại -> gửi lại path cũ
+        const path = file.url.replace(BASE_URL + '/', '');
+        formData.append('images', path);
       }
     });
 
     formData.append('roomTypes', JSON.stringify(roomTypes));
     formData.append('services', JSON.stringify(services));
-
+    console.log([...formData]);
     try {
       if (type === 'hotel') {
         await hotelApi.updateHotel(placeId, formData);

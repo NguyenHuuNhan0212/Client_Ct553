@@ -12,7 +12,11 @@ const hotelApi = {
     return axiosClient.get(`/hotels/${hotelId}`);
   },
   updateHotel(hotelId, data) {
-    return axiosClient.put(`/hotels/${hotelId}`, data);
+    return axiosClient.put(`/hotels/${hotelId}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   },
   deleteHotel(hotelId) {
     return axiosClient.delete(`/hotels/${hotelId}`);
@@ -26,6 +30,11 @@ const hotelApi = {
   getHotelsRelative(data) {
     return axiosClient.get(
       `/hotels/relative?id=${data._id}&address=${data.address}`
+    );
+  },
+  searchHotels(data) {
+    return axiosClient.get(
+      `/hotels/search?location=${data.location}&checkIn=${data.checkIn}&checkOut=${data.checkOut}&guests=${data.guests}`
     );
   }
 };
