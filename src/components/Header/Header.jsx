@@ -88,7 +88,7 @@ export default function Header() {
       {
         key: 'booking',
         icon: <FileDoneOutlined />,
-        label: <Link to='/profile?tab=3'>Đơn đặt dịch vụ</Link>
+        label: <Link to='/profile?tab=3'>Lịch sử đặt dịch vụ</Link>
       },
       {
         key: 'payment',

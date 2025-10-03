@@ -40,7 +40,7 @@ export default function Profile() {
   const menuItems = [
     { key: '1', icon: <UserOutlined />, label: 'Thông tin cá nhân' },
     { key: '2', icon: <CalendarOutlined />, label: 'Lịch trình' },
-    { key: '3', icon: <ShoppingCartOutlined />, label: 'Đơn đặt dịch vụ' },
+    { key: '3', icon: <ShoppingCartOutlined />, label: 'Lịch sử đặt dịch vụ' },
     { key: '4', icon: <CreditCardOutlined />, label: 'Thanh toán' }
   ];
 

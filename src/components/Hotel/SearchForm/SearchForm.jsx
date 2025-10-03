@@ -13,11 +13,14 @@ import {
 import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import styles from '../style.module.css';
+import { useDispatch } from 'react-redux';
+import { setStateBooking } from '../../../redux/slices/hotelSlice';
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
 
 export default function SearchForm({ onSearch }) {
   const { containerSearch } = styles;
+  const dispatch = useDispatch();
   const [cities, setCities] = useState([]);
   const [formData, setFormData] = useState({
     location: '',
@@ -44,7 +47,13 @@ export default function SearchForm({ onSearch }) {
       message.error('Ngày check-out không được trước ngày check-in');
       return;
     }
-
+    const data = {
+      location: formData.location,
+      checkIn: checkIn.format('YYYY-MM-DD'), // string OK
+      checkOut: checkOut.format('YYYY-MM-DD'), // string OK
+      guests: formData.guests
+    };
+    dispatch(setStateBooking(data));
     if (onSearch) onSearch(formData);
   };
 
@@ -60,7 +69,6 @@ export default function SearchForm({ onSearch }) {
     };
     fetchCities();
   }, []);
-  console.log(cities);
   return (
     <Card className={containerSearch}>
       <Row gutter={16} align='middle'>

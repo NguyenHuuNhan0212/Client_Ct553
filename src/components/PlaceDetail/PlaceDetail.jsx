@@ -4,13 +4,14 @@ import { Typography, List, Row, Col, Divider, Layout, Tag } from 'antd';
 import { capitalizeName } from '../../utils/capitalize';
 import PlaceRelative from './PlaceRelative';
 import HotelNearPlace from './HotelNearPlace';
+import ServiceOfPlace from './ServiceOfPlace';
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 function PlaceDetail({ currentPlace }) {
   const [mainImage, setMainImage] = useState(null);
 
-  const { info, services, roomTypes, ownerInfo } = currentPlace;
+  const { info, services, ownerInfo } = currentPlace;
   useEffect(() => {
     if (info?.images?.length > 0) {
       setMainImage(`http://localhost:3000/${info.images[0]}`);
@@ -124,39 +125,8 @@ function PlaceDetail({ currentPlace }) {
           </Paragraph>
         </Col>
       </Row>
-      {/* Loại phòng */}
-      {roomTypes?.length > 0 && (
-        <>
-          <Divider style={{ fontSize: '20px' }}>Các loại phòng</Divider>
-          <List
-            dataSource={roomTypes}
-            bordered
-            renderItem={(r) => (
-              <List.Item>
-                <span>{r.name}</span> -{' '}
-                <b>{r.pricePerNight?.toLocaleString()} VND/đêm</b>
-              </List.Item>
-            )}
-          />
-        </>
-      )}
       {/* Dịch vụ */}
-      {services?.length > 0 && (
-        <>
-          <Divider style={{ fontSize: '20px' }}>
-            Các dịch vụ địa điểm cung cấp
-          </Divider>
-          <List
-            dataSource={services}
-            bordered
-            renderItem={(s) => (
-              <List.Item>
-                <span>{s.name}</span> - <b>{s.price.toLocaleString()} VND</b>
-              </List.Item>
-            )}
-          />
-        </>
-      )}
+      {services?.length > 0 && <ServiceOfPlace services={services} />}
       <PlaceRelative currentPlace={info} isHotel={!info.type} />
       {info.type && <HotelNearPlace currentPlace={info} />}
     </Content>

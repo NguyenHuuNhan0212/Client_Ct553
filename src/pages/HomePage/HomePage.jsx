@@ -7,6 +7,7 @@ import Chatbot from '../../components/Chatbot/Chatbot';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getAllPlace } from '../../redux/slices/placeSlice';
+import { resetStateBooking } from '../../redux/slices/hotelSlice';
 
 const { Content } = Layout;
 
@@ -14,6 +15,7 @@ export default function Home() {
   const dispatch = useDispatch();
   const { places } = useSelector((state) => state.place);
   useEffect(() => {
+    dispatch(resetStateBooking());
     dispatch(getAllPlace());
   }, []); //eslint-disable-line
   return (

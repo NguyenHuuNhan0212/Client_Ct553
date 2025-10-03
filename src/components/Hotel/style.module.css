@@ -16,49 +16,39 @@
   color: #333;
 }
 .roomCard {
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
-  position: relative;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
 }
-
 .roomCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
 }
 
-/* Cover phần icon phòng */
 .roomCover {
-  height: 200px;
+  height: 160px;
+  background: linear-gradient(135deg, #1890ff, #73d13d);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   position: relative;
 }
 
-/* Icon phòng */
 .roomIcon {
-  font-size: 50px;
-  color: #555;
+  font-size: 64px;
+  color: white;
+  opacity: 0.9;
 }
 
-/* Overlay thông tin khi hover */
 .roomOverlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s;
+  bottom: 12px;
+  right: 12px;
 }
 
-.roomCover:hover .roomOverlay {
-  opacity: 1;
+.amenitiesWrap {
+  margin-top: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }

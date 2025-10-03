@@ -1,4 +1,13 @@
-import { Card, Table, Tag, Button, Typography, Space, Modal } from 'antd';
+import {
+  Card,
+  Table,
+  Tag,
+  Button,
+  Typography,
+  Space,
+  Modal,
+  message
+} from 'antd';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -9,7 +18,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { getAllPlaceOfUser } from '../../redux/slices/placeSlice';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import placeApi from '../../apis/placeService';
 import FormUpdatePlace from '../FormAddPlace/FormUpdatePlace';
 import { capitalizeName } from '../../utils/capitalize';
@@ -65,9 +73,9 @@ function ServiceProvide() {
       }
       await dispatch(getAllPlaceOfUser()).unwrap();
       setOpen(false);
-      toast.success(`Đã xóa "${selectedPlace.name}" thành công.`);
+      message.success(`Đã xóa "${selectedPlace.name}" thành công.`);
     } catch (err) {
-      toast.error(err.response?.data);
+      message.error(err.response?.data);
     }
   };
   const handleToggleStatus = async (record) => {
@@ -78,11 +86,11 @@ function ServiceProvide() {
         await placeApi.updateStatusActive(record._id);
       }
       await dispatch(getAllPlaceOfUser()).unwrap();
-      toast.success(
+      message.success(
         `Cập nhật trạng thái hoạt động của ${record.name} thành công`
       );
     } catch (err) {
-      toast.error(err.response?.data);
+      message.error(err.response?.data);
     }
   };
   const handleCancel = () => {

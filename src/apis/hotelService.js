@@ -11,6 +11,11 @@ const hotelApi = {
   getOneHotel(hotelId) {
     return axiosClient.get(`/hotels/${hotelId}`);
   },
+  getDetailHotelByReqUser(data) {
+    return axiosClient.get(
+      `/hotels/detail/${data.hotelId}?checkIn=${data.checkIn}&checkOut=${data.checkOut}&guests=${data.guests}`
+    );
+  },
   updateHotel(hotelId, data) {
     return axiosClient.put(`/hotels/${hotelId}`, data, {
       headers: {

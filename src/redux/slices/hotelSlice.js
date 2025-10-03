@@ -23,15 +23,40 @@ export const searchHotels = createAsyncThunk(
     }
   }
 );
-const placeSlice = createSlice({
+export const getDetailHotelByReqUser = createAsyncThunk(
+  'hotel/getDetailHotelByReqUser',
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await hotelApi.getDetailHotelByReqUser(data);
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
+const hotelSlice = createSlice({
   name: 'hotel',
   initialState: {
     searchResults: [],
     hasSearched: false,
     currentHotel: null,
+    checkIn: null,
+    checkOut: null,
+    guests: 1,
     loading: false
   },
-  reducers: [],
+  reducers: {
+    setStateBooking: (state, action) => {
+      state.checkIn = action.payload.checkIn;
+      state.checkOut = action.payload.checkOut;
+      state.guests = action.payload.guests;
+    },
+    resetStateBooking: (state) => {
+      state.checkIn = null;
+      state.checkOut = null;
+      state.guests = 1;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getOneHotel.pending, (state) => {
@@ -54,7 +79,18 @@ const placeSlice = createSlice({
       })
       .addCase(searchHotels.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(getDetailHotelByReqUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getDetailHotelByReqUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentHotel = action.payload;
+      })
+      .addCase(getDetailHotelByReqUser.rejected, (state) => {
+        state.loading = false;
       });
   }
 });
-export default placeSlice.reducer;
+export const { setStateBooking, resetStateBooking } = hotelSlice.actions;
+export default hotelSlice.reducer;

@@ -1,26 +1,35 @@
-import { Card, Table } from 'antd';
-
+import { Card, Table, Typography } from 'antd';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getBookings } from '../../redux/slices/bookingSlice';
+const { Title } = Typography;
 function Booking() {
-  const bookings = [
-    { id: 1, service: 'Khách sạn ABC', status: 'Đã xác nhận', price: 1500000 },
-    { id: 2, service: 'Khách sạn 1', status: 'Đã xác nhận', price: 1500000 },
-    { id: 3, service: 'Khách sạn 2', status: 'Đã xác nhận', price: 1500000 },
-    { id: 4, service: 'Khách sạn 3', status: 'Đã xác nhận', price: 1500000 },
-    { id: 5, service: 'Khách sạn 5', status: 'Đã xác nhận', price: 1500000 },
-    { id: 6, service: 'Khách sạn 6', status: 'Đã xác nhận', price: 1500000 },
-    { id: 7, service: 'Tour Cần Thơ', status: 'Chờ xác nhận', price: 1200000 }
-  ];
+  const dispatch = useDispatch();
+  const { bookings } = useSelector((state) => state.booking);
+
+  useEffect(() => {
+    dispatch(getBookings());
+  }, [dispatch]);
   return (
-    <Card variant='borderless' style={{ borderRadius: 10, padding: 20 }}>
+    <Card
+      variant='borderless'
+      title={
+        <Title level={1} style={{ textAlign: 'center' }}>
+          Lịch sử đơn đặt dịch vụ
+        </Title>
+      }
+      style={{ borderRadius: 10, padding: 20 }}
+    >
       <Table
         dataSource={bookings}
-        rowKey='id'
+        rowKey='_id'
         columns={[
-          { title: 'Dịch vụ', dataIndex: 'service' },
+          { title: 'Tên địa điểm', dataIndex: 'placeName' },
+          { title: 'Loại dịch vụ', dataIndex: 'serviceName' },
           { title: 'Trạng thái', dataIndex: 'status' },
           {
             title: 'Giá (VNĐ)',
-            dataIndex: 'price',
+            dataIndex: 'totalPrice',
             render: (val) => val.toLocaleString()
           }
         ]}
