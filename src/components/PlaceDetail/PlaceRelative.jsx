@@ -2,24 +2,18 @@ import { Col, Divider, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import placeApi from '../../apis/placeService';
 import ServiceCard from '../Service/ServiceCard';
-import hotelApi from '../../apis/hotelService';
-function PlaceRelative({ currentPlace, isHotel = false }) {
+function PlaceRelative({ currentPlace }) {
   const province = currentPlace.address.split(',')[1];
   const [places, setPlaces] = useState([]);
   const data = {
     _id: currentPlace._id,
-    type: !isHotel ? currentPlace.type : '',
+    type: currentPlace.type,
     address: province
   };
   useEffect(() => {
     const fetchData = async (data) => {
-      if (!isHotel) {
-        const res = await placeApi.getPlaceRelative(data);
-        setPlaces(res.places);
-      } else {
-        const res = await hotelApi.getHotelsRelative(data);
-        setPlaces(res.hotels);
-      }
+      const res = await placeApi.getPlaceRelative(data);
+      setPlaces(res.places);
     };
     fetchData(data);
   }, [currentPlace]); //eslint-disable-line
@@ -34,7 +28,7 @@ function PlaceRelative({ currentPlace, isHotel = false }) {
             <Row gutter={[16, 16]} style={{ marginBottom: '20px' }}>
               {places?.map((s) => (
                 <Col key={s._id} xs={24} sm={12} md={8} lg={6}>
-                  <ServiceCard {...s} isHotel={isHotel} />
+                  <ServiceCard {...s} isHotel={s.type === 'hotel'} />
                 </Col>
               ))}
             </Row>

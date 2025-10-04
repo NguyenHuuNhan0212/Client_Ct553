@@ -6,7 +6,7 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
-  /* max-width: 1200px; */
+  width: 1200px;
   margin: 40px auto;
 }
 .info {
@@ -51,4 +51,12 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+.searchLocationContainer {
+  display: flex;
+  max-width: 1200px;
+  margin: 40px auto;
+  justify-content: center;
+  align-items: center;
+  margin-top: -50px;
 }

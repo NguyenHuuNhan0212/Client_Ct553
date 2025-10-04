@@ -6,7 +6,7 @@ export default function ServiceList({ places }) {
     <Row gutter={[16, 16]}>
       {places?.map((s) => (
         <Col key={s._id} xs={24} sm={12} md={8} lg={6}>
-          <ServiceCard {...s} />
+          <ServiceCard {...s} isHotel={s.type === 'hotel'} />
         </Col>
       ))}
     </Row>

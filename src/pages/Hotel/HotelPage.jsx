@@ -12,17 +12,24 @@ import { searchHotels } from '../../redux/slices/hotelSlice';
 const { Title } = Typography;
 
 function HotelPage() {
-  const { content, popularDestinations, banner } = styles;
+  const {
+    content,
+    popularDestinations,
+    heroContent,
+    banner,
+    title,
+    heroOverlay
+  } = styles;
   const dispatch = useDispatch();
   const { searchResults, hasSearched } = useSelector((state) => state.hotel);
   const handleSearch = (data) => {
-    const { location, dateRange, guests } = data;
-    const [checkIn, checkOut] = dateRange;
+    const { location, checkIn, checkOut, guests } = data;
+    // const [checkIn, checkOut] = dateRange;
     dispatch(
       searchHotels({
         location,
-        checkIn: checkIn.format('YYYY-MM-DD'),
-        checkOut: checkOut.format('YYYY-MM-DD'),
+        checkIn: checkIn,
+        checkOut: checkOut,
         guests
       })
     );
@@ -34,10 +41,11 @@ function HotelPage() {
       <Content className={content}>
         {/* Banner tìm kiếm */}
         <div className={banner}>
-          <Title level={2} style={{ textAlign: 'center', marginBottom: 30 }}>
-            Tìm kiếm khách sạn phù hợp cho bạn
-          </Title>
-          <SearchForm onSearch={handleSearch} />
+          <div className={heroOverlay}></div>
+          <div className={heroContent}>
+            <h1 className={title}>Tìm kiếm khách sạn phù hợp cho bạn</h1>
+            <SearchForm onSearch={handleSearch} />
+          </div>
         </div>
 
         {/* Điểm đến phổ biến */}

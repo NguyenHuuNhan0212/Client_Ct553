@@ -41,12 +41,14 @@ const hotelSlice = createSlice({
     hasSearched: false,
     currentHotel: null,
     checkIn: null,
+    location: null,
     checkOut: null,
     guests: 1,
     loading: false
   },
   reducers: {
     setStateBooking: (state, action) => {
+      state.location = action.payload.location;
       state.checkIn = action.payload.checkIn;
       state.checkOut = action.payload.checkOut;
       state.guests = action.payload.guests;
@@ -54,6 +56,8 @@ const hotelSlice = createSlice({
     resetStateBooking: (state) => {
       state.checkIn = null;
       state.checkOut = null;
+      state.location = null;
+      state.hasSearched = false;
       state.guests = 1;
     }
   },
