@@ -21,7 +21,6 @@ import { useNavigate } from 'react-router-dom';
 import placeApi from '../../apis/placeService';
 import FormUpdatePlace from '../FormAddPlace/FormUpdatePlace';
 import { capitalizeName } from '../../utils/capitalize';
-import hotelApi from '../../apis/hotelService';
 import SearchBar from '../SearchBar/SearchBar';
 const { Title, Text } = Typography;
 function ServiceProvide() {
@@ -66,11 +65,7 @@ function ServiceProvide() {
   const handleRemovePlace = async () => {
     if (!selectedPlace) return;
     try {
-      if (selectedPlace.type === 'hotel') {
-        await hotelApi.deleteHotel(selectedPlace._id);
-      } else {
-        await placeApi.deletePlace(selectedPlace._id);
-      }
+      await placeApi.deletePlace(selectedPlace._id);
       await dispatch(getAllPlaceOfUser()).unwrap();
       setOpen(false);
       message.success(`Đã xóa "${selectedPlace.name}" thành công.`);
@@ -80,11 +75,7 @@ function ServiceProvide() {
   };
   const handleToggleStatus = async (record) => {
     try {
-      if (record.type === 'hotel') {
-        await hotelApi.updateStatusActive(record._id);
-      } else {
-        await placeApi.updateStatusActive(record._id);
-      }
+      await placeApi.updateStatusActive(record._id);
       await dispatch(getAllPlaceOfUser()).unwrap();
       message.success(
         `Cập nhật trạng thái hoạt động của ${record.name} thành công`
@@ -101,7 +92,7 @@ function ServiceProvide() {
   useEffect(() => {
     dispatch(getAllPlaceOfUser()).unwrap();
   }, [dispatch]);
-
+  console.log(filteredServices);
   return (
     <Card
       variant='borderless'

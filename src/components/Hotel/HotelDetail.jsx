@@ -1,14 +1,4 @@
-import {
-  Layout,
-  Typography,
-  Row,
-  Col,
-  Tabs,
-  Image,
-  Divider,
-  List,
-  message
-} from 'antd';
+import { Layout, Typography, Row, Col, Tabs, Image, message, Tag } from 'antd';
 import { EnvironmentOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -68,7 +58,6 @@ function HotelDetail() {
   const images = currentHotel?.info?.images?.length
     ? currentHotel.info.images
     : ['https://picsum.photos/800/400'];
-
   const items = [
     {
       key: '1',
@@ -85,6 +74,26 @@ function HotelDetail() {
             style={{ fontSize: '16px', lineHeight: '1.6', color: '#333' }}
           />
           <div>
+            <p
+              style={{
+                marginBottom: 5,
+                fontSize: '16px',
+                color: '#555',
+                fontWeight: '500'
+              }}
+            >
+              Các tiện ích mà địa điểm cung cấp:
+            </p>
+            {currentHotel?.hotelDetail?.facilities?.map((fa, i) => {
+              return (
+                <Tag bordered={false} color='geekblue' key={i}>
+                  {fa}
+                </Tag>
+              );
+            })}
+          </div>
+
+          <div>
             {currentHotel?.services?.length > 0 && (
               <ServiceOfPlace services={currentHotel?.services} />
             )}
@@ -97,11 +106,12 @@ function HotelDetail() {
       label: 'Phòng',
       children: (
         <Row gutter={[24, 24]}>
-          {currentHotel?.roomTypes?.map((room, idx) => (
+          {currentHotel?.hotelDetail?.roomTypes?.map((room, idx) => (
             <Col xs={24} sm={12} md={8} lg={6} key={idx}>
               <RoomCard
                 room={{ ...room, services: currentHotel?.services }}
                 onBook={onBook}
+                facilities={currentHotel?.hotelDetail?.facilities}
               />
             </Col>
           ))}

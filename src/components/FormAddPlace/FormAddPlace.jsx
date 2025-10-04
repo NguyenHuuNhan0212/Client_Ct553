@@ -7,7 +7,6 @@ import GeneralInfoTab from './GeneralInfoTab';
 import ServiceTab from './ServiceTab';
 import RoomTypeTab from './RoomTypeTab';
 import styles from './style.module.css';
-import hotelApi from '../../apis/hotelService';
 const { Title } = Typography;
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -30,41 +29,44 @@ const FormAddPlace = () => {
 
   // Submit
   const onFinish = async (values) => {
+    console.log(values);
     const address = `${values.ward}, ${values.province}`;
     const payload = { ...values, address };
+
     if (type === 'hotel') {
+      // validate roomTypes
       if (!roomTypes.length) {
         return toast.error('Bạn phải nhập ít nhất 1 loại phòng');
       }
-    } else {
       for (let rt of roomTypes) {
-        if (
-          !rt.name ||
-          !rt.capacity ||
-          !rt.totalRooms ||
-          !rt.pricePerNight ||
-          rt.devices.length === 0
-        ) {
+        if (!rt.name || !rt.capacity || !rt.totalRooms || !rt.pricePerNight) {
           return toast.error('Vui lòng điền đầy đủ thông tin loại phòng!');
         }
       }
     }
+
     const formData = new FormData();
     Object.keys(payload).forEach((key) => {
       formData.append(key, payload[key]);
     });
+
     fileList.forEach((file) => {
       formData.append('images', file.originFileObj);
     });
-    formData.append('roomTypes', JSON.stringify(roomTypes));
-    formData.append('services', JSON.stringify(services));
-    try {
-      if (type === 'hotel') {
-        await hotelApi.addHotel(formData);
-      } else {
-        await placeApi.addPlace(formData);
-      }
 
+    // gửi đúng format cho backend
+    if (type === 'hotel') {
+      const hotelDetail = {
+        facilities: values.facilities || [],
+        roomTypes: roomTypes
+      };
+      formData.append('hotelDetail', JSON.stringify(hotelDetail));
+    }
+
+    formData.append('services', JSON.stringify(services));
+
+    try {
+      await placeApi.addPlace(formData); // dùng chung addPlace
       form.resetFields();
       setRoomTypes([]);
       setServices([]);
@@ -72,7 +74,7 @@ const FormAddPlace = () => {
       navigate('/');
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message);
+      toast.error(err.response?.data?.message || 'Có lỗi xảy ra');
     }
   };
 
@@ -90,7 +92,7 @@ const FormAddPlace = () => {
   const addRoomType = () =>
     setRoomTypes([
       ...roomTypes,
-      { name: '', capacity: 1, totalRooms: 1, pricePerNight: 100, devices: [] }
+      { name: '', capacity: 1, totalRooms: 1, pricePerNight: 100 }
     ]);
   const updateRoomType = (i, field, value) => {
     const newRooms = [...roomTypes];

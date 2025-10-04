@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   Button,
@@ -7,7 +7,8 @@ import {
   Row,
   Col,
   Select,
-  Typography
+  Typography,
+  Form
 } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Text } = Typography;
@@ -28,8 +29,27 @@ const RoomTypeTab = ({
     'Minibar',
     'Bồn tắm'
   ];
+  const [facilities, setFacilities] = useState([]);
   return (
     <>
+      <Text strong>Thiết bị trong phòng</Text>
+      <Form.Item name={'facilities'}>
+        <Select
+          mode='multiple'
+          allowClear
+          style={{ width: '100%', marginTop: 4 }}
+          placeholder='Chọn thiết bị'
+          value={facilities || []}
+          onChange={(vals) => setFacilities(vals)}
+        >
+          {devices.map((item) => (
+            <Option key={item} value={item}>
+              {item}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
       {roomTypes.map((rt, i) => (
         <Card
           key={i}
@@ -85,21 +105,6 @@ const RoomTypeTab = ({
               />
             </Col>
           </Row>
-          <Text strong>Thiết bị trong phòng</Text>
-          <Select
-            mode='multiple'
-            allowClear
-            style={{ width: '100%', marginTop: 4 }}
-            placeholder='Chọn thiết bị'
-            value={rt.devices || []}
-            onChange={(vals) => updateRoomType(i, 'devices', vals)}
-          >
-            {devices.map((item) => (
-              <Option key={item} value={item}>
-                {item}
-              </Option>
-            ))}
-          </Select>
         </Card>
       ))}
 

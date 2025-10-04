@@ -106,7 +106,7 @@ function ServiceOfPlace({ services }) {
   return (
     <div style={{ marginBottom: 20 }}>
       <Divider style={{ fontSize: '20px' }}>
-        Các dịch vụ địa điểm cung cấp
+        Khám phá các dịch vụ mà địa điểm cung cấp
       </Divider>
       <p
         style={{
@@ -116,7 +116,7 @@ function ServiceOfPlace({ services }) {
           fontWeight: '500'
         }}
       >
-        Bạn có thể nhấn vào dịch vụ để xem chi tiết hoặc đặt dịch vụ mong muốn.
+        Nhấn vào dịch vụ để xem chi tiết hoặc đặt dịch vụ mong muốn.
       </p>
       <Collapse
         items={items}

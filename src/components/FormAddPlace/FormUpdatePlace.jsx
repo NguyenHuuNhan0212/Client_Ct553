@@ -6,7 +6,6 @@ import GeneralInfoTab from './GeneralInfoTab';
 import ServiceTab from './ServiceTab';
 import RoomTypeTab from './RoomTypeTab';
 import styles from './style.module.css';
-import hotelApi from '../../apis/hotelService';
 
 const { Title } = Typography;
 const BASE_URL = 'http://localhost:3000';
@@ -24,31 +23,18 @@ const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
     const fetchData = async () => {
       let place = null;
       try {
-        if (typeCurrent === 'hotel') {
-          const res = await hotelApi.getOneHotel(placeId);
-          place = res.info;
-          setServices(res.services || []);
-          setRoomTypes(res.roomTypes || []);
-          setType('hotel');
-          form.setFieldsValue({
-            name: place.name,
-            description: place.description,
-            province: place.address?.split(',')[1]?.trim(),
-            ward: place.address?.split(',')[0]?.trim()
-          });
-        } else {
-          const res = await placeApi.getOnePlace(placeId);
-          place = res.info;
-          setServices(res.services || []);
-          setRoomTypes(res.roomTypes || []);
-          setType(place.type);
-          form.setFieldsValue({
-            name: place.name,
-            description: place.description,
-            province: place.address?.split(',')[1]?.trim(),
-            ward: place.address?.split(',')[0]?.trim()
-          });
-        }
+        const res = await placeApi.getOnePlace(placeId);
+        place = res.info;
+        setServices(res.services || []);
+        setRoomTypes(res.hotelDetail?.roomTypes || []);
+        setType(place.type);
+        form.setFieldsValue({
+          name: place.name,
+          description: place.description,
+          province: place.address?.split(',')[1]?.trim(),
+          ward: place.address?.split(',')[0]?.trim(),
+          facilities: res.hotelDetail?.facilities
+        });
 
         setFileList(
           (place.images || []).map((path, i) => ({
@@ -86,17 +72,15 @@ const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
         formData.append('images', path);
       }
     });
-
-    formData.append('roomTypes', JSON.stringify(roomTypes));
+    const hotelDetail = {
+      facilities: values.facilities || [],
+      roomTypes: roomTypes
+    };
+    formData.append('hotelDetail', JSON.stringify(hotelDetail));
     formData.append('services', JSON.stringify(services));
     console.log([...formData]);
     try {
-      if (type === 'hotel') {
-        await hotelApi.updateHotel(placeId, formData);
-      } else {
-        await placeApi.updatePlace(placeId, formData);
-      }
-
+      await placeApi.updatePlace(placeId, formData);
       toast.success('Cập nhật địa điểm thành công!');
       onSuccess();
     } catch (err) {
@@ -111,7 +95,7 @@ const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
       label: 'Thông tin chung',
       children: (
         <GeneralInfoTab
-          isHotel={type === 'hotel'}
+          type={type}
           fileList={fileList}
           handleChange={({ fileList }) => setFileList(fileList)}
           setType={setType}

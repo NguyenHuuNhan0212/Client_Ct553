@@ -1,4 +1,9 @@
-import { Card, Table, Typography } from 'antd';
+import { Card, Table, Tag, Typography } from 'antd';
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  SyncOutlined
+} from '@ant-design/icons';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBookings } from '../../redux/slices/bookingSlice';
@@ -26,7 +31,24 @@ function Booking() {
         columns={[
           { title: 'Tên địa điểm', dataIndex: 'placeName' },
           { title: 'Loại dịch vụ', dataIndex: 'serviceName' },
-          { title: 'Trạng thái', dataIndex: 'status' },
+          {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            render: (value) =>
+              value === 'pending' ? (
+                <Tag icon={<SyncOutlined spin />} color='processing'>
+                  Đang xử lý
+                </Tag>
+              ) : value === 'success' ? (
+                <Tag icon={<CheckCircleOutlined />} color='success'>
+                  Thành công
+                </Tag>
+              ) : (
+                <Tag icon={<CloseCircleOutlined />} color='error'>
+                  Đã hủy
+                </Tag>
+              )
+          },
           {
             title: 'Giá (VNĐ)',
             dataIndex: 'totalPrice',

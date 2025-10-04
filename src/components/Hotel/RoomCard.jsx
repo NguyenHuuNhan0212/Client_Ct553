@@ -19,7 +19,7 @@ const { RangePicker } = DatePicker;
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 
-const RoomCard = ({ room, onBook }) => {
+const RoomCard = ({ room, onBook, facilities = [] }) => {
   console.log(room);
   const { roomCard, roomCover, roomIcon, roomOverlay, amenitiesWrap } = styles;
   const [open, setOpen] = useState(false);
@@ -130,8 +130,8 @@ const RoomCard = ({ room, onBook }) => {
         <Divider />
         <Text strong>Tiện ích hiện có:</Text>
         <div className={amenitiesWrap}>
-          {room.devices?.length > 0 ? (
-            room.devices.map((a, idx) => (
+          {facilities?.length > 0 ? (
+            facilities.map((a, idx) => (
               <Tag key={idx} color='geekblue'>
                 {a}
               </Tag>

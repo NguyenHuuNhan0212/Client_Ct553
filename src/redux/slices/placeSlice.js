@@ -50,7 +50,7 @@ const placeSlice = createSlice({
       })
       .addCase(getAllPlaceOfUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.placesOffUser = action.payload.merged;
+        state.placesOffUser = action.payload;
       })
       .addCase(getAllPlaceOfUser.rejected, (state) => {
         state.loading = false;
