@@ -8,7 +8,7 @@ import {
   Modal,
   Checkbox
 } from 'antd';
-import { FaBed } from 'react-icons/fa';
+import { FaBed, FaVuejs } from 'react-icons/fa';
 import styles from './style.module.css';
 import { useState, useEffect } from 'react';
 import { capitalizeName } from '../../utils/capitalize';
@@ -20,7 +20,6 @@ import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 
 const RoomCard = ({ room, onBook, facilities = [] }) => {
-  console.log(room);
   const { roomCard, roomCover, roomIcon, roomOverlay, amenitiesWrap } = styles;
   const [open, setOpen] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -31,10 +30,8 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
   const calculateTotal = (values) => {
     if (!values.dateRange || values.dateRange.length < 2) return 0;
 
-    let nights = dayjs(values.dateRange[1]).diff(
-      dayjs(values.dateRange[0]),
-      'day'
-    );
+    let nights =
+      dayjs(values.dateRange[1]).diff(dayjs(values.dateRange[0]), 'day') + 1;
     if (nights === 0) {
       nights = 1;
     }
@@ -68,7 +65,6 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
         };
       });
 
-      // gộp tất cả vào details
       const payload = {
         checkInDate: roomDetail.checkInDate,
         checkOutDate: roomDetail.checkOutDate,
@@ -89,7 +85,6 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
 
     return () => unsubscribe?.();
   }, [form, room]); // eslint-disable-line
-
   return (
     <>
       <Card
@@ -168,7 +163,11 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
             label='Ngày nhận - trả phòng'
             rules={[{ required: true, message: 'Chọn ngày!' }]}
           >
-            <RangePicker />
+            <RangePicker
+              disabledDate={(current) => {
+                return current && current < dayjs().startOf('day');
+              }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -177,9 +176,9 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
             rules={[{ required: true, message: 'Nhập số lượng!' }]}
           >
             <InputNumber
-              min={1}
+              min={0}
               max={10}
-              defaultValue={1}
+              defaultValue={0}
               style={{ width: '100%' }}
             />
           </Form.Item>

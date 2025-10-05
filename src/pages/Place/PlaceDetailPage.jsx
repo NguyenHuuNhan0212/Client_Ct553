@@ -14,7 +14,6 @@ function PlaceDetailPage() {
     dispatch(getOnePlace(id));
   }, [id, dispatch]);
   if (!currentPlace) return <div>Loading...</div>;
-
   return (
     <>
       <Header />

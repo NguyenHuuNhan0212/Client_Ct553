@@ -1,63 +1,243 @@
-import { Card, Table, Tag, Typography } from 'antd';
+import {
+  Card,
+  Table,
+  Tag,
+  Typography,
+  Modal,
+  Descriptions,
+  List,
+  Divider,
+  Space
+} from 'antd';
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
-  SyncOutlined
+  SyncOutlined,
+  InfoCircleOutlined,
+  EyeOutlined,
+  EditOutlined,
+  DeleteOutlined
 } from '@ant-design/icons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBookings } from '../../redux/slices/bookingSlice';
-const { Title } = Typography;
+import { getBookingDetail, getBookings } from '../../redux/slices/bookingSlice';
+
+const { Title, Text } = Typography;
+
 function Booking() {
   const dispatch = useDispatch();
   const { bookings } = useSelector((state) => state.booking);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const { currentBooking } = useSelector((state) => state.booking);
 
   useEffect(() => {
     dispatch(getBookings());
   }, [dispatch]);
+
+  const showDetail = (record) => {
+    dispatch(getBookingDetail(record._id));
+    setIsModalVisible(true);
+  };
+
+  const handleClose = () => {
+    setIsModalVisible(false);
+  };
+
+  const columns = [
+    { title: 'Tên địa điểm', align: 'center', dataIndex: 'placeName' },
+    { title: 'Loại dịch vụ', align: 'center', dataIndex: 'serviceName' },
+    {
+      title: 'Trạng thái',
+      align: 'center',
+      dataIndex: 'status',
+      render: (value) =>
+        value === 'pending' ? (
+          <Tag icon={<SyncOutlined spin />} color='processing'>
+            Đang xử lý
+          </Tag>
+        ) : value === 'confirmed' ? (
+          <Tag icon={<CheckCircleOutlined />} color='success'>
+            Thành công
+          </Tag>
+        ) : (
+          <Tag icon={<CloseCircleOutlined />} color='error'>
+            Đã hủy
+          </Tag>
+        )
+    },
+    {
+      title: 'Giá (VNĐ)',
+      align: 'center',
+      dataIndex: 'totalPrice',
+      render: (val) => val?.toLocaleString() || '—'
+    },
+    {
+      title: 'Hành động',
+      align: 'center',
+      render: (_, record) => (
+        // <Tag
+        //   icon={<InfoCircleOutlined />}
+        //   color='blue'
+        //   style={{ cursor: 'pointer' }}
+        //   onClick={() => showDetail(record)}
+        // >
+        //   Xem chi tiết
+        // </Tag>
+        <Space size='large' style={{ fontSize: 20 }}>
+          <EyeOutlined
+            style={{ color: 'blue', cursor: 'pointer' }}
+            onClick={() => showDetail(record)}
+          />
+          <EditOutlined
+            style={{ color: '#ebca48ff', cursor: 'pointer' }}
+            onClick={() => console.log('edit')}
+          />
+          <DeleteOutlined
+            style={{ color: 'red', cursor: 'pointer' }}
+            onClick={() => console.log('xóa')}
+          />
+        </Space>
+      )
+    }
+  ];
+
   return (
-    <Card
-      variant='borderless'
-      title={
-        <Title level={1} style={{ textAlign: 'center' }}>
-          Lịch sử đơn đặt dịch vụ
-        </Title>
-      }
-      style={{ borderRadius: 10, padding: 20 }}
-    >
-      <Table
-        dataSource={bookings}
-        rowKey='_id'
-        columns={[
-          { title: 'Tên địa điểm', dataIndex: 'placeName' },
-          { title: 'Loại dịch vụ', dataIndex: 'serviceName' },
-          {
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            render: (value) =>
-              value === 'pending' ? (
-                <Tag icon={<SyncOutlined spin />} color='processing'>
-                  Đang xử lý
-                </Tag>
-              ) : value === 'success' ? (
-                <Tag icon={<CheckCircleOutlined />} color='success'>
-                  Thành công
-                </Tag>
-              ) : (
-                <Tag icon={<CloseCircleOutlined />} color='error'>
-                  Đã hủy
-                </Tag>
-              )
-          },
-          {
-            title: 'Giá (VNĐ)',
-            dataIndex: 'totalPrice',
-            render: (val) => val.toLocaleString()
-          }
-        ]}
-        pagination={{ pageSize: 5 }}
-      />
-    </Card>
+    <>
+      <Card
+        variant='borderless'
+        title={
+          <Title level={2} style={{ textAlign: 'center', marginBottom: 0 }}>
+            Lịch sử đơn đặt dịch vụ
+          </Title>
+        }
+        style={{ borderRadius: 10, padding: 20, background: '#fafafa' }}
+      >
+        <Table
+          dataSource={bookings}
+          rowKey='_id'
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+          style={{ marginTop: 20 }}
+        />
+      </Card>
+
+      {/* Modal hiển thị chi tiết */}
+      <Modal
+        open={isModalVisible}
+        onCancel={handleClose}
+        title={<Divider style={{ fontSize: 20 }}>Chi tiết đơn đặt</Divider>}
+        footer={null}
+        centered
+        width={700}
+      >
+        {currentBooking ? (
+          <>
+            <Descriptions
+              bordered
+              column={1}
+              size='middle'
+              style={{ marginBottom: 20 }}
+            >
+              <Descriptions.Item label='Địa điểm'>
+                {currentBooking.place?.name}
+              </Descriptions.Item>
+              <Descriptions.Item label='Ngày nhận phòng'>
+                {new Date(currentBooking.checkInDate).toLocaleDateString()}
+              </Descriptions.Item>
+              <Descriptions.Item label='Ngày trả phòng'>
+                {new Date(currentBooking.checkOutDate).toLocaleDateString()}
+              </Descriptions.Item>
+              <Descriptions.Item label='Trạng thái'>
+                {currentBooking.status === 'pending' ? (
+                  <Tag icon={<SyncOutlined spin />} color='processing'>
+                    Đang xử lý
+                  </Tag>
+                ) : currentBooking.status === 'confirmed' ? (
+                  <Tag icon={<CheckCircleOutlined />} color='success'>
+                    Thành công
+                  </Tag>
+                ) : (
+                  <Tag icon={<CloseCircleOutlined />} color='error'>
+                    Đã hủy
+                  </Tag>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label='Tổng tiền'>
+                <Text strong style={{ fontSize: 16, color: '#1677ff' }}>
+                  {currentBooking.totalPrice?.toLocaleString()} VNĐ
+                </Text>
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Divider>Chi tiết dịch vụ / phòng</Divider>
+
+            <List
+              dataSource={currentBooking.bookingDetails || []}
+              bordered
+              renderItem={(item) => (
+                <List.Item>
+                  <div style={{ width: '100%' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        marginBottom: 5
+                      }}
+                    >
+                      <Text strong>
+                        {item.roomTypeName ||
+                          item.serviceName ||
+                          'Dịch vụ khác'}
+                      </Text>
+                      <Text type='secondary'>
+                        {item.priceAtBooking?.toLocaleString()} VNĐ
+                      </Text>
+                    </div>
+                    <div>
+                      <Text type='secondary'>Số lượng: {item.quantity}</Text>
+                    </div>
+
+                    {item.roomTypeName && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between'
+                        }}
+                      >
+                        {' '}
+                        <Text type='secondary'>
+                          Số ngày:{' '}
+                          {Math.ceil(
+                            (new Date(currentBooking.checkOutDate) -
+                              new Date(currentBooking.checkInDate)) /
+                              (1000 * 60 * 60 * 24)
+                          )}
+                        </Text>
+                        <Text type='secondary'>
+                          Tổng tiền:{' '}
+                          {Number(item.priceAtBooking) *
+                            Number(item.quantity) *
+                            Number(
+                              Math.ceil(
+                                (new Date(currentBooking.checkOutDate) -
+                                  new Date(currentBooking.checkInDate)) /
+                                  (1000 * 60 * 60 * 24)
+                              )
+                            )}{' '}
+                          VNĐ
+                        </Text>{' '}
+                      </div>
+                    )}
+                  </div>
+                </List.Item>
+              )}
+            />
+          </>
+        ) : (
+          <Text>Không có dữ liệu chi tiết.</Text>
+        )}
+      </Modal>
+    </>
   );
 }
 

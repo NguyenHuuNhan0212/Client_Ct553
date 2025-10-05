@@ -1,10 +1,12 @@
 import { Card, Rate, Tag, Button } from 'antd';
 import { DollarOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const { Meta } = Card;
 
 export default function HotelCard({ hotel }) {
+  const { checkIn, checkOut } = useSelector((state) => state.hotel);
   const firstImage =
     hotel.images && hotel.images.length > 0
       ? `http://localhost:3000/${hotel.images[0]}`
@@ -58,9 +60,11 @@ export default function HotelCard({ hotel }) {
               <Tag color='green' style={{ fontSize: 14 }}>
                 <DollarOutlined /> {hotel.minPricePerNight}K/đêm
               </Tag>
-              <span style={{ fontWeight: 600 }}>
-                Tổng: {hotel.minTotal}K/ ({hotel.nights} đêm)
-              </span>
+              {checkIn && checkOut && (
+                <span style={{ fontWeight: 600 }}>
+                  Tổng: {hotel.minTotal}K/ ({hotel.nights} đêm)
+                </span>
+              )}
             </div>
             <div style={{ marginTop: 10, display: 'flex', gap: 10 }}>
               <Tag color='blue'>

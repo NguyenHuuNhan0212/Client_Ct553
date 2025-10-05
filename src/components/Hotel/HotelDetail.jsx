@@ -21,11 +21,13 @@ function HotelDetail() {
   const { currentHotel, checkIn, checkOut, guests } = useSelector(
     (state) => state.hotel
   );
-  const { loading } = useSelector((state) => state.booking); //eslint-disable-line
+
   const { id } = useParams();
 
   const onBook = (data) => {
+    const placeId = currentHotel?.info?._id;
     const bookingPayload = {
+      placeId,
       checkInDate: data.checkInDate,
       checkOutDate: data.checkOutDate,
       details: data.details
@@ -50,7 +52,6 @@ function HotelDetail() {
       dispatch(getOneHotel(id));
     }
   }, [dispatch, id, checkIn, checkOut, guests]);
-
   if (!currentHotel) {
     return <div>Loading...</div>;
   }
@@ -95,7 +96,7 @@ function HotelDetail() {
 
           <div>
             {currentHotel?.services?.length > 0 && (
-              <ServiceOfPlace services={currentHotel?.services} />
+              <ServiceOfPlace services={currentHotel?.services} isHotel />
             )}
           </div>
         </>
@@ -106,7 +107,7 @@ function HotelDetail() {
       label: 'Phòng',
       children: (
         <Row gutter={[24, 24]}>
-          {currentHotel?.hotelDetail?.roomTypes?.map((room, idx) => (
+          {currentHotel?.roomTypes?.map((room, idx) => (
             <Col xs={24} sm={12} md={8} lg={6} key={idx}>
               <RoomCard
                 room={{ ...room, services: currentHotel?.services }}

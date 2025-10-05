@@ -11,16 +11,18 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createBooking } from '../../redux/slices/bookingSlice';
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
 
-function ServiceOfPlace({ services }) {
+function ServiceOfPlace({ services, isHotel = false }) {
   const [activeKey, setActiveKey] = useState(0);
   const [selectedService, setSelectedService] = useState(null);
   const dispatch = useDispatch();
+  const { currentPlace } = useSelector((state) => state.place);
+  const { currentHotel } = useSelector((state) => state.hotel);
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [totalPrice, setTotalPrice] = useState(0);
@@ -79,7 +81,11 @@ function ServiceOfPlace({ services }) {
     try {
       const values = await form.validateFields();
       const total = calculateTotal(values);
+      const placeId = isHotel
+        ? currentHotel?.info?._id
+        : currentPlace?.info?._id;
       const data = {
+        placeId,
         checkInDate: values.dateRange[0].toDate().toISOString(),
         checkOutDate: values.dateRange[1].toDate().toISOString(),
         details: [
@@ -146,7 +152,11 @@ function ServiceOfPlace({ services }) {
             label='Ngày bắt đầu - kết thúc'
             rules={[{ required: true, message: 'Chọn ngày!' }]}
           >
-            <RangePicker />
+            <RangePicker
+              disabledDate={(current) => {
+                return current && current < dayjs().startOf('day');
+              }}
+            />
           </Form.Item>
 
           <Form.Item

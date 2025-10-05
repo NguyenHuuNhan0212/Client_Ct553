@@ -6,6 +6,9 @@ const bookingApi = {
   },
   getBookings() {
     return axiosClient.get('/bookings');
+  },
+  getBookingDetail(bookingId) {
+    return axiosClient.get(`/bookings/${bookingId}`);
   }
 };
 export default bookingApi;
