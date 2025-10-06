@@ -7,7 +7,8 @@ import {
   Descriptions,
   List,
   Divider,
-  Space
+  Space,
+  message
 } from 'antd';
 import {
   CheckCircleOutlined,
@@ -21,6 +22,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBookingDetail, getBookings } from '../../redux/slices/bookingSlice';
+import bookingApi from '../../apis/bookingService';
 
 const { Title, Text } = Typography;
 
@@ -29,7 +31,8 @@ function Booking() {
   const { bookings } = useSelector((state) => state.booking);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { currentBooking } = useSelector((state) => state.booking);
-
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [openModalDelete, setOpenModalDelete] = useState(false);
   useEffect(() => {
     dispatch(getBookings());
   }, [dispatch]);
@@ -42,12 +45,37 @@ function Booking() {
   const handleClose = () => {
     setIsModalVisible(false);
   };
+  const showModalDelete = (record) => {
+    setOpenModalDelete(true);
+    setSelectedBooking(record);
+  };
+  const handleDelete = async () => {
+    if (!selectedBooking) return;
+    try {
+      await bookingApi.deleteBooking(selectedBooking._id);
+      await dispatch(getBookings()).unwrap();
+      setOpenModalDelete(false);
+      message.success(`Đã xóa đơn đặt thành công`);
+    } catch (err) {
+      setOpenModalDelete(false);
+      message.error(err?.response?.data?.message);
+    }
+  };
 
   const columns = [
     { title: 'Tên địa điểm', align: 'center', dataIndex: 'placeName' },
     { title: 'Loại địa điểm', align: 'center', dataIndex: 'serviceName' },
     {
-      title: 'Trạng thái',
+      title: 'Ngày đặt dịch vụ',
+      align: 'center',
+      dataIndex: 'createdAt',
+      render: (value) => {
+        const date = new Date(value);
+        return date.toLocaleDateString('vi-VN');
+      }
+    },
+    {
+      title: 'Trạng thái đơn đặt',
       align: 'center',
       dataIndex: 'status',
       render: (value) =>
@@ -56,6 +84,10 @@ function Booking() {
             Đang xử lý
           </Tag>
         ) : value === 'confirmed' ? (
+          <Tag icon={<CheckCircleOutlined />} color='success'>
+            Thành công
+          </Tag>
+        ) : value === 'paid' ? (
           <Tag icon={<CheckCircleOutlined />} color='success'>
             Thành công
           </Tag>
@@ -75,14 +107,6 @@ function Booking() {
       title: 'Hành động',
       align: 'center',
       render: (_, record) => (
-        // <Tag
-        //   icon={<InfoCircleOutlined />}
-        //   color='blue'
-        //   style={{ cursor: 'pointer' }}
-        //   onClick={() => showDetail(record)}
-        // >
-        //   Xem chi tiết
-        // </Tag>
         <Space size='large' style={{ fontSize: 20 }}>
           <EyeOutlined
             style={{ color: 'blue', cursor: 'pointer' }}
@@ -94,7 +118,7 @@ function Booking() {
           />
           <DeleteOutlined
             style={{ color: 'red', cursor: 'pointer' }}
-            onClick={() => console.log('xóa')}
+            onClick={() => showModalDelete(record)}
           />
         </Space>
       )
@@ -156,6 +180,10 @@ function Booking() {
                   <Tag icon={<CheckCircleOutlined />} color='success'>
                     Thành công
                   </Tag>
+                ) : currentBooking.status === 'paid' ? (
+                  <Tag icon={<CheckCircleOutlined />} color='success'>
+                    Thành công
+                  </Tag>
                 ) : (
                   <Tag icon={<CloseCircleOutlined />} color='error'>
                     Đã hủy
@@ -167,6 +195,38 @@ function Booking() {
                   {currentBooking.totalPrice?.toLocaleString()} VNĐ
                 </Text>
               </Descriptions.Item>
+
+              <Descriptions.Item label='Trạng thái thanh toán'>
+                <Text
+                  strong
+                  style={{
+                    fontSize: 16,
+                    color:
+                      currentBooking.payment?.method === 'offline' ||
+                      (currentBooking.payment?.method !== 'offline' &&
+                        currentBooking.payment?.paymentType !== 'full')
+                        ? '#ff4d4f'
+                        : '#52c41a'
+                  }}
+                >
+                  {currentBooking.payment?.method === 'offline'
+                    ? 'Thanh toán khi sử dụng dịch vụ'
+                    : currentBooking.payment?.method !== 'offline' &&
+                      currentBooking.payment?.paymentType === 'full'
+                    ? 'Đã thanh toán'
+                    : `Thanh toán 1 phần (${currentBooking.payment?.amount?.toLocaleString()} VNĐ)`}
+                </Text>
+              </Descriptions.Item>
+              {currentBooking.payment?.paymentType === 'deposit' && (
+                <Descriptions.Item label='Tiền cần trả sau'>
+                  <Text strong style={{ fontSize: 16, color: '#ff4d4f' }}>
+                    {(
+                      currentBooking.totalPrice - currentBooking.payment?.amount
+                    ).toLocaleString()}{' '}
+                    VNĐ
+                  </Text>
+                </Descriptions.Item>
+              )}
             </Descriptions>
 
             <Divider>Chi tiết dịch vụ / phòng</Divider>
@@ -236,6 +296,14 @@ function Booking() {
         ) : (
           <Text>Không có dữ liệu chi tiết.</Text>
         )}
+      </Modal>
+      <Modal
+        title='Xác nhận xóa đơn đặt'
+        open={openModalDelete}
+        onOk={handleDelete}
+        onCancel={() => setOpenModalDelete(false)}
+      >
+        <p>Bạn chắc chắn muốn xóa đơn đặt?</p>
       </Modal>
     </>
   );

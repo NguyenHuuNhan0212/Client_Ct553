@@ -43,6 +43,10 @@ const routes = [
   {
     path: 'hotel/:id',
     component: lazy(() => import('../pages/Hotel/HotelDetailPage'))
+  },
+  {
+    path: 'payment-return',
+    component: lazy(() => import('../pages/PaymentReturn/PaymentReturn'))
   }
 ];
 

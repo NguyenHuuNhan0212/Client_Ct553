@@ -6,7 +6,8 @@ import {
   Space,
   Divider,
   Modal,
-  Checkbox
+  Checkbox,
+  Radio
 } from 'antd';
 import { FaBed, FaVuejs } from 'react-icons/fa';
 import styles from './style.module.css';
@@ -25,6 +26,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [form] = Form.useForm();
   const [totalPrice, setTotalPrice] = useState(0);
+  const [raidoValue, setRadioValue] = useState(0);
   const { checkIn, checkOut } = useSelector((state) => state.hotel);
   // 🔥 Hàm tính tổng tiền
   const calculateTotal = (values) => {
@@ -45,6 +47,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
 
     return roomCost + serviceCost;
   };
+  const onChange = (e) => setRadioValue(e.target.value);
   const handleOk = () => {
     form.validateFields().then((values) => {
       const roomDetail = {
@@ -66,6 +69,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
       });
 
       const payload = {
+        paymentMethod: values.paymentMethod,
         checkInDate: roomDetail.checkInDate,
         checkOutDate: roomDetail.checkOutDate,
         details: [roomDetail, ...serviceDetails],
@@ -198,6 +202,31 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
           <Title level={4} style={{ textAlign: 'right' }}>
             Tổng tiền: <span style={{ color: 'red' }}>{totalPrice}K</span>
           </Title>
+          <Divider>Phương thức thanh toán</Divider>
+          <Form.Item
+            name='paymentMethod'
+            rules={[
+              { required: true, message: 'Chọn phương thức thanh toán!' }
+            ]}
+          >
+            <Radio.Group
+              onChange={onChange}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 10
+              }}
+              value={raidoValue}
+              options={[
+                { value: 'offline', label: 'Thanh toán khi đến địa điểm' },
+                {
+                  value: 'deposit',
+                  label: 'Thanh toán một phần để giữ chỗ (30%)'
+                },
+                { value: 'full', label: 'Thanh toán toàn bộ' }
+              ]}
+            />
+          </Form.Item>
         </Form>
       </Modal>
     </>

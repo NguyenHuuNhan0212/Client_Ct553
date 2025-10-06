@@ -13,6 +13,7 @@ import styles from './style.module.css';
 import RoomCard from './RoomCard';
 import ServiceOfPlace from '../PlaceDetail/ServiceOfPlace';
 import { createBooking } from '../../redux/slices/bookingSlice';
+import paymentApi from '../../apis/paymentService';
 const { Title, Paragraph } = Typography;
 
 function HotelDetail() {
@@ -25,16 +26,44 @@ function HotelDetail() {
   const { id } = useParams();
 
   const onBook = (data) => {
+    const paymentMethod = data.paymentMethod;
     const placeId = currentHotel?.info?._id;
+
     const bookingPayload = {
       placeId,
       checkInDate: data.checkInDate,
       checkOutDate: data.checkOutDate,
       details: data.details
     };
+
     dispatch(createBooking(bookingPayload))
       .unwrap()
-      .then(() => message.success('Đặt phòng thành công!'))
+      .then(async (booking) => {
+        const bookingId = booking?.booking?._id;
+        if (!bookingId) {
+          message.error('Không lấy được mã booking!');
+          return;
+        }
+        try {
+          const res = await paymentApi.createPayment({
+            bookingId,
+            deposit: paymentMethod === 'deposit',
+            isOffline: paymentMethod === 'offline'
+          });
+
+          const { paymentUrl } = res;
+
+          if (paymentUrl) {
+            window.location.href = paymentUrl; // Chuyển hướng tới VNPAY
+          } else {
+            message.success(
+              'Đặt phòng thành công (Thanh toán khi sử dụng dịch vụ)'
+            );
+          }
+        } catch (error) {
+          message.error('Lỗi khi tạo thanh toán!', error);
+        }
+      })
       .catch((err) => message.error(err?.message || 'Đặt phòng thất bại'));
   };
 

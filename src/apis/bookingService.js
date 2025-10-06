@@ -9,6 +9,9 @@ const bookingApi = {
   },
   getBookingDetail(bookingId) {
     return axiosClient.get(`/bookings/${bookingId}`);
+  },
+  deleteBooking(bookingId) {
+    return axiosClient.delete(`/bookings/${bookingId}`);
   }
 };
 export default bookingApi;
