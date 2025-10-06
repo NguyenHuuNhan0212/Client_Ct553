@@ -6,7 +6,6 @@ import {
   UserOutlined,
   CalendarOutlined,
   ShoppingCartOutlined,
-  CreditCardOutlined,
   AppstoreOutlined,
   BarChartOutlined
 } from '@ant-design/icons';
@@ -40,14 +39,17 @@ export default function Profile() {
   const menuItems = [
     { key: '1', icon: <UserOutlined />, label: 'Thông tin cá nhân' },
     { key: '2', icon: <CalendarOutlined />, label: 'Lịch trình' },
-    { key: '3', icon: <ShoppingCartOutlined />, label: 'Lịch sử đặt dịch vụ' },
-    { key: '4', icon: <CreditCardOutlined />, label: 'Thanh toán' }
+    { key: '3', icon: <ShoppingCartOutlined />, label: 'Lịch sử đặt dịch vụ' }
   ];
 
   if (user?.role === 'provider') {
     menuItems.push(
-      { key: '5', icon: <AppstoreOutlined />, label: 'Dịch vụ của tôi' },
-      { key: '6', icon: <BarChartOutlined />, label: 'Thống kê dịch vụ' }
+      {
+        key: '4',
+        icon: <AppstoreOutlined />,
+        label: 'Quản lý địa điểm/dịch vụ'
+      },
+      { key: '5', icon: <BarChartOutlined />, label: 'Thống kê dịch vụ' }
     );
   }
   // Gia lap
@@ -123,10 +125,8 @@ export default function Profile() {
       case '3':
         return <Booking />;
       case '4':
-        return <Payment />;
-      case '5':
         return <ServiceProvide />;
-      case '6':
+      case '5':
         return <ServiceBookingList />;
       default:
         return null;
@@ -150,7 +150,7 @@ export default function Profile() {
     <>
       <Header />
       <Layout className={container}>
-        <Sider className={sidebar}>
+        <Sider className={sidebar} width={240}>
           <Menu
             mode='inline'
             selectedKeys={[selectedKey]}

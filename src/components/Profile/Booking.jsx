@@ -45,7 +45,7 @@ function Booking() {
 
   const columns = [
     { title: 'Tên địa điểm', align: 'center', dataIndex: 'placeName' },
-    { title: 'Loại dịch vụ', align: 'center', dataIndex: 'serviceName' },
+    { title: 'Loại địa điểm', align: 'center', dataIndex: 'serviceName' },
     {
       title: 'Trạng thái',
       align: 'center',

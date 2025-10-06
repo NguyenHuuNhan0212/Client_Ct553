@@ -90,22 +90,17 @@ export default function Header() {
         icon: <FileDoneOutlined />,
         label: <Link to='/profile?tab=3'>Lịch sử đặt dịch vụ</Link>
       },
-      {
-        key: 'payment',
-        icon: <CreditCardOutlined />,
-        label: <Link to='/profile?tab=4'>Thanh toán</Link>
-      },
       ...(user?.role === 'provider'
         ? [
             {
               key: 'services',
               icon: <AppstoreOutlined />,
-              label: <Link to='/profile?tab=5'>Dịch vụ của tôi</Link>
+              label: <Link to='/profile?tab=4'>Quản lý địa điểm/dịch vụ</Link>
             },
             {
               key: 'stats',
               icon: <BarChartOutlined />,
-              label: <Link to='/profile?tab=6'>Thống kê dịch vụ</Link>
+              label: <Link to='/profile?tab=5'>Thống kê dịch vụ</Link>
             }
           ]
         : []),
