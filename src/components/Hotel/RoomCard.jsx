@@ -7,7 +7,8 @@ import {
   Divider,
   Modal,
   Checkbox,
-  Radio
+  Radio,
+  message
 } from 'antd';
 import { FaBed, FaVuejs } from 'react-icons/fa';
 import styles from './style.module.css';
@@ -20,6 +21,7 @@ const { RangePicker } = DatePicker;
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
 import PaymentMethodSelect from '../PaymentMethod/PaymentMethod';
+import CancelPolicy from '../Profile/BookingComponents/CancelPolicy';
 
 const RoomCard = ({ room, onBook, facilities = [] }) => {
   const { roomCard, roomCover, roomIcon, roomOverlay, amenitiesWrap } = styles;
@@ -28,6 +30,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
   const [form] = Form.useForm();
   const [totalPrice, setTotalPrice] = useState(0);
   const [radioValue, setRadioValue] = useState(0);
+  const [isChecked, setChecked] = useState(false);
   const { checkIn, checkOut } = useSelector((state) => state.hotel);
   // 🔥 Hàm tính tổng tiền
   const calculateTotal = (values) => {
@@ -48,8 +51,14 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
 
     return roomCost + serviceCost;
   };
-
+  const onChangeCheckBox = (e) => {
+    setChecked(e.target.checked);
+  };
   const handleOk = () => {
+    if (!isChecked) {
+      message.warning('Vui lòng tick chấp nhận chính sách trước khi tiếp tục!');
+      return;
+    }
     form.validateFields().then((values) => {
       const roomDetail = {
         roomTypeId: checkIn && checkOut ? room.romTypeId : room._id,
@@ -152,6 +161,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
         onOk={() => {
           handleOk();
         }}
+        width={700}
         okText='Xác nhận'
         cancelText='Hủy'
       >
@@ -202,7 +212,10 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
           {/* ✅ Hiển thị tổng tiền realtime */}
           <Divider />
           <Title level={4} style={{ textAlign: 'right' }}>
-            Tổng tiền: <span style={{ color: 'red' }}>{totalPrice}K</span>
+            Tổng tiền:{' '}
+            <span style={{ color: 'red' }}>
+              {totalPrice.toLocaleString()}VNĐ
+            </span>
           </Title>
           <Divider>Phương thức thanh toán</Divider>
           <Form.Item
@@ -217,6 +230,14 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
             />
           </Form.Item>
         </Form>
+        <CancelPolicy />
+        <Checkbox
+          style={{ marginTop: 10 }}
+          defaultChecked={isChecked}
+          onChange={onChangeCheckBox}
+        >
+          Tôi đã đọc kỹ và đồng ý với chính sách
+        </Checkbox>
       </Modal>
     </>
   );

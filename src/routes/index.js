@@ -17,8 +17,8 @@ const routes = [
     component: lazy(() => import('../pages/Login/Login'))
   },
   {
-    path: 'services',
-    component: lazy(() => import('../pages/Service/Service'))
+    path: 'itinerary',
+    component: lazy(() => import('../pages/CreateItinerary/CreateItinerary'))
   },
   {
     path: 'forgot-password',

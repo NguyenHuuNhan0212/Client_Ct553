@@ -58,11 +58,13 @@ export default function HotelCard({ hotel }) {
               }}
             >
               <Tag color='green' style={{ fontSize: 14 }}>
-                <DollarOutlined /> {hotel.minPricePerNight}K/đêm
+                <DollarOutlined /> {hotel.minPricePerNight.toLocaleString()}{' '}
+                VNĐ/đêm
               </Tag>
               {checkIn && checkOut && (
                 <span style={{ fontWeight: 600 }}>
-                  Tổng: {hotel.minTotal}K/ ({hotel.nights} đêm)
+                  Tổng: {hotel.minTotal.toLocaleString()}VNĐ/ ({hotel.nights}{' '}
+                  đêm)
                 </span>
               )}
             </div>

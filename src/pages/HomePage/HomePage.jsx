@@ -17,6 +17,7 @@ export default function Home() {
   useEffect(() => {
     dispatch(resetStateBooking());
     dispatch(getAllPlace());
+    localStorage.removeItem('itineraryForm');
   }, []); //eslint-disable-line
   return (
     <Layout>

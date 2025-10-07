@@ -56,12 +56,7 @@ function PaymentMethodSelect({ value, onChange }) {
 
   return (
     <Card
-      title={
-        <Text strong style={{ fontSize: 16, color: '#1677ff' }}>
-          Chọn hình thức thanh toán
-        </Text>
-      }
-      bordered={false}
+      variant='borderless'
       style={{
         background: '#fafafa',
         borderRadius: 12,

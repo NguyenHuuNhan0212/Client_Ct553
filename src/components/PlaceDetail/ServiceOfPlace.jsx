@@ -8,7 +8,8 @@ import {
   InputNumber,
   Typography,
   message,
-  Radio
+  Radio,
+  Checkbox
 } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
@@ -16,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createBooking } from '../../redux/slices/bookingSlice';
 import paymentApi from '../../apis/paymentService';
 import PaymentMethodSelect from '../PaymentMethod/PaymentMethod';
+import CancelPolicy from '../Profile/BookingComponents/CancelPolicy';
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
@@ -29,6 +31,7 @@ function ServiceOfPlace({ services, isHotel = false }) {
   const [radioValue, setRadioValue] = useState(0);
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
+  const [isChecked, setChecked] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const items = services.map((s, index) => ({
@@ -58,7 +61,9 @@ function ServiceOfPlace({ services, isHotel = false }) {
   const onChange = (key) => {
     setActiveKey(key);
   };
-
+  const onChangeCheckBox = (e) => {
+    setChecked(e.target.checked);
+  };
   const handleBooking = (s) => {
     setSelectedService(s);
     setOpen(true);
@@ -82,6 +87,10 @@ function ServiceOfPlace({ services, isHotel = false }) {
   };
 
   const handleOk = async () => {
+    if (!isChecked) {
+      message.warning('Vui lòng tick chấp nhận chính sách trước khi tiếp tục!');
+      return;
+    }
     try {
       const values = await form.validateFields();
       const placeId = isHotel
@@ -128,7 +137,7 @@ function ServiceOfPlace({ services, isHotel = false }) {
           }
         })
         .catch((err) => message.error(err?.message || 'Đặt phòng thất bại'));
-
+      setChecked(false);
       setOpen(false);
     } catch (error) {
       console.log('Validation failed:', error);
@@ -155,11 +164,13 @@ function ServiceOfPlace({ services, isHotel = false }) {
         defaultActiveKey={activeKey}
         accordion
         onChange={onChange}
+        style={{ textAlign: 'left', width: '100%' }}
       />
 
       <Modal
         title={`Đặt ${selectedService?.name || ''}`}
         open={open}
+        width={700}
         onCancel={() => setOpen(false)}
         onOk={handleOk}
         okText='Xác nhận'
@@ -199,7 +210,10 @@ function ServiceOfPlace({ services, isHotel = false }) {
           {/* ✅ Hiển thị tổng tiền realtime */}
           <Divider />
           <Title level={4} style={{ textAlign: 'right' }}>
-            Tổng tiền: <span style={{ color: 'red' }}>{totalPrice}K</span>
+            Tổng tiền:{' '}
+            <span style={{ color: 'red' }}>
+              {totalPrice.toLocaleString()}VNĐ
+            </span>
           </Title>
           <Divider>Phương thức thanh toán</Divider>
           <Form.Item
@@ -214,6 +228,14 @@ function ServiceOfPlace({ services, isHotel = false }) {
             />
           </Form.Item>
         </Form>
+        <CancelPolicy />
+        <Checkbox
+          style={{ marginTop: 10 }}
+          defaultChecked={isChecked}
+          onChange={onChangeCheckBox}
+        >
+          Tôi đã đọc kỹ và đồng ý với chính sách
+        </Checkbox>
       </Modal>
     </div>
   );

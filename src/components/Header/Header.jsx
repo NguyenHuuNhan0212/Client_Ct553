@@ -50,10 +50,10 @@ export default function Header() {
       )
     },
     {
-      key: 'services',
+      key: 'itinerary',
       label: (
-        <Link to='/services' style={{ fontSize: '16px', fontWeight: '600' }}>
-          Dịch vụ
+        <Link to='/itinerary' style={{ fontSize: '16px', fontWeight: '600' }}>
+          Tạo lịch trình
         </Link>
       )
     },

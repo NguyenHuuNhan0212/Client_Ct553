@@ -1,5 +1,5 @@
 import Footer from '../../components/Footer/Footer';
-import FormAddPlace from '../../components/FormAddPlace/FormAddPlace';
+import FormAddPlace from '../../components/FormPlace/FormAddPlace';
 import Header from '../../components/Header/Header';
 
 function AddPlace() {
