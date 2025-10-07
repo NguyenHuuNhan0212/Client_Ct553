@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { getAllPlaceOfUser } from '../../redux/slices/placeSlice';
 import { useNavigate } from 'react-router-dom';
 import placeApi from '../../apis/placeService';
-import FormUpdatePlace from '../FormAddPlace/FormUpdatePlace';
+import FormUpdatePlace from '../FormPlace/FormUpdatePlace';
 import { capitalizeName } from '../../utils/capitalize';
 import SearchBar from '../SearchBar/SearchBar';
 const { Title, Text } = Typography;

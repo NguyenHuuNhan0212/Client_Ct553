@@ -7,12 +7,15 @@ import {
   DatePicker,
   InputNumber,
   Typography,
-  message
+  message,
+  Radio
 } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { createBooking } from '../../redux/slices/bookingSlice';
+import paymentApi from '../../apis/paymentService';
+import PaymentMethodSelect from '../PaymentMethod/PaymentMethod';
 
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
@@ -23,6 +26,7 @@ function ServiceOfPlace({ services, isHotel = false }) {
   const dispatch = useDispatch();
   const { currentPlace } = useSelector((state) => state.place);
   const { currentHotel } = useSelector((state) => state.hotel);
+  const [radioValue, setRadioValue] = useState(0);
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [totalPrice, setTotalPrice] = useState(0);
@@ -31,7 +35,7 @@ function ServiceOfPlace({ services, isHotel = false }) {
     key: String(index),
     label: (
       <span>
-        {s.name} - <b>{s.price.toLocaleString()}K</b>
+        {s.name} - <b>{s.price.toLocaleString()}</b>
       </span>
     ),
     children: (
@@ -80,14 +84,13 @@ function ServiceOfPlace({ services, isHotel = false }) {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      const total = calculateTotal(values);
       const placeId = isHotel
         ? currentHotel?.info?._id
         : currentPlace?.info?._id;
       const data = {
         placeId,
-        checkInDate: values.dateRange[0].toDate().toISOString(),
-        checkOutDate: values.dateRange[1].toDate().toISOString(),
+        checkInDate: values.dateCheckIn,
+        checkOutDate: values.dateCheckIn,
         details: [
           {
             serviceId: selectedService._id,
@@ -96,12 +99,35 @@ function ServiceOfPlace({ services, isHotel = false }) {
           }
         ]
       };
-      dispatch(createBooking(data));
-      message.success(
-        `Bạn đã đặt ${
-          selectedService.name
-        } với tổng tiền ${total.toLocaleString()}K`
-      );
+      dispatch(createBooking(data))
+        .unwrap()
+        .then(async (booking) => {
+          const bookingId = booking?.booking?._id;
+          if (!bookingId) {
+            message.error('Không lấy được mã booking!');
+            return;
+          }
+          try {
+            const res = await paymentApi.createPayment({
+              bookingId,
+              deposit: radioValue === 'deposit',
+              isOffline: radioValue === 'offline'
+            });
+
+            const { paymentUrl } = res;
+
+            if (paymentUrl) {
+              window.location.href = paymentUrl; // Chuyển hướng tới VNPAY
+            } else {
+              message.success(
+                'Đặt dịch vụ thành công (Thanh toán khi sử dụng dịch vụ)'
+              );
+            }
+          } catch (error) {
+            message.error('Lỗi khi tạo thanh toán!', error);
+          }
+        })
+        .catch((err) => message.error(err?.message || 'Đặt phòng thất bại'));
 
       setOpen(false);
     } catch (error) {
@@ -148,14 +174,16 @@ function ServiceOfPlace({ services, isHotel = false }) {
           }}
         >
           <Form.Item
-            name='dateRange'
-            label='Ngày bắt đầu - kết thúc'
+            name='dateCheckIn'
+            label='Ngày bắt đầu'
             rules={[{ required: true, message: 'Chọn ngày!' }]}
           >
-            <RangePicker
-              disabledDate={(current) => {
-                return current && current < dayjs().startOf('day');
-              }}
+            <DatePicker
+              format='DD-MM-YYYY'
+              style={{ width: '100%' }}
+              disabledDate={(current) =>
+                current && current < dayjs().endOf('day')
+              }
             />
           </Form.Item>
 
@@ -173,6 +201,18 @@ function ServiceOfPlace({ services, isHotel = false }) {
           <Title level={4} style={{ textAlign: 'right' }}>
             Tổng tiền: <span style={{ color: 'red' }}>{totalPrice}K</span>
           </Title>
+          <Divider>Phương thức thanh toán</Divider>
+          <Form.Item
+            name='paymentMethod'
+            rules={[
+              { required: true, message: 'Chọn phương thức thanh toán!' }
+            ]}
+          >
+            <PaymentMethodSelect
+              value={radioValue}
+              onChange={(val) => setRadioValue(val)}
+            />
+          </Form.Item>
         </Form>
       </Modal>
     </div>

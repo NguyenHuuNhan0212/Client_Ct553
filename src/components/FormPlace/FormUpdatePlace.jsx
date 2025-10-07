@@ -55,7 +55,17 @@ const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
   const onFinish = async (values) => {
     const address = `${values.ward}, ${values.province}`;
     const payload = { ...values, address };
-
+    if (type === 'hotel') {
+      // validate roomTypes
+      if (!roomTypes.length) {
+        return toast.error('Bạn phải nhập ít nhất 1 loại phòng');
+      }
+      for (let rt of roomTypes) {
+        if (!rt.name || !rt.capacity || !rt.totalRooms || !rt.pricePerNight) {
+          return toast.error('Vui lòng điền đầy đủ thông tin loại phòng!');
+        }
+      }
+    }
     const formData = new FormData();
     Object.keys(payload).forEach((key) => {
       formData.append(key, payload[key]);

@@ -19,6 +19,7 @@ import { DatePicker, InputNumber, Form } from 'antd';
 const { RangePicker } = DatePicker;
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
+import PaymentMethodSelect from '../PaymentMethod/PaymentMethod';
 
 const RoomCard = ({ room, onBook, facilities = [] }) => {
   const { roomCard, roomCover, roomIcon, roomOverlay, amenitiesWrap } = styles;
@@ -26,7 +27,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
   const [bookingOpen, setBookingOpen] = useState(false);
   const [form] = Form.useForm();
   const [totalPrice, setTotalPrice] = useState(0);
-  const [raidoValue, setRadioValue] = useState(0);
+  const [radioValue, setRadioValue] = useState(0);
   const { checkIn, checkOut } = useSelector((state) => state.hotel);
   // 🔥 Hàm tính tổng tiền
   const calculateTotal = (values) => {
@@ -47,7 +48,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
 
     return roomCost + serviceCost;
   };
-  const onChange = (e) => setRadioValue(e.target.value);
+
   const handleOk = () => {
     form.validateFields().then((values) => {
       const roomDetail = {
@@ -109,7 +110,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
         <Title level={4}>{capitalizeName(room.name)}</Title>
         <Space size='small' wrap>
           <Tag color='blue'>{room.capacity} người</Tag>
-          <Tag color='green'>{room.pricePerNight.toLocaleString()}K / ngày</Tag>
+          <Tag color='green'>{room.pricePerNight.toLocaleString()} / ngày</Tag>
         </Space>
       </Card>
 
@@ -124,7 +125,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
           <Text strong>Số người tối đa: </Text> {room.capacity}
         </Paragraph>
         <Paragraph>
-          <Text strong>Giá: </Text> {room.pricePerNight.toLocaleString()}K / đêm
+          <Text strong>Giá: </Text> {room.pricePerNight.toLocaleString()}/ đêm
         </Paragraph>
         <Divider />
         <Text strong>Tiện ích hiện có:</Text>
@@ -168,6 +169,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
             rules={[{ required: true, message: 'Chọn ngày!' }]}
           >
             <RangePicker
+              style={{ width: '100%' }}
               disabledDate={(current) => {
                 return current && current < dayjs().startOf('day');
               }}
@@ -191,7 +193,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
             <Checkbox.Group style={{ width: '100%' }}>
               {room.services?.map((service) => (
                 <Checkbox key={service._id} value={service._id}>
-                  {service.name} ({service.price}K)
+                  {service.name} ({service.price.toLocaleString()})
                 </Checkbox>
               ))}
             </Checkbox.Group>
@@ -209,22 +211,9 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
               { required: true, message: 'Chọn phương thức thanh toán!' }
             ]}
           >
-            <Radio.Group
-              onChange={onChange}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 10
-              }}
-              value={raidoValue}
-              options={[
-                { value: 'offline', label: 'Thanh toán khi đến địa điểm' },
-                {
-                  value: 'deposit',
-                  label: 'Thanh toán một phần để giữ chỗ (30%)'
-                },
-                { value: 'full', label: 'Thanh toán toàn bộ' }
-              ]}
+            <PaymentMethodSelect
+              value={radioValue}
+              onChange={(val) => setRadioValue(val)}
             />
           </Form.Item>
         </Form>

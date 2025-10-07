@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBookingDetail, getBookings } from '../../redux/slices/bookingSlice';
 import bookingApi from '../../apis/bookingService';
+import CancelPolicy from './BookingComponents/CancelPolicy';
 
 const { Title, Text } = Typography;
 
@@ -33,6 +34,7 @@ function Booking() {
   const { currentBooking } = useSelector((state) => state.booking);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [openModalDelete, setOpenModalDelete] = useState(false);
+  const [openModalCancel, setOpenModalCancel] = useState(false);
   useEffect(() => {
     dispatch(getBookings());
   }, [dispatch]);
@@ -49,6 +51,10 @@ function Booking() {
     setOpenModalDelete(true);
     setSelectedBooking(record);
   };
+  const showModalCancel = (record) => {
+    setOpenModalCancel(true);
+    setSelectedBooking(record);
+  };
   const handleDelete = async () => {
     if (!selectedBooking) return;
     try {
@@ -56,6 +62,19 @@ function Booking() {
       await dispatch(getBookings()).unwrap();
       setOpenModalDelete(false);
       message.success(`Đã xóa đơn đặt thành công`);
+    } catch (err) {
+      setOpenModalDelete(false);
+      message.error(err?.response?.data?.message);
+    }
+  };
+  const handleCancel = async () => {
+    if (!selectedBooking) return;
+    console.log(selectedBooking);
+    try {
+      await bookingApi.cancelBooking(selectedBooking._id);
+      await dispatch(getBookings()).unwrap();
+      setOpenModalCancel(false);
+      message.success(`Đã hủy đơn đặt thành công`);
     } catch (err) {
       setOpenModalDelete(false);
       message.error(err?.response?.data?.message);
@@ -112,14 +131,19 @@ function Booking() {
             style={{ color: 'blue', cursor: 'pointer' }}
             onClick={() => showDetail(record)}
           />
-          <EditOutlined
-            style={{ color: '#ebca48ff', cursor: 'pointer' }}
-            onClick={() => console.log('edit')}
-          />
-          <DeleteOutlined
-            style={{ color: 'red', cursor: 'pointer' }}
-            onClick={() => showModalDelete(record)}
-          />
+          {record.status !== 'cancelled' && (
+            <CloseCircleOutlined
+              style={{ color: 'red', cursor: 'pointer' }}
+              onClick={() => showModalCancel(record)}
+            />
+          )}
+
+          {record.status === 'cancelled' && (
+            <DeleteOutlined
+              style={{ color: 'red', cursor: 'pointer' }}
+              onClick={() => showModalDelete(record)}
+            />
+          )}
         </Space>
       )
     }
@@ -144,6 +168,7 @@ function Booking() {
           style={{ marginTop: 20 }}
         />
       </Card>
+      <CancelPolicy />
 
       {/* Modal hiển thị chi tiết */}
       <Modal
@@ -165,13 +190,13 @@ function Booking() {
               <Descriptions.Item label='Địa điểm'>
                 {currentBooking.place?.name}
               </Descriptions.Item>
-              <Descriptions.Item label='Ngày nhận phòng'>
+              <Descriptions.Item label='Ngày check in'>
                 {new Date(currentBooking.checkInDate).toLocaleDateString()}
               </Descriptions.Item>
-              <Descriptions.Item label='Ngày trả phòng'>
+              <Descriptions.Item label='Ngày check out'>
                 {new Date(currentBooking.checkOutDate).toLocaleDateString()}
               </Descriptions.Item>
-              <Descriptions.Item label='Trạng thái'>
+              <Descriptions.Item label='Trạng thái đơn đặt'>
                 {currentBooking.status === 'pending' ? (
                   <Tag icon={<SyncOutlined spin />} color='processing'>
                     Đang xử lý
@@ -190,42 +215,53 @@ function Booking() {
                   </Tag>
                 )}
               </Descriptions.Item>
-              <Descriptions.Item label='Tổng tiền'>
-                <Text strong style={{ fontSize: 16, color: '#1677ff' }}>
-                  {currentBooking.totalPrice?.toLocaleString()} VNĐ
-                </Text>
-              </Descriptions.Item>
-
-              <Descriptions.Item label='Trạng thái thanh toán'>
-                <Text
-                  strong
-                  style={{
-                    fontSize: 16,
-                    color:
-                      currentBooking.payment?.method === 'offline' ||
-                      (currentBooking.payment?.method !== 'offline' &&
-                        currentBooking.payment?.paymentType !== 'full')
-                        ? '#ff4d4f'
-                        : '#52c41a'
-                  }}
-                >
-                  {currentBooking.payment?.method === 'offline'
-                    ? 'Thanh toán khi sử dụng dịch vụ'
-                    : currentBooking.payment?.method !== 'offline' &&
-                      currentBooking.payment?.paymentType === 'full'
-                    ? 'Đã thanh toán'
-                    : `Thanh toán 1 phần (${currentBooking.payment?.amount?.toLocaleString()} VNĐ)`}
-                </Text>
-              </Descriptions.Item>
-              {currentBooking.payment?.paymentType === 'deposit' && (
-                <Descriptions.Item label='Tiền cần trả sau'>
-                  <Text strong style={{ fontSize: 16, color: '#ff4d4f' }}>
-                    {(
-                      currentBooking.totalPrice - currentBooking.payment?.amount
-                    ).toLocaleString()}{' '}
-                    VNĐ
-                  </Text>
-                </Descriptions.Item>
+              {currentBooking.status !== 'cancelled' && (
+                <>
+                  <Descriptions.Item label='Tổng tiền'>
+                    <Text strong style={{ fontSize: 16, color: '#1677ff' }}>
+                      {currentBooking.totalPrice?.toLocaleString()} VNĐ
+                    </Text>
+                  </Descriptions.Item>
+                  <Descriptions.Item label='Trạng thái thanh toán'>
+                    <Text
+                      strong
+                      style={{
+                        fontSize: 16,
+                        color:
+                          currentBooking.payment?.method === 'offline' ||
+                          (currentBooking.payment?.method !== 'offline' &&
+                            currentBooking.payment?.paymentType !== 'full')
+                            ? '#ff4d4f'
+                            : '#52c41a'
+                      }}
+                    >
+                      {currentBooking.payment?.method === 'offline'
+                        ? 'Thanh toán khi sử dụng dịch vụ'
+                        : currentBooking.payment?.method !== 'offline' &&
+                          currentBooking.payment?.paymentType === 'full'
+                        ? 'Đã thanh toán'
+                        : `Thanh toán 1 phần (${currentBooking.payment?.amount?.toLocaleString()} VNĐ)`}
+                    </Text>
+                  </Descriptions.Item>
+                  {currentBooking.payment?.paymentType === 'deposit' && (
+                    <Descriptions.Item label='Tiền cần trả sau'>
+                      <Text strong style={{ fontSize: 16, color: '#ff4d4f' }}>
+                        {(
+                          currentBooking.totalPrice -
+                          currentBooking.payment?.amount
+                        ).toLocaleString()}{' '}
+                        VNĐ
+                      </Text>
+                    </Descriptions.Item>
+                  )}
+                  {currentBooking.payment?.method === 'offline' && (
+                    <Descriptions.Item label='Tiền cần trả sau'>
+                      <Text strong style={{ fontSize: 16, color: '#ff4d4f' }}>
+                        {currentBooking.totalPrice.toLocaleString()} VNĐ
+                      </Text>
+                    </Descriptions.Item>
+                  )}
+                </>
               )}
             </Descriptions>
 
@@ -304,6 +340,19 @@ function Booking() {
         onCancel={() => setOpenModalDelete(false)}
       >
         <p>Bạn chắc chắn muốn xóa đơn đặt?</p>
+      </Modal>
+
+      <Modal
+        title='Xác nhận hủy đơn đặt'
+        open={openModalCancel}
+        onOk={handleCancel}
+        onCancel={() => setOpenModalCancel(false)}
+      >
+        <p>
+          {selectedBooking
+            ? `Bạn chắc chắn muốn hủy đơn đặt của ${selectedBooking?.placeName}? `
+            : 'Bạn chắc chắn muốn hủy đơn đặt?'}
+        </p>
       </Modal>
     </>
   );
