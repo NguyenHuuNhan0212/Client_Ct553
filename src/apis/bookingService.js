@@ -15,6 +15,9 @@ const bookingApi = {
   },
   cancelBooking(bookingId) {
     return axiosClient.patch(`/bookings/${bookingId}`);
+  },
+  getAllServiceBookingsOfSupplier() {
+    return axiosClient.get('/bookings/supplier');
   }
 };
 export default bookingApi;

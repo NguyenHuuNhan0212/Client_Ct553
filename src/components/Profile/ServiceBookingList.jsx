@@ -1,64 +1,109 @@
-import { Card, Table, Tag } from 'antd';
+import { Card, Table, Tag, Typography } from 'antd';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllForSupplier } from '../../redux/slices/bookingSlice';
+import dayjs from 'dayjs';
+const { Title } = Typography;
+function BookingList() {
+  const dispatch = useDispatch();
+  const { bookingsOfSupplier } = useSelector((state) => state.booking);
 
-function RoomBookingList() {
-  // Dữ liệu mẫu (bạn thay bằng API thực tế)
-  const bookings = [
-    {
-      id: 101,
-      customer: 'Nguyễn Văn A',
-      roomType: 'Phòng đơn',
-      checkIn: '2025-09-18',
-      checkOut: '2025-09-20',
-      status: 'Đang xử lý'
-    },
-    {
-      id: 102,
-      customer: 'Trần Thị B',
-      roomType: 'Phòng đôi',
-      checkIn: '2025-09-15',
-      checkOut: '2025-09-17',
-      status: 'Đã xác nhận'
-    },
-    {
-      id: 103,
-      customer: 'Lê Văn C',
-      roomType: 'Phòng VIP',
-      checkIn: '2025-09-10',
-      checkOut: '2025-09-12',
-      status: 'Đã hủy'
+  const renderContent = (record) => {
+    if (
+      record.paymentMethod === 'offline' &&
+      record.paymentStatus === 'pending'
+    ) {
+      return <Tag color='red'>Chưa thanh toán</Tag>;
+    } else if (
+      record.paymentMethod === 'online' &&
+      record.paymentStatus === 'success' &&
+      record.status === 'confirmed'
+    ) {
+      return <Tag color='green'>Đã thanh toán</Tag>;
+    } else if (
+      record.paymentMethod === 'online' &&
+      record.paymentStatus === 'success' &&
+      record.status === 'paid'
+    ) {
+      return <Tag color='green'>Thanh toán một phần</Tag>;
+    } else if (record.paymentStatus === 'refunded') {
+      return <Tag color='cyan'>Đã hoàn tiền</Tag>;
+    } else {
+      return <Tag color='red'>Đã hủy</Tag>;
     }
-  ];
-
+  };
   const columns = [
-    { title: 'Mã đặt phòng', dataIndex: 'id', key: 'id' },
-    { title: 'Khách hàng', dataIndex: 'customer', key: 'customer' },
-    { title: 'Loại phòng', dataIndex: 'roomType', key: 'roomType' },
-    { title: 'Ngày nhận phòng', dataIndex: 'checkIn', key: 'checkIn' },
-    { title: 'Ngày trả phòng', dataIndex: 'checkOut', key: 'checkOut' },
+    { title: 'Địa điểm', dataIndex: ['placeId', 'name'], key: 'placeName' },
+    { title: 'Khách hàng', dataIndex: ['userId', 'fullName'], key: 'customer' },
     {
-      title: 'Trạng thái',
-      dataIndex: 'status',
+      title: 'Loại đơn đặt',
+      key: 'bookingType',
+      render: (record) => {
+        if (!record.bookingDetails || record.bookingDetails.length === 0)
+          return 'Không có dữ liệu';
+
+        return (
+          <>
+            {record.bookingDetails.map((item, index) => {
+              let type = '';
+              if (item.roomTypeId) type = 'Phòng';
+              if (item.serviceId) type = 'Dịch vụ';
+
+              return (
+                <div key={index}>
+                  <strong>
+                    {type}:{' '}
+                    {item.serviceId ? item.serviceName : item.roomTypeName}
+                  </strong>{' '}
+                  — SL: {item.quantity} — Giá:{' '}
+                  {item.priceAtBooking.toLocaleString()}₫
+                </div>
+              );
+            })}
+          </>
+        );
+      }
+    },
+    {
+      title: 'Ngày đặt',
+      dataIndex: 'createdAt',
+      key: 'bookingDate',
+      render: (createdAt) => dayjs(createdAt).format('DD-MM-YYYY')
+    },
+    {
+      title: 'Ngày check in',
+      dataIndex: 'checkInDate',
+      key: 'checkIn',
+      render: (checkInDate) => dayjs(checkInDate).format('DD-MM-YYYY')
+    },
+    {
+      title: 'Trạng thái thanh toán',
       key: 'status',
-      render: (status) => {
-        let color = 'blue';
-        if (status === 'Đã xác nhận') color = 'green';
-        else if (status === 'Đã hủy') color = 'red';
-        else if (status === 'Đang xử lý') color = 'orange';
-        return <Tag color={color}>{status}</Tag>;
+      render: (record) => {
+        return renderContent(record);
       }
     }
   ];
-
+  useEffect(() => {
+    dispatch(getAllForSupplier());
+  }, [dispatch]);
   return (
-    <Card variant='borderless' style={{ borderRadius: 10, padding: 20 }}>
+    <Card
+      variant='borderless'
+      style={{ borderRadius: 10, padding: 20 }}
+      title={
+        <Title level={1} style={{ textAlign: 'center' }}>
+          Danh sách đặt dịch vụ
+        </Title>
+      }
+    >
       <Table
-        dataSource={bookings}
-        rowKey='id'
+        dataSource={bookingsOfSupplier}
         columns={columns}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 7 }}
       />
     </Card>
   );
 }
 
-export default RoomBookingList;
+export default BookingList;

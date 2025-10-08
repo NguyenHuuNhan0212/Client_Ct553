@@ -35,11 +35,24 @@ export const getBookingDetail = createAsyncThunk(
     }
   }
 );
+
+export const getAllForSupplier = createAsyncThunk(
+  'booking/getAllForSupplier',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await bookingApi.getAllServiceBookingsOfSupplier();
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
 const bookingSlice = createSlice({
   name: 'booking',
   initialState: {
     currentBooking: null,
     bookings: [],
+    bookingsOfSupplier: [],
     loading: false,
     error: null
   },
@@ -78,6 +91,17 @@ const bookingSlice = createSlice({
       .addCase(getBookingDetail.rejected, (state) => {
         state.loading = false;
         state.currentBooking = null;
+      })
+      .addCase(getAllForSupplier.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAllForSupplier.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bookingsOfSupplier = action.payload.bookings;
+      })
+      .addCase(getAllForSupplier.rejected, (state) => {
+        state.loading = false;
+        state.bookingsOfSupplier = [];
       });
   }
 });

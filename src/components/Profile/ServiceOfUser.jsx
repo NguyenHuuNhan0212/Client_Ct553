@@ -92,7 +92,6 @@ function ServiceProvide() {
   useEffect(() => {
     dispatch(getAllPlaceOfUser()).unwrap();
   }, [dispatch]);
-  console.log(filteredServices);
   return (
     <Card
       variant='borderless'

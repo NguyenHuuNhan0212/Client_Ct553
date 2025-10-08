@@ -14,7 +14,7 @@ import Info from '../../components/Profile/Info';
 import Booking from '../../components/Profile/Booking';
 import ItineraryComponent from '../../components/Profile/Itinerary';
 import ServiceProvide from '../../components/Profile/ServiceOfUser';
-import ServiceBookingList from '../../components/Profile/ServiceBookingList';
+import BookingList from '../../components/Profile/ServiceBookingList';
 import Header from '../../components/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './style.module.css';
@@ -48,7 +48,11 @@ export default function Profile() {
         icon: <AppstoreOutlined />,
         label: 'Quản lý địa điểm/dịch vụ'
       },
-      { key: '5', icon: <BarChartOutlined />, label: 'Thống kê dịch vụ' }
+      {
+        key: '5',
+        icon: <BarChartOutlined />,
+        label: 'Danh sách đặt dịch vụ'
+      }
     );
   }
   // Gia lap
@@ -126,7 +130,7 @@ export default function Profile() {
       case '4':
         return <ServiceProvide />;
       case '5':
-        return <ServiceBookingList />;
+        return <BookingList />;
       default:
         return null;
     }
