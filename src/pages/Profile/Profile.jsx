@@ -11,7 +11,6 @@ import {
 } from '@ant-design/icons';
 
 import Info from '../../components/Profile/Info';
-import Payment from '../../components/Profile/Payment';
 import Booking from '../../components/Profile/Booking';
 import ItineraryComponent from '../../components/Profile/Itinerary';
 import ServiceProvide from '../../components/Profile/ServiceOfUser';

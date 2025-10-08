@@ -1,5 +1,14 @@
-import React from 'react';
-import { Card, Input, DatePicker, Button, Tag, Divider, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
+import {
+  Card,
+  Input,
+  DatePicker,
+  Button,
+  Tag,
+  Divider,
+  Space,
+  Select
+} from 'antd';
 import { EnvironmentOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
@@ -11,6 +20,19 @@ export default function ItineraryForm({
   handleDateChange,
   handleSave
 }) {
+  const [cities, setCities] = useState([]);
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const res = await fetch('https://provinces.open-api.vn/api/v2');
+        const data = await res.json();
+        setCities(data);
+      } catch (err) {
+        console.error('Lỗi khi load tỉnh thành:', err);
+      }
+    };
+    fetchCities();
+  }, []);
   return (
     <Card
       title='🗓️ Tạo lịch trình cá nhân'
@@ -28,12 +50,27 @@ export default function ItineraryForm({
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
-        <Input
+        {/* <Input
           placeholder='Điểm đến chính'
           prefix={<EnvironmentOutlined />}
           size='large'
           value={form.destination}
           onChange={(e) => setForm({ ...form, destination: e.target.value })}
+        /> */}
+        <Select
+          showSearch
+          placeholder='Chọn địa điểm'
+          filterOption={(input, option) =>
+            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+          }
+          options={cities.map((city) => ({
+            label: city.name,
+            value: city.name
+          }))}
+          size='large'
+          style={{ width: '100%' }}
+          value={form.destination || undefined}
+          onChange={(value) => setForm({ ...form, destination: value })}
         />
         <Input
           placeholder='Người tạo'

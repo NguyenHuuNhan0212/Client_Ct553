@@ -34,6 +34,9 @@ const placeApi = {
         'Content-Type': 'multipart/form-data'
       }
     });
+  },
+  getPlaceByAddress(data) {
+    return axiosClient.get(`/places/relative?address=${data.address}`);
   }
 };
 export default placeApi;

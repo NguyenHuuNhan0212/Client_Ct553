@@ -8,6 +8,7 @@ import ItineraryForm from './ItineraryForm';
 import DayActivities from './DayActivities';
 import PlaceList from './PlaceList';
 import { useNavigate } from 'react-router-dom';
+import { getPlacesByAddress } from '../../redux/slices/placeSlice';
 
 export default function CreateItineraryPro() {
   const [form, setForm] = useState(() => {
@@ -25,13 +26,8 @@ export default function CreateItineraryPro() {
     );
   });
   const navigate = useNavigate();
-  const [places, setPlaces] = useState([]);
   const dispatch = useDispatch();
-  const placeList = useSelector((state) => state.place.places);
-
-  useEffect(() => {
-    setPlaces(placeList || []);
-  }, [placeList]);
+  const { places } = useSelector((state) => state.place);
 
   // 🧮 Tính số ngày
   const handleDateChange = (dates) => {
@@ -51,13 +47,15 @@ export default function CreateItineraryPro() {
     });
   };
 
-  // ➕ Thêm hoạt động
   const addActivity = (dayIndex, place) => {
     const updated = [...form.details];
     updated[dayIndex].activities.push({
       placeId: place._id,
       placeName: place.name,
+      address: place.address,
       note: '',
+      image: place.images[0],
+      services: place.services || [],
       startTime: '',
       endTime: ''
     });
@@ -65,14 +63,12 @@ export default function CreateItineraryPro() {
     message.success(`Đã thêm ${place.name} vào Ngày ${dayIndex + 1}`);
   };
 
-  // ❌ Xóa hoạt động
   const removeActivity = (dayIndex, actIndex) => {
     const updated = [...form.details];
     updated[dayIndex].activities.splice(actIndex, 1);
     setForm({ ...form, details: updated });
   };
 
-  // 💾 Lưu lịch trình
   const handleSave = async () => {
     if (!form.title || !form.creatorName || !form.startDate || !form.endDate) {
       return message.error('Vui lòng nhập đầy đủ thông tin!');
@@ -108,11 +104,13 @@ export default function CreateItineraryPro() {
       message.error('Lỗi khi tạo lịch trình', err);
     }
   };
-  // 💾 Lưu form vào localStorage khi thay đổi
+  useEffect(() => {
+    dispatch(getPlacesByAddress({ address: form.destination }));
+  }, [dispatch, form.destination]);
   useEffect(() => {
     localStorage.setItem('itineraryForm', JSON.stringify(form));
   }, [form]);
-
+  console.log(form.destination);
   return (
     <div
       style={{

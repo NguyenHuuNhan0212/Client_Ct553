@@ -207,7 +207,7 @@ function HotelDetail() {
           <Paragraph>
             Giá chỉ từ:{' '}
             <b style={{ color: 'red', fontSize: '20px' }}>
-              {currentHotel?.minPricePerNight.toLocaleString() || 0} / đêm
+              {currentHotel?.minPricePerNight.toLocaleString() || 0}VNĐ / đêm
             </b>
           </Paragraph>
         </Col>

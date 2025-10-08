@@ -38,7 +38,7 @@ function ServiceOfPlace({ services, isHotel = false }) {
     key: String(index),
     label: (
       <span>
-        {s.name} - <b>{s.price.toLocaleString()}</b>
+        {s.name} - <b>{s.price.toLocaleString()}VNĐ</b>
       </span>
     ),
     children: (
