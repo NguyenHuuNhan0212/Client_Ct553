@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   Descriptions,
   message,
@@ -6,13 +7,18 @@ import {
   Space,
   Table,
   Tag,
+  Tooltip,
   Typography
 } from 'antd';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllForSupplier } from '../../redux/slices/bookingSlice';
 import dayjs from 'dayjs';
-import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  DeleteOutlined,
+  EyeOutlined
+} from '@ant-design/icons';
 import bookingApi from '../../apis/bookingService';
 const { Title, Text } = Typography;
 function BookingList() {
@@ -21,6 +27,8 @@ function BookingList() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenConfirmPaymentModal, setIsOpenConfirmPaymentModal] =
+    useState(false);
   const renderContent = (record) => {
     if (
       record.paymentMethod === 'offline' &&
@@ -34,11 +42,17 @@ function BookingList() {
     ) {
       return <Tag color='green'>Đã thanh toán</Tag>;
     } else if (
+      record.paymentMethod === 'offline' &&
+      record.paymentStatus === 'success' &&
+      record.status === 'confirmed'
+    ) {
+      return <Tag color='green'>Đã thanh toán</Tag>;
+    } else if (
       record.paymentMethod === 'online' &&
       record.paymentStatus === 'success' &&
       record.status === 'paid'
     ) {
-      return <Tag color='green'>Thanh toán một phần</Tag>;
+      return <Tag color='blue'>Thanh toán một phần</Tag>;
     } else if (record.paymentStatus === 'refunded') {
       return <Tag color='cyan'>Đã hủy và hoàn tiền</Tag>;
     } else {
@@ -54,7 +68,24 @@ function BookingList() {
     setSelectedBooking(record);
     setIsOpenDeleteModal(true);
   };
-
+  const handleShowModalConfirmPayment = (record) => {
+    setIsOpenConfirmPaymentModal(true);
+    setSelectedBooking(record);
+  };
+  const handleConfirmPayment = async () => {
+    if (!selectedBooking) {
+      return;
+    }
+    try {
+      await bookingApi.confirmPayment(selectedBooking._id);
+      await dispatch(getAllForSupplier()).unwrap();
+      setIsOpenConfirmPaymentModal(false);
+      message.success('Cập nhật thanh toán thành công');
+    } catch (err) {
+      setIsOpenConfirmPaymentModal(false);
+      message.error(err.response?.data);
+    }
+  };
   const handleRemovePlace = async () => {
     if (!selectedBooking) return;
     try {
@@ -133,20 +164,36 @@ function BookingList() {
       }
     },
     {
-      title: 'Hành động',
+      title: 'Thao tác',
       align: 'center',
       key: 'status',
       render: (_, record) => (
         <Space size='large' style={{ fontSize: 20 }}>
-          <EyeOutlined
-            style={{ color: 'blue', cursor: 'pointer' }}
-            onClick={() => handleShowModal(record)}
-          />
-          {record.isDeleted && (
-            <DeleteOutlined
-              style={{ color: '#ff4d4f', cursor: 'pointer' }}
-              onClick={() => handleShowModalDelete(record)}
+          <Tooltip title={'Xem chi tiết đơn đặt'}>
+            <EyeOutlined
+              style={{ color: 'blue', cursor: 'pointer' }}
+              onClick={() => handleShowModal(record)}
             />
+          </Tooltip>
+
+          {record.isDeleted && (
+            <Tooltip title={'Xóa đơn đặt'}>
+              <DeleteOutlined
+                style={{ color: '#ff4d4f', cursor: 'pointer' }}
+                onClick={() => handleShowModalDelete(record)}
+              />
+            </Tooltip>
+          )}
+          {Number(record.totalPrice) !== Number(record.paymentAmount) && (
+            <Tooltip title={'Xác nhận đã thu tiền đầy đủ'}>
+              <Button
+                color='cyan'
+                variant='filled'
+                onClick={() => handleShowModalConfirmPayment(record)}
+              >
+                <CheckCircleOutlined /> Đã thu tiền
+              </Button>
+            </Tooltip>
           )}
         </Space>
       )
@@ -276,21 +323,16 @@ function BookingList() {
                 label='Số tiền đã thanh toán'
                 style={{ color: '#52c41a', fontWeight: 700 }}
               >
-                {selectedBooking.paymentMethod !== 'online'
-                  ? 0
-                  : selectedBooking?.paymentAmount.toLocaleString()}{' '}
-                VNĐ
+                {selectedBooking?.paymentAmount.toLocaleString()} VNĐ
               </Descriptions.Item>
               <Descriptions.Item
                 label='Số tiền cần thanh toán thêm'
                 style={{ color: '#faad14', fontWeight: 700 }}
               >
-                {selectedBooking.paymentMethod !== 'online'
-                  ? selectedBooking?.totalPrice.toLocaleString()
-                  : (
-                      Number(selectedBooking?.totalPrice) -
-                      Number(selectedBooking?.paymentAmount)
-                    ).toLocaleString()}{' '}
+                {(
+                  Number(selectedBooking?.totalPrice) -
+                  Number(selectedBooking?.paymentAmount)
+                ).toLocaleString()}{' '}
                 VNĐ
               </Descriptions.Item>
             </Descriptions>
@@ -303,8 +345,24 @@ function BookingList() {
         open={isOpenDeleteModal}
         onOk={handleRemovePlace}
         onCancel={() => setIsOpenDeleteModal(false)}
+        okText={'Xác nhận xóa'}
+        cancelText={'Hủy'}
       >
         <p>Bạn chắc chắn muốn xóa đơn đặt này!!!</p>
+      </Modal>
+
+      <Modal
+        title='Xác nhận thanh toán đầy đủ'
+        open={isOpenConfirmPaymentModal}
+        onOk={handleConfirmPayment}
+        onCancel={() => setIsOpenConfirmPaymentModal(false)}
+        okText={'Xác nhận đã thanh toán đủ'}
+        cancelText={'Hủy'}
+      >
+        <p>
+          Bạn có chắc chắn muốn xác nhận đã thu tiền đầy đủ cho đơn đặt này
+          không?
+        </p>
       </Modal>
     </>
   );

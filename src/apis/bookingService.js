@@ -21,6 +21,9 @@ const bookingApi = {
   },
   deleteBookingForSupplier(bookingId) {
     return axiosClient.delete(`/bookings/supplier/${bookingId}`);
+  },
+  confirmPayment(bookingId) {
+    return axiosClient.patch(`bookings/confirm-payment/${bookingId}`);
   }
 };
 export default bookingApi;

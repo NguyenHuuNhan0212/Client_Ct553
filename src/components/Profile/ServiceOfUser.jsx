@@ -6,7 +6,8 @@ import {
   Typography,
   Space,
   Modal,
-  message
+  message,
+  Tooltip
 } from 'antd';
 import {
   DeleteOutlined,
@@ -196,18 +197,24 @@ function ServiceProvide() {
             align: 'center',
             render: (_, record) => (
               <Space size='large' style={{ fontSize: 20 }}>
-                <EyeOutlined
-                  style={{ color: 'blue', cursor: 'pointer' }}
-                  onClick={() => handleClickSeeDetail(record)}
-                />
-                <EditOutlined
-                  style={{ color: '#ebca48ff', cursor: 'pointer' }}
-                  onClick={() => handleEdit(record)}
-                />
-                <DeleteOutlined
-                  style={{ color: 'red', cursor: 'pointer' }}
-                  onClick={() => showModal(record)}
-                />
+                <Tooltip title={'Xem chi tiết địa điểm'}>
+                  <EyeOutlined
+                    style={{ color: 'blue', cursor: 'pointer' }}
+                    onClick={() => handleClickSeeDetail(record)}
+                  />
+                </Tooltip>
+                <Tooltip title={'Chỉnh sửa địa điểm'}>
+                  <EditOutlined
+                    style={{ color: '#ebca48ff', cursor: 'pointer' }}
+                    onClick={() => handleEdit(record)}
+                  />
+                </Tooltip>
+                <Tooltip title={'Xóa địa điểm'}>
+                  <DeleteOutlined
+                    style={{ color: 'red', cursor: 'pointer' }}
+                    onClick={() => showModal(record)}
+                  />
+                </Tooltip>
               </Space>
             )
           }
@@ -240,6 +247,8 @@ function ServiceProvide() {
         open={open}
         onOk={handleRemovePlace}
         onCancel={handleCancel}
+        okText={'Xác nhận xóa'}
+        cancelText={'Hủy'}
       >
         <p>
           {selectedPlace
@@ -253,7 +262,7 @@ function ServiceProvide() {
         open={openEdit}
         onCancel={handleCloseEdit}
         footer={null}
-        width={800} // rộng hơn để form đẹp
+        width={800}
       >
         {editingPlace && (
           <FormUpdatePlace

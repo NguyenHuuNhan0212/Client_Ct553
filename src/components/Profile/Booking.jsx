@@ -8,7 +8,8 @@ import {
   List,
   Divider,
   Space,
-  message
+  message,
+  Tooltip
 } from 'antd';
 import {
   CheckCircleOutlined,
@@ -24,6 +25,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getBookingDetail, getBookings } from '../../redux/slices/bookingSlice';
 import bookingApi from '../../apis/bookingService';
 import CancelPolicy from './BookingComponents/CancelPolicy';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 
@@ -90,7 +92,7 @@ function Booking() {
       dataIndex: 'createdAt',
       render: (value) => {
         const date = new Date(value);
-        return date.toLocaleDateString('vi-VN');
+        return dayjs(date).format('HH:mm:ss DD-MM-YYYY');
       }
     },
     {
@@ -123,26 +125,33 @@ function Booking() {
       render: (val) => val?.toLocaleString() || '—'
     },
     {
-      title: 'Hành động',
+      title: 'Thao tác',
       align: 'center',
       render: (_, record) => (
         <Space size='large' style={{ fontSize: 20 }}>
-          <EyeOutlined
-            style={{ color: 'blue', cursor: 'pointer' }}
-            onClick={() => showDetail(record)}
-          />
-          {record.status !== 'cancelled' && (
-            <CloseCircleOutlined
-              style={{ color: 'red', cursor: 'pointer' }}
-              onClick={() => showModalCancel(record)}
+          <Tooltip title={'Xem chi tiết đơn đặt'}>
+            <EyeOutlined
+              style={{ color: 'blue', cursor: 'pointer' }}
+              onClick={() => showDetail(record)}
             />
+          </Tooltip>
+
+          {record.status !== 'cancelled' && (
+            <Tooltip title={'Hủy đơn đặt'}>
+              <CloseCircleOutlined
+                style={{ color: 'red', cursor: 'pointer' }}
+                onClick={() => showModalCancel(record)}
+              />
+            </Tooltip>
           )}
 
           {record.status === 'cancelled' && (
-            <DeleteOutlined
-              style={{ color: 'red', cursor: 'pointer' }}
-              onClick={() => showModalDelete(record)}
-            />
+            <Tooltip title={'Xóa đơn đặt'}>
+              <DeleteOutlined
+                style={{ color: 'red', cursor: 'pointer' }}
+                onClick={() => showModalDelete(record)}
+              />
+            </Tooltip>
           )}
         </Space>
       )
@@ -243,7 +252,7 @@ function Booking() {
                         : `Thanh toán 1 phần (${currentBooking.payment?.amount?.toLocaleString()} VNĐ)`}
                     </Text>
                   </Descriptions.Item>
-                  {currentBooking.payment?.paymentType === 'deposit' && (
+                  {
                     <Descriptions.Item label='Tiền cần trả sau'>
                       <Text strong style={{ fontSize: 16, color: '#ff4d4f' }}>
                         {(
@@ -253,14 +262,7 @@ function Booking() {
                         VNĐ
                       </Text>
                     </Descriptions.Item>
-                  )}
-                  {currentBooking.payment?.method === 'offline' && (
-                    <Descriptions.Item label='Tiền cần trả sau'>
-                      <Text strong style={{ fontSize: 16, color: '#ff4d4f' }}>
-                        {currentBooking.totalPrice.toLocaleString()} VNĐ
-                      </Text>
-                    </Descriptions.Item>
-                  )}
+                  }
                 </>
               )}
             </Descriptions>
@@ -338,6 +340,8 @@ function Booking() {
         open={openModalDelete}
         onOk={handleDelete}
         onCancel={() => setOpenModalDelete(false)}
+        okText={'Xác nhận xóa'}
+        cancelText={'Hủy'}
       >
         <p>Bạn chắc chắn muốn xóa đơn đặt?</p>
       </Modal>
@@ -347,16 +351,18 @@ function Booking() {
         open={openModalCancel}
         onOk={handleCancel}
         onCancel={() => setOpenModalCancel(false)}
+        okText={'Xác nhận hủy'}
+        cancelText={'Hủy'}
       >
         <p>
+          <Text style={{ color: 'red', fontWeight: 600 }}>
+            Bạn hãy đọc kỹ các chính sách hủy và hoàn tiền trước khi xác nhận{' '}
+          </Text>
+          <br />
           {selectedBooking
             ? `Bạn chắc chắn muốn hủy đơn đặt của ${selectedBooking?.placeName}? `
             : 'Bạn chắc chắn muốn hủy đơn đặt?'}
           <br />
-
-          <Text style={{ color: 'red', fontWeight: 600 }}>
-            Bạn hãy đọc kỹ các chính sách hủy và hoàn tiền trước khi xác nhận{' '}
-          </Text>
         </p>
       </Modal>
     </>

@@ -28,6 +28,7 @@ export default function CreateItineraryPro() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { places } = useSelector((state) => state.place);
+  const { token } = useSelector((state) => state.auth);
 
   // 🧮 Tính số ngày
   const handleDateChange = (dates) => {
@@ -85,21 +86,25 @@ export default function CreateItineraryPro() {
     );
 
     try {
-      dispatch(
-        createItinerary({
-          title: form.title,
-          destination: form.destination,
-          creatorName: form.creatorName,
-          startDate: form.startDate,
-          endDate: form.endDate,
-          numDays: form.numDays,
-          details
-        })
-      );
-
-      navigate('/profile?tab=2');
-      message.success('Tạo lịch trình thành công 🎉');
-      localStorage.removeItem('itineraryForm');
+      if (token) {
+        dispatch(
+          createItinerary({
+            title: form.title,
+            destination: form.destination,
+            creatorName: form.creatorName,
+            startDate: form.startDate,
+            endDate: form.endDate,
+            numDays: form.numDays,
+            details
+          })
+        );
+        navigate('/profile?tab=2');
+        message.success('Tạo lịch trình thành công 🎉');
+        localStorage.removeItem('itineraryForm');
+      } else {
+        message.success('Đăng nhập để tạo lịch trình.');
+        navigate('/login');
+      }
     } catch (err) {
       message.error('Lỗi khi tạo lịch trình', err);
     }
@@ -110,7 +115,6 @@ export default function CreateItineraryPro() {
   useEffect(() => {
     localStorage.setItem('itineraryForm', JSON.stringify(form));
   }, [form]);
-  console.log(form.destination);
   return (
     <div
       style={{

@@ -61,7 +61,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
     }
     form.validateFields().then((values) => {
       const roomDetail = {
-        roomTypeId: checkIn && checkOut ? room.romTypeId : room._id,
+        roomTypeId: checkIn && checkOut ? room.roomTypeId : room._id,
         quantity: values.quantity || 1,
         checkInDate: values.dateRange[0].toDate().toISOString(),
         checkOutDate: values.dateRange[1].toDate().toISOString(),
