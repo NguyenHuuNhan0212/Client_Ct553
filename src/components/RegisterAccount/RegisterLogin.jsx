@@ -18,7 +18,8 @@ export default function RegisterLogin() {
     const data = {
       fullName: values.username,
       email: values.email,
-      password: values.password
+      password: values.password,
+      phone: values.phone
     };
     try {
       const res = await authApi.register(data);
@@ -78,6 +79,23 @@ export default function RegisterLogin() {
           ]}
         >
           <Input prefix={<MailOutlined />} placeholder='Email' size='large' />
+        </Form.Item>
+        <Form.Item
+          name='phone'
+          label={
+            <span style={{ fontSize: '16px', fontWeight: '600' }}>
+              Số điện thoại
+            </span>
+          }
+          rules={[
+            { required: true, message: 'Vui lòng nhập số điện thoại' },
+            {
+              pattern: /^(0|\+84)(\d{9})$/,
+              message: 'Số điện thoại không hợp lệ (VD: 0349414282 )'
+            }
+          ]}
+        >
+          <Input placeholder='Nhập số điện thoại' maxLength={12} />
         </Form.Item>
 
         <Form.Item

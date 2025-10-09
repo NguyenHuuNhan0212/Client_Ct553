@@ -97,8 +97,8 @@ export default function CreateItineraryPro() {
         })
       );
 
-      message.success('Tạo lịch trình thành công 🎉');
       navigate('/profile?tab=2');
+      message.success('Tạo lịch trình thành công 🎉');
       localStorage.removeItem('itineraryForm');
     } catch (err) {
       message.error('Lỗi khi tạo lịch trình', err);

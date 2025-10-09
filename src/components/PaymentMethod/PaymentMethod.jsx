@@ -29,7 +29,7 @@ function PaymentMethodSelect({ value, onChange }) {
         <Space align='start' direction='vertical'>
           <Space>
             <CreditCardOutlined style={{ color: '#faad14', fontSize: 18 }} />
-            <Text strong>Thanh toán một phần (30%)</Text>
+            <Text strong>Thanh toán một phần (30%) (Thanh toán qua VNPay)</Text>
             <Tag color='orange'>Khuyến khích</Tag>
           </Space>
           <Text type='secondary'>
@@ -44,7 +44,7 @@ function PaymentMethodSelect({ value, onChange }) {
         <Space align='start' direction='vertical'>
           <Space>
             <DollarCircleOutlined style={{ color: '#52c41a', fontSize: 18 }} />
-            <Text strong>Thanh toán toàn bộ</Text>
+            <Text strong>Thanh toán toàn bộ (Thanh toán qua VNPay)</Text>
           </Space>
           <Text type='secondary'>
             Thanh toán trước toàn bộ giúp xác nhận đơn hàng ngay lập tức.

@@ -1,19 +1,32 @@
-import { Card, Table, Tag, Typography } from 'antd';
-import { useEffect } from 'react';
+import {
+  Card,
+  Descriptions,
+  message,
+  Modal,
+  Space,
+  Table,
+  Tag,
+  Typography
+} from 'antd';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllForSupplier } from '../../redux/slices/bookingSlice';
 import dayjs from 'dayjs';
-const { Title } = Typography;
+import { DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import bookingApi from '../../apis/bookingService';
+const { Title, Text } = Typography;
 function BookingList() {
   const dispatch = useDispatch();
   const { bookingsOfSupplier } = useSelector((state) => state.booking);
-
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const renderContent = (record) => {
     if (
       record.paymentMethod === 'offline' &&
       record.paymentStatus === 'pending'
     ) {
-      return <Tag color='red'>Chưa thanh toán</Tag>;
+      return <Tag color='gold'>Chưa thanh toán</Tag>;
     } else if (
       record.paymentMethod === 'online' &&
       record.paymentStatus === 'success' &&
@@ -27,16 +40,49 @@ function BookingList() {
     ) {
       return <Tag color='green'>Thanh toán một phần</Tag>;
     } else if (record.paymentStatus === 'refunded') {
-      return <Tag color='cyan'>Đã hoàn tiền</Tag>;
+      return <Tag color='cyan'>Đã hủy và hoàn tiền</Tag>;
     } else {
       return <Tag color='red'>Đã hủy</Tag>;
     }
   };
+
+  const handleShowModal = (record) => {
+    setIsOpenModal(true);
+    setSelectedBooking(record);
+  };
+  const handleShowModalDelete = (record) => {
+    setSelectedBooking(record);
+    setIsOpenDeleteModal(true);
+  };
+
+  const handleRemovePlace = async () => {
+    if (!selectedBooking) return;
+    try {
+      await bookingApi.deleteBookingForSupplier(selectedBooking._id);
+      await dispatch(getAllForSupplier()).unwrap();
+      message.success('Đã xóa đơn đặt thành công');
+      setIsOpenDeleteModal(false);
+    } catch (err) {
+      setIsOpenDeleteModal(false);
+      message.error(err.response?.data || 'Xóa đơn đặt thất bại');
+    }
+  };
   const columns = [
-    { title: 'Địa điểm', dataIndex: ['placeId', 'name'], key: 'placeName' },
-    { title: 'Khách hàng', dataIndex: ['userId', 'fullName'], key: 'customer' },
+    {
+      title: 'Địa điểm',
+      align: 'center',
+      dataIndex: ['placeId', 'name'],
+      key: 'placeName'
+    },
+    {
+      title: 'Khách hàng',
+      align: 'center',
+      dataIndex: ['userId', 'fullName'],
+      key: 'customer'
+    },
     {
       title: 'Loại đơn đặt',
+      align: 'center',
       key: 'bookingType',
       render: (record) => {
         if (!record.bookingDetails || record.bookingDetails.length === 0)
@@ -50,13 +96,13 @@ function BookingList() {
               if (item.serviceId) type = 'Dịch vụ';
 
               return (
-                <div key={index}>
+                <div key={index} style={{ textAlign: 'left' }}>
                   <strong>
                     {type}:{' '}
                     {item.serviceId ? item.serviceName : item.roomTypeName}
                   </strong>{' '}
                   — SL: {item.quantity} — Giá:{' '}
-                  {item.priceAtBooking.toLocaleString()}₫
+                  {item.priceAtBooking.toLocaleString()} VNĐ
                 </div>
               );
             })}
@@ -65,44 +111,202 @@ function BookingList() {
       }
     },
     {
-      title: 'Ngày đặt',
+      title: `Ngày đặt dịch vụ  `,
+      align: 'center',
       dataIndex: 'createdAt',
       key: 'bookingDate',
       render: (createdAt) => dayjs(createdAt).format('DD-MM-YYYY')
     },
     {
       title: 'Ngày check in',
+      align: 'center',
       dataIndex: 'checkInDate',
       key: 'checkIn',
       render: (checkInDate) => dayjs(checkInDate).format('DD-MM-YYYY')
     },
     {
       title: 'Trạng thái thanh toán',
+      align: 'center',
       key: 'status',
       render: (record) => {
         return renderContent(record);
       }
+    },
+    {
+      title: 'Hành động',
+      align: 'center',
+      key: 'status',
+      render: (_, record) => (
+        <Space size='large' style={{ fontSize: 20 }}>
+          <EyeOutlined
+            style={{ color: 'blue', cursor: 'pointer' }}
+            onClick={() => handleShowModal(record)}
+          />
+          {record.isDeleted && (
+            <DeleteOutlined
+              style={{ color: '#ff4d4f', cursor: 'pointer' }}
+              onClick={() => handleShowModalDelete(record)}
+            />
+          )}
+        </Space>
+      )
     }
   ];
   useEffect(() => {
     dispatch(getAllForSupplier());
   }, [dispatch]);
   return (
-    <Card
-      variant='borderless'
-      style={{ borderRadius: 10, padding: 20 }}
-      title={
-        <Title level={1} style={{ textAlign: 'center' }}>
-          Danh sách đặt dịch vụ
-        </Title>
-      }
-    >
-      <Table
-        dataSource={bookingsOfSupplier}
-        columns={columns}
-        pagination={{ pageSize: 7 }}
-      />
-    </Card>
+    <>
+      <Card
+        variant='borderless'
+        style={{ borderRadius: 10, padding: 20 }}
+        title={
+          <Title level={1} style={{ textAlign: 'center' }}>
+            Danh sách đặt dịch vụ
+          </Title>
+        }
+      >
+        <Table
+          dataSource={bookingsOfSupplier}
+          rowKey='_id'
+          columns={columns}
+          pagination={{ pageSize: 5 }}
+        />
+      </Card>
+
+      <Modal
+        title={
+          <Title level={3} style={{ textAlign: 'center' }}>
+            Chi tiết đơn đặt dịch vụ
+          </Title>
+        }
+        open={isOpenModal}
+        onCancel={() => setIsOpenModal(false)}
+        footer={false}
+        width={800}
+      >
+        {selectedBooking && (
+          <>
+            <Descriptions title='Thông tin khách hàng' bordered column={1}>
+              <Descriptions.Item label='Họ tên'>
+                {selectedBooking?.userId?.fullName}
+              </Descriptions.Item>
+              <Descriptions.Item label='Email'>
+                {selectedBooking?.userId?.email}
+              </Descriptions.Item>
+              <Descriptions.Item label='SĐT'>
+                {selectedBooking?.userId?.phone || '—'}
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Descriptions
+              title='Thông tin đơn đặt'
+              bordered
+              column={1}
+              style={{ marginTop: 20 }}
+            >
+              <Descriptions.Item label='Địa điểm'>
+                {selectedBooking?.placeId?.name}
+              </Descriptions.Item>
+              <Descriptions.Item label='Ngày đặt'>
+                {dayjs(selectedBooking?.createdAt).format('DD-MM-YYYY')}
+              </Descriptions.Item>
+              <Descriptions.Item label='Ngày check-in'>
+                {dayjs(selectedBooking?.checkInDate).format('DD-MM-YYYY')}
+              </Descriptions.Item>
+              <Descriptions.Item label='Trạng thái'>
+                {renderContent(selectedBooking)}
+              </Descriptions.Item>
+              <Descriptions.Item label='Phương thức thanh toán'>
+                {selectedBooking?.paymentMethod === 'online' ? (
+                  <span style={{ color: 'blueviolet', fontWeight: 500 }}>
+                    Online
+                  </span>
+                ) : (
+                  <span style={{ color: 'blueviolet', fontWeight: 500 }}>
+                    Tại chỗ
+                  </span>
+                )}
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Table
+              style={{ marginTop: 20 }}
+              rowKey={
+                selectedBooking?.bookingDetails?.serviceId ||
+                selectedBooking?.bookingDetails?.roomTypeId
+              }
+              dataSource={selectedBooking?.bookingDetails || []}
+              pagination={false}
+              size='small'
+              columns={[
+                {
+                  title: 'Loại',
+                  key: 'type',
+                  render: (item) => (item.serviceId ? 'Dịch vụ' : 'Phòng')
+                },
+                {
+                  title: 'Tên',
+                  key: 'name',
+                  render: (item) =>
+                    item.serviceId ? item.serviceName : item.roomTypeName
+                },
+                { title: 'Số lượng', dataIndex: 'quantity', align: 'center' },
+                {
+                  title: 'Giá (VNĐ)',
+                  dataIndex: 'priceAtBooking',
+                  render: (price) => `${price.toLocaleString()} VNĐ`
+                }
+              ]}
+            />
+
+            <Descriptions
+              title='Thông tin thanh toán'
+              bordered
+              column={1}
+              style={{ marginTop: 20 }}
+            >
+              <Descriptions.Item
+                label='Tổng tiền'
+                style={{ color: '#ff4d4f', fontWeight: 700 }}
+              >
+                {selectedBooking?.totalPrice.toLocaleString()} VNĐ
+              </Descriptions.Item>
+              <Descriptions.Item
+                label='Số tiền đã thanh toán'
+                style={{ color: '#52c41a', fontWeight: 700 }}
+              >
+                {selectedBooking.paymentMethod !== 'online'
+                  ? 0
+                  : selectedBooking?.paymentAmount.toLocaleString()}{' '}
+                VNĐ
+              </Descriptions.Item>
+              <Descriptions.Item
+                label='Số tiền cần thanh toán thêm'
+                style={{ color: '#faad14', fontWeight: 700 }}
+              >
+                {selectedBooking.paymentMethod !== 'online'
+                  ? selectedBooking?.totalPrice.toLocaleString()
+                  : (
+                      Number(selectedBooking?.totalPrice) -
+                      Number(selectedBooking?.paymentAmount)
+                    ).toLocaleString()}{' '}
+                VNĐ
+              </Descriptions.Item>
+            </Descriptions>
+          </>
+        )}
+      </Modal>
+
+      <Modal
+        title='Xác nhận xóa đơn đặt'
+        open={isOpenDeleteModal}
+        onOk={handleRemovePlace}
+        onCancel={() => setIsOpenDeleteModal(false)}
+      >
+        <p>Bạn chắc chắn muốn xóa đơn đặt này!!!</p>
+      </Modal>
+    </>
   );
 }
 

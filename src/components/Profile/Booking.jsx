@@ -352,6 +352,11 @@ function Booking() {
           {selectedBooking
             ? `Bạn chắc chắn muốn hủy đơn đặt của ${selectedBooking?.placeName}? `
             : 'Bạn chắc chắn muốn hủy đơn đặt?'}
+          <br />
+
+          <Text style={{ color: 'red', fontWeight: 600 }}>
+            Bạn hãy đọc kỹ các chính sách hủy và hoàn tiền trước khi xác nhận{' '}
+          </Text>
         </p>
       </Modal>
     </>

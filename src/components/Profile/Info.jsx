@@ -92,6 +92,10 @@ function Info({ user }) {
           Email: {user?.email}
         </Text>
         <Text className={text}>
+          <PhoneOutlined style={{ marginRight: 8, color: '#faad14' }} />
+          Số điện thoại: {user?.phone}
+        </Text>
+        <Text className={text}>
           <IdcardOutlined style={{ marginRight: 8, color: '#52c41a' }} />
           Vai trò: {user?.role === 'user' ? 'Người dùng' : 'Nhà cung cấp'}
         </Text>
@@ -101,10 +105,7 @@ function Info({ user }) {
             <Divider style={{ borderColor: '#7cb305' }}>
               Thông tin nhà cung cấp
             </Divider>
-            <Text className={text}>
-              <PhoneOutlined style={{ marginRight: 8, color: '#faad14' }} />
-              Số điện thoại: {user?.phone}
-            </Text>
+
             <Text className={text}>
               <CreditCardOutlined
                 style={{ marginRight: 8, color: '#13c2c2' }}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, Typography, Card } from 'antd';
-import { LockOutlined, MailOutlined } from '@ant-design/icons';
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../redux/slices/authSlice';
@@ -39,18 +39,22 @@ export default function Login() {
         requiredMark={false}
       >
         <Form.Item
-          name='email'
+          name='identify'
           label={
-            <span style={{ fontSize: '16px', fontWeight: '600' }}>Email</span>
+            <span style={{ fontSize: '16px', fontWeight: '600' }}>
+              Email hoặc Số điện thoại
+            </span>
           }
           rules={[
-            { type: 'email', message: 'Email không hợp lệ!' },
-            { required: true, message: 'Vui lòng nhập email!' }
+            {
+              required: true,
+              message: 'Vui lòng nhập email! hoặc số điện thoại'
+            }
           ]}
         >
           <Input
-            prefix={<MailOutlined />}
-            placeholder='Nhập email'
+            prefix={<UserOutlined />}
+            placeholder='Nhập email hoặc số điện thoại'
             size='large'
           />
         </Form.Item>
