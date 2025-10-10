@@ -5,7 +5,7 @@ const routes = [
     component: lazy(() => import('../pages/HomePage/HomePage'))
   },
   {
-    path: '/hotel',
+    path: '/hotels',
     component: lazy(() => import('../pages/Hotel/HotelPage'))
   },
   {

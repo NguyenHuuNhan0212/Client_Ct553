@@ -37,6 +37,12 @@ const placeApi = {
   },
   getPlaceByAddress(data) {
     return axiosClient.get(`/places/relative?address=${data.address}`);
+  },
+  getPlacesPopularByType(type) {
+    return axiosClient.get(`/places?type=${type}`);
+  },
+  getPlacesPopular() {
+    return axiosClient.get(`/places/popular`);
   }
 };
 export default placeApi;

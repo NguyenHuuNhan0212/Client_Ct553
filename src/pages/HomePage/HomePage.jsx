@@ -1,22 +1,27 @@
-import { Layout } from 'antd';
+import { Divider, Layout, Typography } from 'antd';
 import Header from '../../components/Header/Header';
 import Banner from '../../components/Banner/Banner';
 import ServiceList from '../../components/Service/ServiceList';
 import Footer from '../../components/Footer/Footer';
 import Chatbot from '../../components/Chatbot/Chatbot';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { getAllPlace } from '../../redux/slices/placeSlice';
-import { resetStateBooking } from '../../redux/slices/hotelSlice';
+import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { resetStateSearchHotel } from '../../redux/slices/hotelSlice';
+import ExploreCategories from '../../components/ExploreCategories/ExploreCategories';
+import placeApi from '../../apis/placeService';
 
 const { Content } = Layout;
-
+const { Title } = Typography;
 export default function Home() {
   const dispatch = useDispatch();
-  const { places } = useSelector((state) => state.place);
+  const [placesPopular, setPlacesPopular] = useState([]);
   useEffect(() => {
-    dispatch(resetStateBooking());
-    dispatch(getAllPlace());
+    const fetchData = async () => {
+      const res = await placeApi.getPlacesPopular();
+      setPlacesPopular(res);
+    };
+    fetchData();
+    dispatch(resetStateSearchHotel());
     localStorage.removeItem('itineraryForm');
   }, []); //eslint-disable-line
   return (
@@ -25,10 +30,10 @@ export default function Home() {
       <Banner />
       <Content style={{ padding: '0 50px' }}>
         <div style={{ margin: '40px 0' }}>
-          <h2 style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
-            Địa điểm nổi bật
-          </h2>
-          <ServiceList places={places} />
+          <ExploreCategories />
+          <Divider style={{ fontSize: 30 }}>Điểm đến nổi bật</Divider>
+
+          <ServiceList places={placesPopular} />
         </div>
       </Content>
       <Footer />

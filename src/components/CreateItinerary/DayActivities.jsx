@@ -57,7 +57,7 @@ export default function DayActivities({ form, setForm, removeActivity }) {
                     overflow: 'hidden',
                     background: '#fafafa'
                   }}
-                  bodyStyle={{ padding: 12 }}
+                  styles={{ body: { padding: 12 } }}
                 >
                   <div
                     style={{

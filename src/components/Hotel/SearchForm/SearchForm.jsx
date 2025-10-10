@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import styles from '../style.module.css';
 import { useDispatch } from 'react-redux';
-import { setStateBooking } from '../../../redux/slices/hotelSlice';
+import { setStateSearchHotel } from '../../../redux/slices/hotelSlice';
 import { motion } from 'framer-motion'; // eslint-disable-line
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
@@ -57,7 +57,7 @@ export default function SearchForm({ onSearch }) {
       checkOut: checkOut ? checkOut.format('YYYY-MM-DD') : null, // string OK
       guests: formData.guests
     };
-    dispatch(setStateBooking(data));
+    dispatch(setStateSearchHotel(data));
     if (onSearch) onSearch(data);
   };
 

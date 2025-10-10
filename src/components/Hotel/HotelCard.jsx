@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 export default function HotelCard({ hotel }) {
   const { checkIn, checkOut } = useSelector((state) => state.hotel);
   const firstImage =
-    hotel.images && hotel.images.length > 0
+    hotel?.images && hotel?.images.length > 0
       ? `http://localhost:3000/${hotel.images[0]}`
       : 'https://via.placeholder.com/400x250?text=No+Image';
 
@@ -15,7 +15,7 @@ export default function HotelCard({ hotel }) {
       hoverable
       cover={
         <img
-          alt={hotel.name}
+          alt={hotel?.name}
           src={firstImage}
           style={{
             height: 220,
@@ -43,7 +43,7 @@ export default function HotelCard({ hotel }) {
         }}
       >
         <div>
-          <div style={{ fontSize: 18, fontWeight: 600 }}>{hotel.name}</div>
+          <div style={{ fontSize: 18, fontWeight: 600 }}>{hotel?.name}</div>
           <div
             style={{
               color: '#555',
@@ -53,7 +53,7 @@ export default function HotelCard({ hotel }) {
               overflow: 'hidden'
             }}
           >
-            <EnvironmentOutlined /> {hotel.address}
+            <EnvironmentOutlined /> {hotel?.address}
           </div>
 
           <div
@@ -65,24 +65,25 @@ export default function HotelCard({ hotel }) {
             }}
           >
             <Tag color='green' style={{ fontSize: 14 }}>
-              <DollarOutlined /> {hotel.minPricePerNight.toLocaleString()}{' '}
+              <DollarOutlined /> {hotel?.minPricePerNight?.toLocaleString()}{' '}
               VNĐ/đêm
             </Tag>
             {checkIn && checkOut && (
               <span style={{ fontWeight: 600 }}>
-                Tổng: {hotel.minTotal.toLocaleString()}VNĐ ({hotel.nights} đêm)
+                Tổng: {hotel?.minTotal?.toLocaleString()}VNĐ ({hotel?.nights}{' '}
+                ngày)
               </span>
             )}
           </div>
 
           <div style={{ marginTop: 10, display: 'flex', gap: 10 }}>
             <Tag color='blue'>
-              {hotel.availableRoomTypesCount} loại phòng còn trống
+              {hotel?.availableRoomTypesCount} loại phòng còn trống
             </Tag>
           </div>
         </div>
 
-        <Link to={`/hotel/${hotel.hotelId}`}>
+        <Link to={`/hotel/${hotel?.hotelId}`}>
           <Button type='primary' block style={{ marginTop: 12 }}>
             Xem chi tiết
           </Button>

@@ -16,6 +16,7 @@ import { useEffect } from 'react';
 import { getInfoUser } from '../../redux/slices/userSlice';
 import { logout } from '../../redux/slices/authSlice';
 import { capitalizeName } from '../../utils/capitalize';
+import { setPlaceType } from '../../redux/slices/placeSlice';
 
 const { Header: AntHeader } = Layout;
 
@@ -42,9 +43,13 @@ export default function Header() {
       )
     },
     {
-      key: 'hotel',
+      key: 'hotels',
       label: (
-        <Link to='/hotel' style={{ fontSize: '16px', fontWeight: '600' }}>
+        <Link
+          to='/hotels'
+          style={{ fontSize: '16px', fontWeight: '600' }}
+          onClick={() => dispatch(setPlaceType({ type: 'hotel' }))}
+        >
           Khách sạn
         </Link>
       )
@@ -53,7 +58,7 @@ export default function Header() {
       key: 'itinerary',
       label: (
         <Link to='/itinerary' style={{ fontSize: '16px', fontWeight: '600' }}>
-          Tạo tour
+          Tạo lịch trình
         </Link>
       )
     },

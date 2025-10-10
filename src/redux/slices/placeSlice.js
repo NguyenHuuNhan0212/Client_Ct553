@@ -48,12 +48,20 @@ export const getPlacesByAddress = createAsyncThunk(
 const placeSlice = createSlice({
   name: 'place',
   initialState: {
+    type: null,
     placesOffUser: [],
     places: [],
     currentPlace: null,
     loading: false
   },
-  reducers: [],
+  reducers: {
+    setPlaceType: (state, action) => {
+      state.type = action.payload.type;
+    },
+    resetPlaceType: (state) => {
+      state.type = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllPlaceOfUser.pending, (state) => {
@@ -97,4 +105,5 @@ const placeSlice = createSlice({
       });
   }
 });
+export const { setPlaceType, resetPlaceType } = placeSlice.actions;
 export default placeSlice.reducer;

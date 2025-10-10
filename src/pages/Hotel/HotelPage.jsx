@@ -1,7 +1,6 @@
-import { Layout, Typography } from 'antd';
+import { Empty, Layout, Typography } from 'antd';
 import Header from '../../components/Header/Header';
 import SearchForm from '../../components/Hotel/SearchForm/SearchForm';
-import PopularDestinations from '../../components/Hotel/PopularDestinations/PopularDestinations';
 import Chatbot from '../../components/Chatbot/Chatbot';
 import Footer from '../../components/Footer/Footer';
 import { Content } from 'antd/es/layout/layout';
@@ -9,6 +8,9 @@ import styles from './style.module.css';
 import SearchResult from '../../components/Hotel/SearchResult/SearchResult';
 import { useDispatch, useSelector } from 'react-redux';
 import { searchHotels } from '../../redux/slices/hotelSlice';
+import { useEffect, useState } from 'react';
+import placeApi from '../../apis/placeService';
+import { resetPlaceType } from '../../redux/slices/placeSlice';
 const { Title } = Typography;
 
 function HotelPage() {
@@ -21,7 +23,9 @@ function HotelPage() {
     heroOverlay
   } = styles;
   const dispatch = useDispatch();
+  const [hotelsPopular, setHotelsPopular] = useState([]);
   const { searchResults, hasSearched } = useSelector((state) => state.hotel);
+  const { type } = useSelector((state) => state.place);
   const handleSearch = (data) => {
     const { location, checkIn, checkOut, guests } = data;
     // const [checkIn, checkOut] = dateRange;
@@ -34,7 +38,14 @@ function HotelPage() {
       })
     );
   };
-
+  useEffect(() => {
+    const fetchPlacesPopular = async () => {
+      const res = await placeApi.getPlacesPopularByType(type);
+      setHotelsPopular(res);
+    };
+    fetchPlacesPopular();
+    return () => dispatch(resetPlaceType());
+  }, [type, dispatch]);
   return (
     <Layout>
       <Header />
@@ -48,10 +59,12 @@ function HotelPage() {
           </div>
         </div>
 
-        {/* Điểm đến phổ biến */}
         <div className={popularDestinations}>
-          {hasSearched && <SearchResult hotels={searchResults} />}
-          <PopularDestinations />
+          {hasSearched ? (
+            <SearchResult hotels={searchResults} />
+          ) : (
+            <SearchResult hotels={hotelsPopular} isPopular />
+          )}
         </div>
       </Content>
       <Footer />

@@ -47,18 +47,19 @@ const hotelSlice = createSlice({
     loading: false
   },
   reducers: {
-    setStateBooking: (state, action) => {
+    setStateSearchHotel: (state, action) => {
       state.location = action.payload.location;
       state.checkIn = action.payload.checkIn;
       state.checkOut = action.payload.checkOut;
       state.guests = action.payload.guests;
     },
-    resetStateBooking: (state) => {
+    resetStateSearchHotel: (state) => {
       state.checkIn = null;
       state.checkOut = null;
       state.location = null;
       state.hasSearched = false;
       state.guests = 1;
+      state.searchResults = [];
     }
   },
   extraReducers: (builder) => {
@@ -96,5 +97,6 @@ const hotelSlice = createSlice({
       });
   }
 });
-export const { setStateBooking, resetStateBooking } = hotelSlice.actions;
+export const { setStateSearchHotel, resetStateSearchHotel } =
+  hotelSlice.actions;
 export default hotelSlice.reducer;

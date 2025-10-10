@@ -10,7 +10,11 @@ function HotelDetailPage() {
       <Layout>
         <Header />
         <Content
-          style={{ padding: '0 200px', marginTop: '65px', minHeight: '100vh' }}
+          style={{
+            padding: '0 200px 50px',
+            marginTop: '65px',
+            minHeight: '100vh'
+          }}
         >
           <HotelDetail />
         </Content>
