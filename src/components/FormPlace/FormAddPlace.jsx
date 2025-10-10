@@ -176,7 +176,7 @@ const FormAddPlace = () => {
   return (
     <Card className={container}>
       <Title level={2} style={{ textAlign: 'center' }}>
-        Thêm dịch vụ mới
+        Thêm địa điểm mới
       </Title>
       <Form form={form} layout='vertical' onFinish={onFinish}>
         <Tabs

@@ -50,16 +50,9 @@ export default function ItineraryForm({
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
-        {/* <Input
-          placeholder='Điểm đến chính'
-          prefix={<EnvironmentOutlined />}
-          size='large'
-          value={form.destination}
-          onChange={(e) => setForm({ ...form, destination: e.target.value })}
-        /> */}
         <Select
           showSearch
-          placeholder='Chọn địa điểm'
+          placeholder='Chọn địa điểm đến'
           filterOption={(input, option) =>
             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
           }

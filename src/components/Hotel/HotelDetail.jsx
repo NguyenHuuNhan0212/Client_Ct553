@@ -203,7 +203,9 @@ function HotelDetail() {
             Chủ địa điểm:{' '}
             {capitalizeName(currentHotel?.ownerInfo?.userId?.fullName)}
           </Paragraph>
-          <Paragraph>Liên hệ: {currentHotel?.ownerInfo?.phone}</Paragraph>
+          <Paragraph>
+            Liên hệ: {currentHotel?.ownerInfo?.userId?.phone}
+          </Paragraph>
           <Paragraph>
             Giá chỉ từ:{' '}
             <b style={{ color: 'red', fontSize: '20px' }}>

@@ -31,7 +31,7 @@ export default function HotelCard({ hotel }) {
         borderRadius: 12,
         overflow: 'hidden',
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        height: '100%' // ✅ Quan trọng để nó full theo Col
+        height: '100%'
       }}
     >
       <div

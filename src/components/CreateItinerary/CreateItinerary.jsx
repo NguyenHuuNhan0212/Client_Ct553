@@ -9,7 +9,7 @@ import DayActivities from './DayActivities';
 import PlaceList from './PlaceList';
 import { useNavigate } from 'react-router-dom';
 import { getPlacesByAddress } from '../../redux/slices/placeSlice';
-
+import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line
 export default function CreateItineraryPro() {
   const [form, setForm] = useState(() => {
     const saved = localStorage.getItem('itineraryForm');
@@ -116,34 +116,47 @@ export default function CreateItineraryPro() {
     localStorage.setItem('itineraryForm', JSON.stringify(form));
   }, [form]);
   return (
-    <div
-      style={{
-        padding: '24px 40px',
-        background: '#f7f9fb',
-        minHeight: '100vh',
-        marginTop: 65
-      }}
-    >
-      <Row gutter={10}>
-        <Col xs={24} lg={14}>
-          <ItineraryForm
-            form={form}
-            setForm={setForm}
-            handleDateChange={handleDateChange}
-            removeActivity={removeActivity}
-            handleSave={handleSave}
-          />
-          <DayActivities
-            form={form}
-            setForm={setForm}
-            removeActivity={removeActivity}
-          />
-        </Col>
+    <AnimatePresence mode='wait'>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }} // trạng thái ban đầu
+        animate={{ opacity: 1, y: 0 }} // animation khi xuất hiện
+        exit={{ opacity: 0, y: -10 }} // animation khi biến mất
+        transition={{ duration: 0.5 }} // tốc độ
+      >
+        <div
+          style={{
+            padding: '24px 40px',
+            background: '#f7f9fb',
+            minHeight: '100vh',
+            marginTop: 65
+          }}
+        >
+          <Row gutter={10}>
+            <Col xs={24} lg={14}>
+              <ItineraryForm
+                form={form}
+                setForm={setForm}
+                handleDateChange={handleDateChange}
+                removeActivity={removeActivity}
+                handleSave={handleSave}
+              />
+              <DayActivities
+                form={form}
+                setForm={setForm}
+                removeActivity={removeActivity}
+              />
+            </Col>
 
-        <Col xs={24} lg={10}>
-          <PlaceList form={form} places={places} addActivity={addActivity} />
-        </Col>
-      </Row>
-    </div>
+            <Col xs={24} lg={10}>
+              <PlaceList
+                form={form}
+                places={places}
+                addActivity={addActivity}
+              />
+            </Col>
+          </Row>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }

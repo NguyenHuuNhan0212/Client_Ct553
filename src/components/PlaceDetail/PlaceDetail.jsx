@@ -121,7 +121,7 @@ function PlaceDetail({ currentPlace }) {
             {capitalizeName(ownerInfo?.userId?.fullName) || 'Chưa cập nhật'}
           </Paragraph>
           <Paragraph style={{ fontSize: '16px' }}>
-            <b>Số điện thoại:</b> {ownerInfo?.phone || 'Chưa cập nhật'}
+            <b>Số điện thoại:</b> {ownerInfo?.userId?.phone || 'Chưa cập nhật'}
           </Paragraph>
         </Col>
       </Row>

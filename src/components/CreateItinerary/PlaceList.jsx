@@ -52,7 +52,14 @@ export default function PlaceList({ form, places = [], addActivity }) {
 
   return (
     <Card
-      title='📍 Danh sách địa điểm'
+      title={
+        <>
+          <Title level={2}>📍 Danh sách địa điểm</Title>
+          <Text disabled>
+            Bạn sẽ thấy danh sách địa điểm tương ứng khi bạn chọn địa điểm đến.
+          </Text>
+        </>
+      }
       style={{
         borderRadius: 16,
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',

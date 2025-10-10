@@ -98,7 +98,7 @@ function ServiceProvide() {
       variant='borderless'
       title={
         <Title level={1} style={{ textAlign: 'center' }}>
-          Dịch vụ của tôi
+          Địa điểm du lịch của tôi
         </Title>
       }
       style={{ borderRadius: 10, padding: 20 }}
@@ -163,15 +163,23 @@ function ServiceProvide() {
             dataIndex: 'isActive',
             align: 'center',
             render: (value, record) => (
-              <Button
-                type={value ? 'default' : 'primary'}
-                color={value ? 'danger' : ''}
-                variant={value ? 'solid' : ''}
-                size='small'
-                onClick={() => handleToggleStatus(record)}
+              <Tooltip
+                title={
+                  value
+                    ? 'Nhấn để cập nhật trạng thái ngừng hoạt động'
+                    : 'Nhấn để cập nhật trạng thái hoạt động trở lại'
+                }
               >
-                {value ? 'Ngưng' : 'Kích hoạt'}
-              </Button>
+                <Button
+                  type={value ? 'default' : 'primary'}
+                  color={value ? 'danger' : ''}
+                  variant={value ? 'solid' : ''}
+                  size='small'
+                  onClick={() => handleToggleStatus(record)}
+                >
+                  {value ? 'Ngưng' : 'Kích hoạt'}
+                </Button>
+              </Tooltip>
             )
           },
           {
@@ -236,10 +244,10 @@ function ServiceProvide() {
           icon={<PlusOutlined />}
           style={{ marginTop: 20 }}
         >
-          Thêm dịch vụ
+          Thêm địa điểm du lịch
         </Button>
         <div style={{ fontWeight: 'bold' }}>
-          Tổng số dịch vụ: {services?.length || 0}
+          Tổng số địa điểm: {services?.length || 0}
         </div>
       </div>
       <Modal

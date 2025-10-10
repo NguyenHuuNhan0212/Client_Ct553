@@ -53,7 +53,7 @@ export default function Header() {
       key: 'itinerary',
       label: (
         <Link to='/itinerary' style={{ fontSize: '16px', fontWeight: '600' }}>
-          Tạo lịch trình
+          Tạo tour
         </Link>
       )
     },
@@ -66,7 +66,7 @@ export default function Header() {
                 to='/add-place'
                 style={{ fontSize: '16px', fontWeight: '600' }}
               >
-                Thêm dịch vụ
+                Thêm địa điểm
               </Link>
             )
           }
