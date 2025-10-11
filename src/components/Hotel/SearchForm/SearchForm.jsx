@@ -102,7 +102,7 @@ export default function SearchForm({ onSearch }) {
           </Col>
           <Col xs={24} md={6}>
             <Title level={4} style={{ marginBottom: 10 }}>
-              Ngày dự kiến
+              Ngày dự kiến (tùy chọn)
             </Title>
             <RangePicker
               size='large'

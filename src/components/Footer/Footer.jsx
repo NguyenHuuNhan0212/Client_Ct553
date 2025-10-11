@@ -18,7 +18,7 @@ export default function Footer() {
     background: 'linear-gradient(135deg, #12479dff 0%, #5890daff 100%)',
     color: '#fff',
     padding: '50px 80px 20px',
-    textAlign: 'left',
+    textAlign: 'center',
     fontFamily: "'Segoe UI', sans-serif"
   };
 
@@ -78,6 +78,30 @@ export default function Footer() {
               onMouseOut={(e) => (e.target.style.color = '#d9e6ff')}
             >
               Khách sạn
+            </Link>
+            <Link
+              to={'/restaurants'}
+              style={linkStyle}
+              onMouseOver={(e) => (e.target.style.color = '#fff')}
+              onMouseOut={(e) => (e.target.style.color = '#d9e6ff')}
+            >
+              Nhà hàng & Quán ăn
+            </Link>
+            <Link
+              to={'/cafes'}
+              style={linkStyle}
+              onMouseOver={(e) => (e.target.style.color = '#fff')}
+              onMouseOut={(e) => (e.target.style.color = '#d9e6ff')}
+            >
+              Cafe & Chill
+            </Link>
+            <Link
+              to={'/touristSpots'}
+              style={linkStyle}
+              onMouseOver={(e) => (e.target.style.color = '#fff')}
+              onMouseOut={(e) => (e.target.style.color = '#d9e6ff')}
+            >
+              Địa điểm du lịch
             </Link>
           </Col>
 

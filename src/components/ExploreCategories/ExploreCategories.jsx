@@ -1,8 +1,8 @@
 import { Card, Row, Col, Typography, Divider } from 'antd';
 import {
   ArrowRightOutlined,
+  BankOutlined,
   CoffeeOutlined,
-  EnvironmentOutlined,
   HomeOutlined,
   ShopOutlined
 } from '@ant-design/icons';
@@ -29,7 +29,7 @@ export default function ExploreCategories() {
       color: '#e6f4ff'
     },
     {
-      key: 'cafe',
+      key: 'cafes',
       title: 'Quán Cafe',
       type: 'cafe',
       description: 'Khám phá những quán cafe có không gian độc đáo và ấm cúng.',
@@ -37,7 +37,7 @@ export default function ExploreCategories() {
       color: '#fff7e6'
     },
     {
-      key: 'restaurant',
+      key: 'restaurants',
       title: 'Nhà hàng',
       type: 'restaurant',
       description: 'Thưởng thức ẩm thực địa phương và món ăn đặc sản.',
@@ -45,11 +45,11 @@ export default function ExploreCategories() {
       color: '#f6ffed'
     },
     {
-      key: 'touristSpot',
+      key: 'touristSpots',
       title: 'Địa điểm du lịch',
       type: 'touristSpot',
       description: 'Khám phá cảnh đẹp và trải nghiệm địa phương thú vị.',
-      icon: <EnvironmentOutlined style={{ fontSize: 40, color: '#eb2f96' }} />,
+      icon: <BankOutlined style={{ fontSize: 40, color: '#eb2f96' }} />,
       color: '#fff0f6'
     }
   ];

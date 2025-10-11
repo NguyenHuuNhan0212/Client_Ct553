@@ -35,8 +35,10 @@ const placeApi = {
       }
     });
   },
-  getPlaceByAddress(data) {
-    return axiosClient.get(`/places/relative?address=${data.address}`);
+  getPlaceByAddressAndType(data) {
+    return axiosClient.get(
+      `/places/relative?address=${data.address}&type=${data.type}`
+    );
   },
   getPlacesPopularByType(type) {
     return axiosClient.get(`/places?type=${type}`);

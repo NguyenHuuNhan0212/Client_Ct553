@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { searchHotels } from '../../redux/slices/hotelSlice';
 import { useEffect, useState } from 'react';
 import placeApi from '../../apis/placeService';
-import { resetPlaceType } from '../../redux/slices/placeSlice';
 const { Title } = Typography;
 
 function HotelPage() {
@@ -44,7 +43,6 @@ function HotelPage() {
       setHotelsPopular(res);
     };
     fetchPlacesPopular();
-    return () => dispatch(resetPlaceType());
   }, [type, dispatch]);
   return (
     <Layout>

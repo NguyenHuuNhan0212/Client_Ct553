@@ -9,6 +9,18 @@ const routes = [
     component: lazy(() => import('../pages/Hotel/HotelPage'))
   },
   {
+    path: '/restaurants',
+    component: lazy(() => import('../pages/Restaurant/RestaurantPage'))
+  },
+  {
+    path: '/cafes',
+    component: lazy(() => import('../pages/Cafe/CafePage'))
+  },
+  {
+    path: '/touristSpots',
+    component: lazy(() => import('../pages/TouristSpot/TouristSpot'))
+  },
+  {
     path: 'register',
     component: lazy(() => import('../pages/Register/Register'))
   },

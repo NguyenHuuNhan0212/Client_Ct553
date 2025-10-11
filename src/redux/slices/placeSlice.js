@@ -34,11 +34,11 @@ export const getAllPlace = createAsyncThunk(
     }
   }
 );
-export const getPlacesByAddress = createAsyncThunk(
+export const getPlacesByAddressAndType = createAsyncThunk(
   'place/getPlacesByAddress',
   async (data, { rejectWithValue }) => {
     try {
-      const res = await placeApi.getPlaceByAddress(data);
+      const res = await placeApi.getPlaceByAddressAndType(data);
       return res;
     } catch (err) {
       return rejectWithValue(err.response?.data);
@@ -93,14 +93,14 @@ const placeSlice = createSlice({
         state.loading = false;
         state.places = [];
       })
-      .addCase(getPlacesByAddress.pending, (state) => {
+      .addCase(getPlacesByAddressAndType.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getPlacesByAddress.fulfilled, (state, action) => {
+      .addCase(getPlacesByAddressAndType.fulfilled, (state, action) => {
         state.loading = false;
         state.places = action.payload.places;
       })
-      .addCase(getPlacesByAddress.rejected, (state) => {
+      .addCase(getPlacesByAddressAndType.rejected, (state) => {
         state.loading = false;
       });
   }

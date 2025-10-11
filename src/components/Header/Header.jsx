@@ -9,7 +9,13 @@ import {
   CreditCardOutlined,
   AppstoreOutlined,
   BarChartOutlined,
-  MenuOutlined
+  MenuOutlined,
+  HomeOutlined,
+  BankOutlined,
+  CoffeeOutlined,
+  EnvironmentOutlined,
+  CalendarOutlined,
+  PlusCircleOutlined
 } from '@ant-design/icons';
 import styles from './style.module.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,7 +36,6 @@ export default function Header() {
   const { user, avatar } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  // 🧩 Thêm state cho responsive
   const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -49,6 +54,7 @@ export default function Header() {
   const leftMenuItems = [
     {
       key: 'home',
+      icon: isMobile ? <HomeOutlined /> : null,
       label: (
         <Link to='/' style={{ fontSize: '16px', fontWeight: '600' }}>
           Trang chủ
@@ -57,6 +63,7 @@ export default function Header() {
     },
     {
       key: 'hotels',
+      icon: isMobile ? <BankOutlined /> : null,
       label: (
         <Link
           to='/hotels'
@@ -69,25 +76,37 @@ export default function Header() {
     },
     {
       key: 'restaurants',
+      icon: isMobile ? <CreditCardOutlined /> : null,
       label: (
-        <Link to='/restaurants' style={{ fontSize: '16px', fontWeight: '600' }}>
+        <Link
+          to='/restaurants'
+          onClick={() => dispatch(setPlaceType({ type: 'restaurant' }))}
+          style={{ fontSize: '16px', fontWeight: '600' }}
+        >
           Nhà hàng & Quán ăn
         </Link>
       )
     },
     {
       key: 'cafes',
+      icon: isMobile ? <CoffeeOutlined /> : null,
       label: (
-        <Link to='/cafes' style={{ fontSize: '16px', fontWeight: '600' }}>
+        <Link
+          to='/cafes'
+          onClick={() => dispatch(setPlaceType({ type: 'cafe' }))}
+          style={{ fontSize: '16px', fontWeight: '600' }}
+        >
           Cafe & Chill
         </Link>
       )
     },
     {
       key: 'touristSpots',
+      icon: isMobile ? <EnvironmentOutlined /> : null,
       label: (
         <Link
           to='/touristSpots'
+          onClick={() => dispatch(setPlaceType({ type: 'touristSpot' }))}
           style={{ fontSize: '16px', fontWeight: '600' }}
         >
           Địa điểm du lịch
@@ -96,6 +115,7 @@ export default function Header() {
     },
     {
       key: 'itinerary',
+      icon: isMobile ? <CalendarOutlined /> : null,
       label: (
         <Link to='/itinerary' style={{ fontSize: '16px', fontWeight: '600' }}>
           Tạo lịch trình
@@ -106,6 +126,7 @@ export default function Header() {
       ? [
           {
             key: 'add-place',
+            icon: isMobile ? <PlusCircleOutlined /> : null,
             label: (
               <Link
                 to='/add-place'

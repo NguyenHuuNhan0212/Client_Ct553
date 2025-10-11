@@ -8,7 +8,7 @@ import ItineraryForm from './ItineraryForm';
 import DayActivities from './DayActivities';
 import PlaceList from './PlaceList';
 import { useNavigate } from 'react-router-dom';
-import { getPlacesByAddress } from '../../redux/slices/placeSlice';
+import { getPlacesByAddressAndType } from '../../redux/slices/placeSlice';
 import { motion, AnimatePresence } from 'motion/react'; // eslint-disable-line
 export default function CreateItineraryPro() {
   const [form, setForm] = useState(() => {
@@ -110,7 +110,9 @@ export default function CreateItineraryPro() {
     }
   };
   useEffect(() => {
-    dispatch(getPlacesByAddress({ address: form.destination }));
+    dispatch(
+      getPlacesByAddressAndType({ address: form.destination, type: 'all' })
+    );
   }, [dispatch, form.destination]);
   useEffect(() => {
     localStorage.setItem('itineraryForm', JSON.stringify(form));
