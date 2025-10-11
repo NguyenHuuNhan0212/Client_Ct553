@@ -2,7 +2,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 500px; /* thêm px */
+  min-height: 550px; /* thêm px */
   width: 100vw;
   display: flex;
   margin-top: 1px;

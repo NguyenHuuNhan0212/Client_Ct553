@@ -1,4 +1,5 @@
 import { Divider, Layout, Typography } from 'antd';
+import { motion } from 'motion/react'; //eslint-disable-line
 import Header from '../../components/Header/Header';
 import Banner from '../../components/Banner/Banner';
 import ServiceList from '../../components/Service/ServiceList';
@@ -11,7 +12,6 @@ import ExploreCategories from '../../components/ExploreCategories/ExploreCategor
 import placeApi from '../../apis/placeService';
 
 const { Content } = Layout;
-const { Title } = Typography;
 export default function Home() {
   const dispatch = useDispatch();
   const [placesPopular, setPlacesPopular] = useState([]);
@@ -31,9 +31,15 @@ export default function Home() {
       <Content style={{ padding: '0 50px' }}>
         <div style={{ margin: '40px 0' }}>
           <ExploreCategories />
-          <Divider style={{ fontSize: 30 }}>Điểm đến nổi bật</Divider>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+          >
+            <Divider style={{ fontSize: 30 }}>Điểm đến nổi bật</Divider>
 
-          <ServiceList places={placesPopular} />
+            <ServiceList places={placesPopular} />
+          </motion.div>
         </div>
       </Content>
       <Footer />

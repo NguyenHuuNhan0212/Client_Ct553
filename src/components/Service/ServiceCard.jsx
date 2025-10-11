@@ -22,7 +22,12 @@ export default function ServiceCard({
           style={{ height: 180, objectFit: 'cover' }}
         />
       }
-      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+      style={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+      }}
     >
       <Meta
         style={{ fontSize: '16px' }}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Typography } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line
+import { motion, AnimatePresence } from 'motion/react'; // eslint-disable-line
 import {
   UserOutlined,
   CalendarOutlined,
@@ -19,7 +19,6 @@ import Header from '../../components/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './style.module.css';
 import { getInfoUser } from '../../redux/slices/userSlice';
-import Footer from '../../components/Footer/Footer';
 const { Content, Sider } = Layout;
 
 export default function Profile() {
@@ -166,10 +165,10 @@ export default function Profile() {
             <AnimatePresence mode='wait'>
               <motion.div
                 key={selectedKey}
-                initial={{ opacity: 0, y: 10 }} // trạng thái ban đầu
+                initial={{ opacity: 0, y: 20 }} // trạng thái ban đầu
                 animate={{ opacity: 1, y: 0 }} // animation khi xuất hiện
                 exit={{ opacity: 0, y: -10 }} // animation khi biến mất
-                transition={{ duration: 0.25 }} // tốc độ
+                transition={{ duration: 0.35 }} // tốc độ
               >
                 {renderContent()}
               </motion.div>

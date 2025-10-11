@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 import styles from '../style.module.css';
 import { useDispatch } from 'react-redux';
 import { setStateSearchHotel } from '../../../redux/slices/hotelSlice';
-import { motion } from 'framer-motion'; // eslint-disable-line
+import { motion } from 'motion/react'; // eslint-disable-line
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
 
@@ -39,11 +39,6 @@ export default function SearchForm({ onSearch }) {
       message.error('Vui lòng chọn địa điểm');
       return;
     }
-    // Kiểm tra ngày hợp lệ
-    // if (!checkIn || !checkOut) {
-    //   message.error('Vui lòng chọn ngày check-in và check-out');
-    //   return;
-    // }
     if (checkIn && checkOut) {
       if (checkOut.isBefore(checkIn)) {
         message.error('Ngày check-out không được trước ngày check-in');

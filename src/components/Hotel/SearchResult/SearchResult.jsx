@@ -1,25 +1,33 @@
 import { Divider, Typography } from 'antd';
-
+import { motion } from 'motion/react'; // eslint-disable-line
 import HotelList from '../HotelList';
+import ServiceList from '../../Service/ServiceList';
 const { Title } = Typography;
 function SearchResult({ hotels, isPopular = false }) {
   return (
-    <div style={{ padding: '0 20px 40px 20px' }}>
-      <Title
-        level={2}
-        style={{ marginBottom: 40, marginTop: -10, textAlign: 'center' }}
-      >
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: 'easeIn' }}
+    >
+      <div style={{ padding: '0 20px 40px 20px' }}>
         {isPopular ? (
-          <Divider style={{ fontSize: 30 }}>
-            Danh sách địa điểm lưu trú nổi bật
-          </Divider>
+          <>
+            <Divider style={{ fontSize: 30, textAlign: 'center' }}>
+              Địa điểm lưu trú nổi bật
+            </Divider>
+            <ServiceList places={hotels} />
+          </>
         ) : (
-          <Divider style={{ fontSize: 30 }}>Danh sách kết quả tìm kiếm</Divider>
+          <>
+            <Divider style={{ fontSize: 30 }}>
+              Danh sách kết quả tìm kiếm
+            </Divider>
+            <HotelList hotels={hotels} />{' '}
+          </>
         )}
-      </Title>
-
-      <HotelList hotels={hotels} />
-    </div>
+      </div>
+    </motion.div>
   );
 }
 

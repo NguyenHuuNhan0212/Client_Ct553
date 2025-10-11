@@ -9,6 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setPlaceType } from '../../redux/slices/placeSlice';
+import { motion } from 'motion/react'; //eslint-disable-line
 import { useState } from 'react';
 
 const { Title, Paragraph } = Typography;
@@ -55,74 +56,80 @@ export default function ExploreCategories() {
 
   return (
     <div>
-      <Divider
-        style={{
-          fontSize: 30
-        }}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
       >
-        Khám phá các địa điểm
-      </Divider>
+        <Divider
+          style={{
+            fontSize: 30
+          }}
+        >
+          Khám phá các địa điểm
+        </Divider>
 
-      <Row gutter={[32, 32]} justify='center'>
-        {categories.map((item) => (
-          <Col
-            key={item.key}
-            xs={24}
-            sm={12}
-            md={12}
-            lg={6}
-            style={{ display: 'flex', justifyContent: 'center' }}
-          >
-            <Card
-              hoverable
-              onMouseEnter={() => setHovered(item.key)}
-              onMouseLeave={() => setHovered(null)}
-              style={{
-                width: 260,
-                borderRadius: 16,
-                textAlign: 'center',
-                backgroundColor: item.color,
-                transition: 'all 0.5s ease',
-                boxShadow:
-                  hovered === item.key
-                    ? '0 8px 24px rgba(0,0,0,0.2)'
-                    : '0 4px 12px rgba(0,0,0,0.1)',
-                transform: hovered === item.key ? 'scale(1.05)' : 'scale(1)'
-              }}
-              onClick={() => {
-                dispatch(setPlaceType({ type: item.type }));
-                navigate(`/${item.key}`);
-              }}
-              styles={{ body: { padding: '30px 20px' } }}
+        <Row gutter={[32, 32]} justify='center'>
+          {categories.map((item) => (
+            <Col
+              key={item.key}
+              xs={24}
+              sm={12}
+              md={12}
+              lg={6}
+              style={{ display: 'flex', justifyContent: 'center' }}
             >
-              <div style={{ marginBottom: 20 }}>{item.icon}</div>
-              <Title level={4}>{item.title}</Title>
-              <Paragraph
+              <Card
+                hoverable
+                onMouseEnter={() => setHovered(item.key)}
+                onMouseLeave={() => setHovered(null)}
                 style={{
-                  color: '#555',
-                  fontSize: 15,
-                  lineHeight: 1.5,
-                  minHeight: 50
+                  width: 260,
+                  borderRadius: 16,
+                  textAlign: 'center',
+                  backgroundColor: item.color,
+                  transition: 'all 0.5s ease',
+                  boxShadow:
+                    hovered === item.key
+                      ? '0 8px 24px rgba(0,0,0,0.2)'
+                      : '0 4px 12px rgba(0,0,0,0.1)',
+                  transform: hovered === item.key ? 'scale(1.05)' : 'scale(1)'
                 }}
+                onClick={() => {
+                  dispatch(setPlaceType({ type: item.type }));
+                  navigate(`/${item.key}`);
+                }}
+                styles={{ body: { padding: '30px 20px' } }}
               >
-                {item.description}
-              </Paragraph>
+                <div style={{ marginBottom: 20 }}>{item.icon}</div>
+                <Title level={4}>{item.title}</Title>
+                <Paragraph
+                  style={{
+                    color: '#555',
+                    fontSize: 15,
+                    lineHeight: 1.5,
+                    minHeight: 50
+                  }}
+                >
+                  {item.description}
+                </Paragraph>
 
-              <div
-                style={{
-                  marginTop: 10,
-                  fontWeight: 500,
-                  color: hovered === item.key ? '#0958d9' : '#1677ff',
-                  transition: 'color 0.3s ease',
-                  cursor: 'pointer'
-                }}
-              >
-                Khám phá ngay <ArrowRightOutlined />
-              </div>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+                <div
+                  style={{
+                    marginTop: 10,
+                    fontWeight: 500,
+                    color: hovered === item.key ? '#0958d9' : '#1677ff',
+                    transition: 'color 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Khám phá ngay <ArrowRightOutlined />
+                </div>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </motion.div>
     </div>
   );
 }

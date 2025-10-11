@@ -13,7 +13,7 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 550px;
+  min-height: 550px;
 }
 .title {
   text-align: center;

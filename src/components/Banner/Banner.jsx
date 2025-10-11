@@ -104,7 +104,7 @@ export default function Banner() {
                     }}
                     onClick={() => navigate('/itinerary')}
                   >
-                    <PlusCircleOutlined /> Tạo tour ngay
+                    <PlusCircleOutlined /> Tạo lịch trình ngay
                   </Button>
 
                   <Button
@@ -122,7 +122,7 @@ export default function Banner() {
                       transition: 'all 0.8s ease'
                     }}
                   >
-                    <SearchOutlined /> Khám phá tour
+                    <SearchOutlined /> Khám phá lịch trình
                   </Button>
                 </div>
               </div>

@@ -9,7 +9,7 @@ import DayActivities from './DayActivities';
 import PlaceList from './PlaceList';
 import { useNavigate } from 'react-router-dom';
 import { getPlacesByAddress } from '../../redux/slices/placeSlice';
-import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line
+import { motion, AnimatePresence } from 'motion/react'; // eslint-disable-line
 export default function CreateItineraryPro() {
   const [form, setForm] = useState(() => {
     const saved = localStorage.getItem('itineraryForm');
@@ -137,7 +137,6 @@ export default function CreateItineraryPro() {
                 form={form}
                 setForm={setForm}
                 handleDateChange={handleDateChange}
-                removeActivity={removeActivity}
                 handleSave={handleSave}
               />
               <DayActivities

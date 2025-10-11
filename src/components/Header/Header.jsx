@@ -1,4 +1,4 @@
-import { Layout, Menu, Dropdown } from 'antd';
+import { Layout, Menu, Dropdown, Button, Drawer, Divider } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   DownOutlined,
@@ -8,11 +8,12 @@ import {
   FileDoneOutlined,
   CreditCardOutlined,
   AppstoreOutlined,
-  BarChartOutlined
+  BarChartOutlined,
+  MenuOutlined
 } from '@ant-design/icons';
 import styles from './style.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getInfoUser } from '../../redux/slices/userSlice';
 import { logout } from '../../redux/slices/authSlice';
 import { capitalizeName } from '../../utils/capitalize';
@@ -28,11 +29,23 @@ export default function Header() {
   const { token } = useSelector((state) => state.auth);
   const { user, avatar } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  // 🧩 Thêm state cho responsive
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 900);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleLogout = () => {
     dispatch(logout());
     navigate('/');
   };
-  // Menu bên trái
+
+  // Menu trái
   const leftMenuItems = [
     {
       key: 'home',
@@ -47,10 +60,37 @@ export default function Header() {
       label: (
         <Link
           to='/hotels'
-          style={{ fontSize: '16px', fontWeight: '600' }}
           onClick={() => dispatch(setPlaceType({ type: 'hotel' }))}
+          style={{ fontSize: '16px', fontWeight: '600' }}
         >
           Khách sạn
+        </Link>
+      )
+    },
+    {
+      key: 'restaurants',
+      label: (
+        <Link to='/restaurants' style={{ fontSize: '16px', fontWeight: '600' }}>
+          Nhà hàng & Quán ăn
+        </Link>
+      )
+    },
+    {
+      key: 'cafes',
+      label: (
+        <Link to='/cafes' style={{ fontSize: '16px', fontWeight: '600' }}>
+          Cafe & Chill
+        </Link>
+      )
+    },
+    {
+      key: 'touristSpots',
+      label: (
+        <Link
+          to='/touristSpots'
+          style={{ fontSize: '16px', fontWeight: '600' }}
+        >
+          Địa điểm du lịch
         </Link>
       )
     },
@@ -78,6 +118,7 @@ export default function Header() {
         ]
       : [])
   ];
+
   const userMenu = {
     items: [
       {
@@ -100,7 +141,7 @@ export default function Header() {
             {
               key: 'services',
               icon: <AppstoreOutlined />,
-              label: <Link to='/profile?tab=4'>Quản lý địa điểm/dịch vụ</Link>
+              label: <Link to='/profile?tab=4'>Quản lý địa điểm</Link>
             },
             {
               key: 'stats',
@@ -109,9 +150,7 @@ export default function Header() {
             }
           ]
         : []),
-      {
-        type: 'divider'
-      },
+      { type: 'divider' },
       {
         key: 'logout',
         icon: <LogoutOutlined style={{ color: 'red' }} />,
@@ -119,31 +158,47 @@ export default function Header() {
       }
     ]
   };
+
   useEffect(() => {
-    if (token && !user) {
-      dispatch(getInfoUser());
-    }
+    if (token && !user) dispatch(getInfoUser());
   }, [token, user, dispatch]);
 
   return (
-    <AntHeader className={container}>
+    <AntHeader
+      className={container}
+      style={{ display: 'flex', alignItems: 'center' }}
+    >
+      {/* Logo */}
       <div className={logo}>
-        <Link to='/' style={{ color: 'white' }}>
+        <Link to='/' style={{ color: 'white', fontWeight: 700, fontSize: 20 }}>
           Vigo Travel
         </Link>
       </div>
 
       {/* Menu trái */}
-      <Menu
-        theme='dark'
-        mode='horizontal'
-        items={leftMenuItems}
-        selectedKeys={[location.pathname.split('/')[1] || 'home']}
-        style={{
-          background: 'transparent',
-          flex: 1
-        }}
-      />
+      {!isMobile && (
+        <Menu
+          theme='dark'
+          mode='horizontal'
+          items={leftMenuItems}
+          selectedKeys={[location.pathname.split('/')[1] || 'home']}
+          style={{
+            background: 'transparent',
+            flex: 1,
+            marginLeft: 30
+          }}
+        />
+      )}
+
+      {/* Nút menu mobile */}
+      {isMobile && (
+        <Button
+          type='text'
+          icon={<MenuOutlined style={{ color: 'white', fontSize: 22 }} />}
+          onClick={() => setOpenDrawer(true)}
+          style={{ marginLeft: 'auto' }}
+        />
+      )}
 
       {/* Menu phải */}
       {user ? (
@@ -177,38 +232,95 @@ export default function Header() {
           </span>
         </Dropdown>
       ) : (
-        <Menu
-          theme='dark'
-          mode='horizontal'
-          items={[
-            {
-              key: 'login',
-              label: (
-                <Link
-                  to='/login'
-                  style={{ fontSize: '16px', fontWeight: '600' }}
-                >
-                  Đăng nhập
-                </Link>
-              )
-            },
-            {
-              key: 'register',
-              label: (
-                <Link
-                  to='/register'
-                  style={{ fontSize: '16px', fontWeight: '600' }}
-                >
-                  Đăng ký
-                </Link>
-              )
-            }
-          ]}
-          style={{
-            background: 'transparent'
-          }}
-        />
+        !isMobile && (
+          <Menu
+            theme='dark'
+            mode='horizontal'
+            items={[
+              {
+                key: 'login',
+                label: (
+                  <Link
+                    to='/login'
+                    style={{ fontSize: '16px', fontWeight: '600' }}
+                  >
+                    Đăng nhập
+                  </Link>
+                )
+              },
+              {
+                key: 'register',
+                label: (
+                  <Link
+                    to='/register'
+                    style={{ fontSize: '16px', fontWeight: '600' }}
+                  >
+                    Đăng ký
+                  </Link>
+                )
+              }
+            ]}
+            style={{
+              background: 'transparent'
+            }}
+          />
+        )
       )}
+
+      {/* Drawer menu cho mobile */}
+      <Drawer
+        placement='right'
+        closable
+        onClose={() => setOpenDrawer(false)}
+        open={openDrawer}
+        styles={{ body: { padding: 0 } }}
+      >
+        <Menu
+          mode='inline'
+          items={leftMenuItems}
+          selectedKeys={[location.pathname.split('/')[1] || 'home']}
+          onClick={() => setOpenDrawer(false)}
+        />
+        {!user && (
+          <>
+            <Divider style={{ borderColor: '#1890ff' }} />
+            <Menu
+              mode='inline'
+              items={[
+                {
+                  key: 'login',
+                  label: (
+                    <Link
+                      to='/login'
+                      style={{
+                        fontSize: '16px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      Đăng nhập
+                    </Link>
+                  )
+                },
+                {
+                  key: 'register',
+                  label: (
+                    <Link
+                      to='/register'
+                      style={{
+                        fontSize: '16px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      Đăng ký
+                    </Link>
+                  )
+                }
+              ]}
+              onClick={() => setOpenDrawer(false)}
+            />
+          </>
+        )}
+      </Drawer>
     </AntHeader>
   );
 }
