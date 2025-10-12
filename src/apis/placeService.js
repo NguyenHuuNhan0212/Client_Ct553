@@ -45,6 +45,15 @@ const placeApi = {
   },
   getPlacesPopular() {
     return axiosClient.get(`/places/popular`);
+  },
+  addPlaceFavorite(data) {
+    return axiosClient.post(`/places/favorite`, data);
+  },
+  removePlaceFavorite(data) {
+    return axiosClient.delete(`/places/favorite/${data.placeId}`);
+  },
+  getPlacesFavorite() {
+    return axiosClient.get('/places/favorite');
   }
 };
 export default placeApi;

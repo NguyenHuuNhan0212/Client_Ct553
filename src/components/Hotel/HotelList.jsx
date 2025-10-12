@@ -9,7 +9,7 @@ export default function HotelList({ hotels }) {
   return (
     <Row gutter={[16, 16]}>
       {hotels.map((hotel, i) => (
-        <Col xs={24} sm={12} md={8} lg={6} key={i} style={{ display: 'flex' }}>
+        <Col key={i} xs={24} sm={12} md={8} lg={6}>
           <HotelCard hotel={hotel} />
         </Col>
       ))}

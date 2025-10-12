@@ -46,7 +46,14 @@ export default function Footer() {
       <AntFooter style={footerStyle}>
         <Row gutter={[32, 32]}>
           <Col xs={24} sm={12} md={8} lg={6}>
-            <div style={{ fontSize: 22, fontWeight: 600, marginBottom: 10 }}>
+            <div
+              style={{
+                fontSize: 22,
+                fontWeight: 600,
+                marginBottom: 10,
+                marginTop: 25
+              }}
+            >
               Vigo Travel
             </div>
             <Text style={{ color: '#d9e6ff', fontSize: 14, lineHeight: 1.6 }}>
@@ -162,7 +169,7 @@ export default function Footer() {
             color: '#b5cfff'
           }}
         >
-          © 2025 Travel Platform. Mọi quyền được bảo lưu.
+          © 2025 Vigo Travel. Mọi quyền được bảo lưu.
         </div>
       </AntFooter>
     </motion.div>

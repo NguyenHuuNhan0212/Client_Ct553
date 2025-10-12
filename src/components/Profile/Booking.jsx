@@ -26,7 +26,8 @@ import { getBookingDetail, getBookings } from '../../redux/slices/bookingSlice';
 import bookingApi from '../../apis/bookingService';
 import CancelPolicy from './BookingComponents/CancelPolicy';
 import dayjs from 'dayjs';
-
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 const { Title, Text } = Typography;
 
 function Booking() {
@@ -82,6 +83,34 @@ function Booking() {
       message.error(err?.response?.data?.message);
     }
   };
+  const renderContentUsedService = (record) => {
+    const { checkInDate, checkOutDate, status, totalPrice, paymentInfo } =
+      record;
+    const today = dayjs();
+    const amount = paymentInfo?.amount || 0;
+
+    if (status === 'cancelled') {
+      return <Tag color='orange'>Không sử dụng dịch vụ</Tag>;
+    }
+
+    if (today.isAfter(dayjs(checkOutDate), 'day')) {
+      if (Number(totalPrice) === Number(amount)) {
+        return <Tag color='green'>Đã sử dụng dịch vụ</Tag>;
+      } else {
+        return <Tag color='red'>Không đến địa điểm</Tag>;
+      }
+    }
+
+    const daysLeft = dayjs(checkInDate).diff(today, 'day');
+    if (daysLeft > 0) {
+      return <Tag color='purple'>{daysLeft} ngày đếm ngược</Tag>;
+    }
+
+    if (today.isBetween(dayjs(checkInDate), dayjs(checkOutDate), 'day', '[]')) {
+      return <Tag color='processing'>Đang sử dụng dịch vụ</Tag>;
+    }
+    return <Tag color='default'>Đang chờ xác định</Tag>;
+  };
 
   const columns = [
     { title: 'Tên địa điểm', align: 'center', dataIndex: 'placeName' },
@@ -117,6 +146,11 @@ function Booking() {
             Đã hủy
           </Tag>
         )
+    },
+    {
+      title: 'Sử dụng dịch vụ',
+      align: 'center',
+      render: (_, record) => renderContentUsedService(record)
     },
     {
       title: 'Giá (VNĐ)',
@@ -200,10 +234,11 @@ function Booking() {
                 {currentBooking.place?.name}
               </Descriptions.Item>
               <Descriptions.Item label='Ngày check in'>
-                {new Date(currentBooking.checkInDate).toLocaleDateString()}
+                {/* {new Date(currentBooking.checkInDate).toLocaleDateString()} */}
+                {dayjs(currentBooking.checkInDate).format('DD/MM/YYYY')}
               </Descriptions.Item>
               <Descriptions.Item label='Ngày check out'>
-                {new Date(currentBooking.checkOutDate).toLocaleDateString()}
+                {dayjs(currentBooking.checkOutDate).format('DD/MM/YYYY')}
               </Descriptions.Item>
               <Descriptions.Item label='Trạng thái đơn đặt'>
                 {currentBooking.status === 'pending' ? (

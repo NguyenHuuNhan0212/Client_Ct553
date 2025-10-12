@@ -1,37 +1,107 @@
-import { Card, Tag, Button } from 'antd';
-import { DollarOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { Card, Tag, Button, message, Tooltip } from 'antd';
+import {
+  DollarOutlined,
+  EnvironmentOutlined,
+  HeartFilled,
+  HeartOutlined
+} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import placeApi from '../../apis/placeService';
+import { getPlacesFavorite } from '../../redux/slices/placeSlice';
+import { capitalizeName } from '../../utils/capitalize';
 export default function HotelCard({ hotel }) {
   const { checkIn, checkOut } = useSelector((state) => state.hotel);
+  const { user } = useSelector((state) => state.user);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const { placesFavorite } = useSelector((state) => state.place);
   const firstImage =
     hotel?.images && hotel?.images.length > 0
       ? `http://localhost:3000/${hotel.images[0]}`
       : 'https://via.placeholder.com/400x250?text=No+Image';
+  const dispatch = useDispatch();
+  const toggleFavorite = async (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    try {
+      if (!isFavorite) {
+        await placeApi.addPlaceFavorite({ placeId: hotel.hotelId });
+        message.success('Đã thêm vào danh sách yêu thích');
+        dispatch(getPlacesFavorite());
+        setIsFavorite(true);
+      } else {
+        await placeApi.removePlaceFavorite({ placeId: hotel.hotelId });
+        message.info('Đã xóa khỏi danh sách yêu thích');
+        dispatch(getPlacesFavorite());
+        setIsFavorite(false);
+      }
+    } catch (err) {
+      message.error(err.response?.data?.message || 'Có lỗi xảy ra');
+    }
+  };
+
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(getPlacesFavorite());
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (placesFavorite && placesFavorite.length > 0) {
+      const favoriteIds = placesFavorite.map((f) => f._id.toString());
+      setIsFavorite(favoriteIds.includes(hotel.hotelId.toString()));
+    } else {
+      setIsFavorite(false);
+    }
+  }, [placesFavorite, hotel.hotelId]);
 
   return (
     <Card
       hoverable
       cover={
-        <img
-          alt={hotel?.name}
-          src={firstImage}
-          style={{
-            height: 220,
-            objectFit: 'cover'
-          }}
-        />
+        <div style={{ position: 'relative' }}>
+          <img
+            alt={hotel?.name}
+            src={firstImage}
+            style={{
+              height: 220,
+              objectFit: 'cover',
+              width: '100%'
+            }}
+          />
+          <Tooltip
+            title={
+              !isFavorite
+                ? 'Thêm vào danh sách yêu thích'
+                : 'Xóa khỏi danh sách yêu thích'
+            }
+          >
+            <div
+              onClick={toggleFavorite}
+              style={{
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                fontSize: 22,
+                color: isFavorite ? 'red' : 'white',
+                backgroundColor: 'rgba(0,0,0,0.4)',
+                borderRadius: '50%',
+                padding: 6,
+                cursor: 'pointer'
+              }}
+            >
+              {isFavorite ? <HeartFilled /> : <HeartOutlined />}
+            </div>
+          </Tooltip>
+        </div>
       }
       style={{
+        height: '100%',
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
-        borderRadius: 12,
-        overflow: 'hidden',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        height: '100%'
+        justifyContent: 'space-between'
       }}
     >
       <div
@@ -43,7 +113,9 @@ export default function HotelCard({ hotel }) {
         }}
       >
         <div>
-          <div style={{ fontSize: 18, fontWeight: 600 }}>{hotel?.name}</div>
+          <div style={{ fontSize: 18, fontWeight: 600 }}>
+            {capitalizeName(hotel?.name)}
+          </div>
           <div
             style={{
               color: '#555',
@@ -83,11 +155,15 @@ export default function HotelCard({ hotel }) {
           </div>
         </div>
 
-        <Link to={`/hotel/${hotel?.hotelId}`}>
-          <Button type='primary' block style={{ marginTop: 12 }}>
-            Xem chi tiết
-          </Button>
-        </Link>
+        {hotel.deleted ? (
+          <Tag color='error'>Địa điểm không còn</Tag>
+        ) : (
+          <Link to={`/hotel/${hotel?.hotelId}`}>
+            <Button type='primary' block style={{ marginTop: 12 }}>
+              Xem chi tiết
+            </Button>
+          </Link>
+        )}
       </div>
     </Card>
   );

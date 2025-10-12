@@ -45,12 +45,25 @@ export const getPlacesByAddressAndType = createAsyncThunk(
     }
   }
 );
+
+export const getPlacesFavorite = createAsyncThunk(
+  'place/getPlacesFavorite',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await placeApi.getPlacesFavorite();
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.message?.data);
+    }
+  }
+);
 const placeSlice = createSlice({
   name: 'place',
   initialState: {
     type: null,
     placesOffUser: [],
     places: [],
+    placesFavorite: [],
     currentPlace: null,
     loading: false
   },
@@ -102,6 +115,12 @@ const placeSlice = createSlice({
       })
       .addCase(getPlacesByAddressAndType.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(getPlacesFavorite.fulfilled, (state, action) => {
+        state.placesFavorite = action.payload;
+      })
+      .addCase(getPlacesFavorite.rejected, (state) => {
+        state.placesFavorite = [];
       });
   }
 });

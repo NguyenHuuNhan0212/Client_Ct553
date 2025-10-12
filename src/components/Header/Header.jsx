@@ -1,4 +1,4 @@
-import { Layout, Menu, Dropdown, Button, Drawer, Divider } from 'antd';
+import { Layout, Menu, Dropdown, Button, Drawer, Divider, Badge } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   DownOutlined,
@@ -15,7 +15,8 @@ import {
   CoffeeOutlined,
   EnvironmentOutlined,
   CalendarOutlined,
-  PlusCircleOutlined
+  PlusCircleOutlined,
+  HeartOutlined
 } from '@ant-design/icons';
 import styles from './style.module.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,7 +24,7 @@ import { useEffect, useState } from 'react';
 import { getInfoUser } from '../../redux/slices/userSlice';
 import { logout } from '../../redux/slices/authSlice';
 import { capitalizeName } from '../../utils/capitalize';
-import { setPlaceType } from '../../redux/slices/placeSlice';
+import { getPlacesFavorite, setPlaceType } from '../../redux/slices/placeSlice';
 
 const { Header: AntHeader } = Layout;
 
@@ -35,7 +36,7 @@ export default function Header() {
   const { token } = useSelector((state) => state.auth);
   const { user, avatar } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-
+  const { placesFavorite } = useSelector((state) => state.place);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -157,17 +158,29 @@ export default function Header() {
         icon: <FileDoneOutlined />,
         label: <Link to='/profile?tab=3'>Lịch sử đặt dịch vụ</Link>
       },
+      {
+        key: 'favorite',
+        icon: <HeartOutlined />,
+        label: (
+          <Link to='/profile?tab=4'>
+            <Badge count={placesFavorite.length} offset={[15, 0]} showZero>
+              <span>Địa điểm yêu thích </span>
+            </Badge>
+          </Link>
+        )
+      },
+
       ...(user?.role === 'provider'
         ? [
             {
               key: 'services',
               icon: <AppstoreOutlined />,
-              label: <Link to='/profile?tab=4'>Quản lý địa điểm</Link>
+              label: <Link to='/profile?tab=5'>Quản lý địa điểm</Link>
             },
             {
               key: 'stats',
               icon: <BarChartOutlined />,
-              label: <Link to='/profile?tab=5'>Danh sách đặt dịch vụ</Link>
+              label: <Link to='/profile?tab=6'>Danh sách đặt dịch vụ</Link>
             }
           ]
         : []),
@@ -181,7 +194,10 @@ export default function Header() {
   };
 
   useEffect(() => {
-    if (token && !user) dispatch(getInfoUser());
+    if (token && !user) {
+      dispatch(getInfoUser());
+      dispatch(getPlacesFavorite());
+    }
   }, [token, user, dispatch]);
 
   return (
@@ -223,7 +239,15 @@ export default function Header() {
 
       {/* Menu phải */}
       {user ? (
-        <Dropdown menu={userMenu} placement='bottomRight'>
+        <Dropdown
+          menu={userMenu}
+          placement='bottomRight'
+          overlayStyle={{
+            maxHeight: 'none',
+            overflow: 'visible',
+            width: '200px' // hoặc auto
+          }}
+        >
           <span
             style={{
               color: 'white',

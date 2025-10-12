@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Menu, Typography } from 'antd';
+import { Badge, Layout, Menu, Typography } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react'; // eslint-disable-line
 import {
@@ -7,7 +7,8 @@ import {
   CalendarOutlined,
   ShoppingCartOutlined,
   AppstoreOutlined,
-  BarChartOutlined
+  BarChartOutlined,
+  HeartOutlined
 } from '@ant-design/icons';
 
 import Info from '../../components/Profile/Info';
@@ -19,6 +20,7 @@ import Header from '../../components/Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './style.module.css';
 import { getInfoUser } from '../../redux/slices/userSlice';
+import PlaceFavorite from '../../components/Profile/Favorite';
 const { Content, Sider } = Layout;
 
 export default function Profile() {
@@ -29,7 +31,7 @@ export default function Profile() {
   const params = new URLSearchParams(search); // eslint-disable-line
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const { placesFavorite } = useSelector((state) => state.place);
   // Lấy key menu từ query
   const defaultKey = params.get('tab') || '1';
   const [selectedKey, setSelectedKey] = useState(defaultKey);
@@ -37,18 +39,27 @@ export default function Profile() {
   const menuItems = [
     { key: '1', icon: <UserOutlined />, label: 'Thông tin cá nhân' },
     { key: '2', icon: <CalendarOutlined />, label: 'Lịch trình' },
-    { key: '3', icon: <ShoppingCartOutlined />, label: 'Lịch sử đặt dịch vụ' }
+    { key: '3', icon: <ShoppingCartOutlined />, label: 'Lịch sử đặt dịch vụ' },
+    {
+      key: '4',
+      icon: <HeartOutlined />,
+      label: (
+        <Badge count={placesFavorite.length} offset={[20, 0]} showZero>
+          <span>Địa điểm yêu thích </span>
+        </Badge>
+      )
+    }
   ];
 
   if (user?.role === 'provider') {
     menuItems.push(
       {
-        key: '4',
+        key: '5',
         icon: <AppstoreOutlined />,
         label: 'Quản lý địa điểm/dịch vụ'
       },
       {
-        key: '5',
+        key: '6',
         icon: <BarChartOutlined />,
         label: 'Danh sách đặt dịch vụ'
       }
@@ -127,8 +138,10 @@ export default function Profile() {
       case '3':
         return <Booking />;
       case '4':
-        return <ServiceProvide />;
+        return <PlaceFavorite />;
       case '5':
+        return <ServiceProvide />;
+      case '6':
         return <BookingList />;
       default:
         return null;
