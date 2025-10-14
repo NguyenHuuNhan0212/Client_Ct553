@@ -62,7 +62,11 @@ const GeneralInfoTab = ({
         />
       </Form.Item>
 
-      <Form.Item label='Ảnh địa điểm' required style={{ marginBottom: 40 }}>
+      <Form.Item
+        label='Ảnh địa điểm (có đuôi .jpeg, .jpg, .png)'
+        required
+        style={{ marginBottom: 40 }}
+      >
         <Upload
           multiple
           listType='picture-card'

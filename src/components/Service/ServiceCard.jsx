@@ -66,7 +66,6 @@ export default function ServiceCard({
       setIsFavorite(false);
     }
   }, [placesFavorite, _id]);
-
   return (
     <Card
       hoverable

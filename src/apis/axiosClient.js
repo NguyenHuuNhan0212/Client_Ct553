@@ -6,7 +6,7 @@ const axiosClient = axios.create({
   headers: {
     'Content-Type': 'application/json'
   },
-  timeout: 10000 // 10s
+  timeout: 100000 // 100s
 });
 
 const getAccessToken = () => sessionStorage.getItem('token');

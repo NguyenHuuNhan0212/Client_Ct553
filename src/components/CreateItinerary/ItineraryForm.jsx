@@ -7,13 +7,14 @@ import {
   Tag,
   Divider,
   Space,
-  Select
+  Select,
+  Typography
 } from 'antd';
 import { EnvironmentOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
-
+const { Text } = Typography;
 export default function ItineraryForm({
   form,
   setForm,
@@ -35,7 +36,7 @@ export default function ItineraryForm({
   }, []);
   return (
     <Card
-      title='🗓️ Tạo lịch trình cá nhân'
+      title='🗓️ Lên kế hoạch cho chuyến đi của bạn'
       extra={
         <Button type='primary' onClick={handleSave}>
           Lưu lịch trình
@@ -44,12 +45,15 @@ export default function ItineraryForm({
       style={{ borderRadius: 16, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
     >
       <Space direction='vertical' style={{ width: '100%' }}>
+        <Text strong>Tên lịch trình (VD: Khám phá Cần Thơ 3 ngày)</Text>
         <Input
-          placeholder='Tên lịch trình (VD: Khám phá Cần Thơ 3 ngày)'
+          placeholder='Nhập tên lịch trình...'
           size='large'
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
+        <Text strong>Chọn địa điểm đến</Text>
+
         <Select
           showSearch
           placeholder='Chọn địa điểm đến'
@@ -65,12 +69,16 @@ export default function ItineraryForm({
           value={form.destination || undefined}
           onChange={(value) => setForm({ ...form, destination: value })}
         />
+        <Text strong>Tên người tạo (NickName)</Text>
+
         <Input
-          placeholder='Người tạo'
+          placeholder='Nhập tên người tạo.'
           size='large'
           value={form.creatorName}
           onChange={(e) => setForm({ ...form, creatorName: e.target.value })}
         />
+        <Text strong>Ngày dự kiến</Text>
+
         <RangePicker
           size='large'
           onChange={handleDateChange}

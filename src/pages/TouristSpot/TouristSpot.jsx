@@ -9,6 +9,7 @@ import { motion } from 'motion/react'; //eslint-disable-line
 import { useEffect, useState } from 'react';
 import placeApi from '../../apis/placeService';
 import { getPlacesByAddressAndType } from '../../redux/slices/placeSlice';
+import Chatbot from '../../components/Chatbot/Chatbot';
 const { Content } = Layout;
 function TouristSpotPage() {
   const {
@@ -102,6 +103,7 @@ function TouristSpotPage() {
         )}
       </Content>
       <Footer />
+      <Chatbot />
     </Layout>
   );
 }

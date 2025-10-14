@@ -117,7 +117,7 @@ function PlaceDetail({ currentPlace }) {
         <Col span={8}>
           <Divider style={{ fontSize: '20px' }}>Thông tin liên hệ</Divider>
           <Paragraph style={{ fontSize: '16px' }}>
-            <b>Chủ địa điểm:</b>{' '}
+            <b>Chủ địa điểm/Quản lý:</b>{' '}
             {capitalizeName(ownerInfo?.userId?.fullName) || 'Chưa cập nhật'}
           </Paragraph>
           <Paragraph style={{ fontSize: '16px' }}>
