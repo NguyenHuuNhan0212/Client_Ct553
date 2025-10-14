@@ -74,7 +74,7 @@ const FormAddPlace = () => {
       navigate('/');
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || 'Có lỗi xảy ra');
+      toast.error(err.response?.data?.message || 'Ảnh không hợp lệ!!');
     }
   };
 

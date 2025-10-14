@@ -23,20 +23,26 @@ import placeApi from '../../apis/placeService';
 import FormUpdatePlace from '../FormPlace/FormUpdatePlace';
 import { capitalizeName } from '../../utils/capitalize';
 import SearchBar from '../SearchBar/SearchBar';
+import InternalBookingForm from './BookingComponents/FormBookingInternal';
 const { Title, Text } = Typography;
 function ServiceProvide() {
   const [open, setOpen] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [openEdit, setOpenEdit] = useState(false);
+  const [openCreateBooking, setOpenCreateBooking] = useState(false);
   const [editingPlace, setEditingPlace] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [filterType, setFilterType] = useState('');
   const dispatch = useDispatch();
   const { placesOffUser: services, loading } = useSelector(
     (state) => state.place
   );
   const navigate = useNavigate();
-  const filteredServices = services?.filter((item) =>
-    item.name.toLowerCase().includes(searchKeyword.toLowerCase())
+  const filteredServices = services?.filter(
+    (item) =>
+      (!searchKeyword ||
+        item.name.toLowerCase().includes(searchKeyword.toLowerCase())) &&
+      (!filterType || item.type === filterType)
   );
   const handleAddService = () => {
     navigate('/add-place');
@@ -62,7 +68,10 @@ function ServiceProvide() {
     setSelectedPlace(record);
     setOpen(true);
   };
-
+  const handleClickCreateBooking = (record) => {
+    setSelectedPlace(record);
+    setOpenCreateBooking(true);
+  };
   const handleRemovePlace = async () => {
     if (!selectedPlace) return;
     try {
@@ -111,6 +120,7 @@ function ServiceProvide() {
         }}
       >
         <SearchBar
+          onFilterType={(type) => setFilterType(type)}
           placeholder='Tìm kiếm theo tên địa điểm...'
           onSearch={setSearchKeyword}
         />
@@ -200,30 +210,48 @@ function ServiceProvide() {
             dataIndex: 'totalServices'
           },
           {
-            title: 'Hành động',
+            title: 'Thao tác',
             key: 'action',
             align: 'center',
             render: (_, record) => (
-              <Space size='large' style={{ fontSize: 20 }}>
-                <Tooltip title={'Xem chi tiết địa điểm'}>
-                  <EyeOutlined
-                    style={{ color: 'blue', cursor: 'pointer' }}
-                    onClick={() => handleClickSeeDetail(record)}
-                  />
-                </Tooltip>
-                <Tooltip title={'Chỉnh sửa địa điểm'}>
-                  <EditOutlined
-                    style={{ color: '#ebca48ff', cursor: 'pointer' }}
-                    onClick={() => handleEdit(record)}
-                  />
-                </Tooltip>
-                <Tooltip title={'Xóa địa điểm'}>
-                  <DeleteOutlined
-                    style={{ color: 'red', cursor: 'pointer' }}
-                    onClick={() => showModal(record)}
-                  />
-                </Tooltip>
-              </Space>
+              <>
+                {record.isApprove && (
+                  <>
+                    <Space size='large' style={{ fontSize: 20 }}>
+                      <Tooltip title={'Xem chi tiết địa điểm'}>
+                        <EyeOutlined
+                          style={{ color: 'blue', cursor: 'pointer' }}
+                          onClick={() => handleClickSeeDetail(record)}
+                        />
+                      </Tooltip>
+                      <Tooltip title={'Chỉnh sửa địa điểm'}>
+                        <EditOutlined
+                          style={{ color: '#ebca48ff', cursor: 'pointer' }}
+                          onClick={() => handleEdit(record)}
+                        />
+                      </Tooltip>
+                      <Tooltip title={'Xóa địa điểm'}>
+                        <DeleteOutlined
+                          style={{ color: 'red', cursor: 'pointer' }}
+                          onClick={() => showModal(record)}
+                        />
+                      </Tooltip>
+                    </Space>
+                    <br />
+                    {record.type === 'hotel' && (
+                      <Tooltip title={'Tạo booking nội bộ cho khách sạn này'}>
+                        <Button
+                          color='cyan'
+                          variant='filled'
+                          onClick={() => handleClickCreateBooking(record)}
+                        >
+                          Tạo đơn đặt phòng
+                        </Button>
+                      </Tooltip>
+                    )}{' '}
+                  </>
+                )}
+              </>
             )
           }
         ]}
@@ -283,6 +311,15 @@ function ServiceProvide() {
             onCancel={handleCloseEdit}
           />
         )}
+      </Modal>
+
+      <Modal
+        open={openCreateBooking}
+        onCancel={() => setOpenCreateBooking(false)}
+        footer={null}
+        width={800}
+      >
+        {selectedPlace && <InternalBookingForm placeId={selectedPlace._id} />}
       </Modal>
     </Card>
   );

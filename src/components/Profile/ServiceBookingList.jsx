@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  DatePicker,
   Descriptions,
   message,
   Modal,
@@ -29,6 +30,13 @@ function BookingList() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenConfirmPaymentModal, setIsOpenConfirmPaymentModal] =
     useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const filteredBookings = selectedDate
+    ? bookingsOfSupplier.filter((b) =>
+        dayjs(b.checkInDate).isSame(dayjs(selectedDate, 'DD-MM-YYYY'), 'day')
+      )
+    : bookingsOfSupplier;
   const renderContent = (record) => {
     if (
       record.paymentMethod === 'offline' &&
@@ -96,6 +104,13 @@ function BookingList() {
     } catch (err) {
       setIsOpenDeleteModal(false);
       message.error(err.response?.data || 'Xóa đơn đặt thất bại');
+    }
+  };
+  const onChangeDate = (_, dateString) => {
+    if (!dateString) {
+      setSelectedDate(null);
+    } else {
+      setSelectedDate(dateString);
     }
   };
   const columns = [
@@ -213,8 +228,23 @@ function BookingList() {
           </Title>
         }
       >
+        <div style={{ textAlign: 'right', marginBottom: 10 }}>
+          <Space>
+            <Text strong>Chọn ngày cần xem: </Text>
+            <DatePicker
+              style={{ color: 'blue' }}
+              status='warning'
+              format={{
+                format: 'DD-MM-YYYY',
+                type: 'mask'
+              }}
+              onChange={onChangeDate}
+            />
+          </Space>
+        </div>
+
         <Table
-          dataSource={bookingsOfSupplier}
+          dataSource={filteredBookings}
           rowKey='_id'
           columns={columns}
           pagination={{ pageSize: 5 }}

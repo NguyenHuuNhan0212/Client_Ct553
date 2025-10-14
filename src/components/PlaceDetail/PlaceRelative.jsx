@@ -1,7 +1,7 @@
 import { Col, Divider, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import placeApi from '../../apis/placeService';
-import ServiceCard from '../Service/ServiceCard';
+import ServiceList from '../Service/ServiceList';
 function PlaceRelative({ currentPlace }) {
   const province = currentPlace.address.split(',')[1];
   const [places, setPlaces] = useState([]);
@@ -23,16 +23,10 @@ function PlaceRelative({ currentPlace }) {
         ''
       ) : (
         <>
-          <Divider style={{ fontSize: '24px' }}>Địa điểm tương tự</Divider>
-          {places?.length > 0 && (
-            <Row gutter={[16, 16]} style={{ marginBottom: '20px' }}>
-              {places?.map((s) => (
-                <Col key={s._id} xs={24} sm={12} md={8} lg={6}>
-                  <ServiceCard {...s} isHotel={s.type === 'hotel'} />
-                </Col>
-              ))}
-            </Row>
-          )}
+          <div style={{ margin: '10px' }}>
+            <Divider style={{ fontSize: '24px' }}>Địa điểm tương tự</Divider>
+            {places?.length > 0 && <ServiceList places={places} isSlick />}
+          </div>
         </>
       )}
     </>

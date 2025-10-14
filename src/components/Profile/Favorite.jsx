@@ -20,7 +20,7 @@ function PlaceFavorite() {
       {!placesFavorite.length && (
         <Empty description={'Chưa có địa điểm yêu thích nào'} />
       )}
-      <ServiceList places={placesFavorite} />;
+      <ServiceList places={placesFavorite} />
     </>
   );
 }

@@ -24,6 +24,9 @@ const bookingApi = {
   },
   confirmPayment(bookingId) {
     return axiosClient.patch(`bookings/confirm-payment/${bookingId}`);
+  },
+  createBookingInternal(data) {
+    return axiosClient.post('/bookings/internal', data);
   }
 };
 export default bookingApi;

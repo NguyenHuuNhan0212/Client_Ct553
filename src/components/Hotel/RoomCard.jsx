@@ -193,7 +193,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
           >
             <InputNumber
               min={0}
-              max={10}
+              max={20}
               defaultValue={0}
               style={{ width: '100%' }}
             />

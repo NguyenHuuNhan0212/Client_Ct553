@@ -41,7 +41,7 @@ const GeneralInfoTab = ({
           >
             <Select onChange={(val) => setType(val)}>
               <Option value='hotel'>Khách sạn/nhà nghỉ</Option>
-              <Option value='restaurant'>Nhà hàng</Option>
+              <Option value='restaurant'>Nhà hàng/quán ăn</Option>
               <Option value='cafe'>Quán cafe</Option>
               <Option value='touristSpot'>Địa điểm du lịch</Option>
             </Select>

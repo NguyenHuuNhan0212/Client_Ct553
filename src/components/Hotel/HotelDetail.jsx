@@ -200,7 +200,7 @@ function HotelDetail() {
             <EnvironmentOutlined /> {currentHotel?.info?.address}
           </Paragraph>
           <Paragraph>
-            Chủ địa điểm:{' '}
+            Chủ địa điểm/Quản lý:{' '}
             {capitalizeName(currentHotel?.ownerInfo?.userId?.fullName)}
           </Paragraph>
           <Paragraph>

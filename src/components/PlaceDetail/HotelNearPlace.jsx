@@ -2,6 +2,7 @@ import { Col, Divider, Row } from 'antd';
 import ServiceCard from '../Service/ServiceCard';
 import { useEffect, useState } from 'react';
 import hotelApi from '../../apis/hotelService';
+import ServiceList from '../Service/ServiceList';
 
 function HotelNearPlace({ currentPlace }) {
   const [hotels, setHotels] = useState([]);
@@ -19,18 +20,12 @@ function HotelNearPlace({ currentPlace }) {
         ''
       ) : (
         <>
-          <Divider style={{ fontSize: '24px' }}>
-            Địa điểm lưu trú gần đó
-          </Divider>
-          {hotels?.length > 0 && (
-            <Row gutter={[16, 16]} style={{ marginBottom: '20px' }}>
-              {hotels?.map((s) => (
-                <Col key={s._id} xs={24} sm={12} md={8} lg={6}>
-                  <ServiceCard {...s} isHotel />
-                </Col>
-              ))}
-            </Row>
-          )}{' '}
+          <div style={{ margin: '10px' }}>
+            <Divider style={{ fontSize: '24px' }}>
+              Địa điểm lưu trú gần đó
+            </Divider>
+            {hotels?.length > 0 && <ServiceList places={hotels} isSlick />}
+          </div>
         </>
       )}
     </>
