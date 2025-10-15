@@ -216,17 +216,18 @@ function BookingList() {
               />
             </Tooltip>
           )}
-          {Number(record.totalPrice) !== Number(record.paymentAmount) && (
-            <Tooltip title={'Xác nhận đã thu tiền đầy đủ'}>
-              <Button
-                color='cyan'
-                variant='filled'
-                onClick={() => handleShowModalConfirmPayment(record)}
-              >
-                <CheckCircleOutlined /> Đã thu tiền
-              </Button>
-            </Tooltip>
-          )}
+          {Number(record.totalPrice) !== Number(record.paymentAmount) &&
+            record.status !== 'cancelled' && (
+              <Tooltip title={'Xác nhận đã thu tiền đầy đủ'}>
+                <Button
+                  color='cyan'
+                  variant='filled'
+                  onClick={() => handleShowModalConfirmPayment(record)}
+                >
+                  <CheckCircleOutlined /> Đã thu tiền
+                </Button>
+              </Tooltip>
+            )}
         </Space>
       )
     }

@@ -1,17 +1,79 @@
 import { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
-import { Typography, List, Row, Col, Divider, Layout, Tag } from 'antd';
+import {
+  Typography,
+  List,
+  Row,
+  Col,
+  Divider,
+  Layout,
+  Tag,
+  message,
+  Tooltip
+} from 'antd';
 import { capitalizeName } from '../../utils/capitalize';
 import PlaceRelative from './PlaceRelative';
 import HotelNearPlace from './HotelNearPlace';
 import ServiceOfPlace from './ServiceOfPlace';
+import { getPlacesFavorite } from '../../redux/slices/placeSlice';
+import placeApi from '../../apis/placeService';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { HeartFilled, HeartOutlined } from '@ant-design/icons';
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 function PlaceDetail({ currentPlace }) {
+  console.log(currentPlace);
   const [mainImage, setMainImage] = useState(null);
-
+  const { user } = useSelector((state) => state.user);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const { placesFavorite } = useSelector((state) => state.place);
+  const dispatch = useDispatch();
   const { info, services, ownerInfo } = currentPlace;
+  const navigate = useNavigate();
+  const toggleFavorite = async (e) => {
+    if (!user) {
+      message.warning('Đăng nhập để thêm địa điểm vào danh sách yêu thích');
+      navigate('/login');
+      return;
+    }
+    e.stopPropagation();
+    e.preventDefault();
+    try {
+      if (!isFavorite) {
+        await placeApi.addPlaceFavorite({ placeId: currentPlace?.info?._id });
+        message.success('Đã thêm vào danh sách yêu thích');
+        dispatch(getPlacesFavorite());
+        setIsFavorite(true);
+      } else {
+        await placeApi.removePlaceFavorite({
+          placeId: currentPlace?.info?._id
+        });
+        message.info('Đã xóa khỏi danh sách yêu thích');
+        dispatch(getPlacesFavorite());
+        setIsFavorite(false);
+      }
+    } catch (err) {
+      message.error(err.response?.data?.message || 'Có lỗi xảy ra');
+    }
+  };
+
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(getPlacesFavorite());
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (placesFavorite && placesFavorite.length > 0) {
+      const favoriteIds = placesFavorite.map((f) => f.placeId?._id.toString());
+      setIsFavorite(favoriteIds.includes(currentPlace?.info?._id.toString()));
+    } else {
+      setIsFavorite(false);
+    }
+  }, [placesFavorite, currentPlace?.info?._id]);
+
   useEffect(() => {
     if (info?.images?.length > 0) {
       setMainImage(`http://localhost:3000/${info.images[0]}`);
@@ -82,7 +144,30 @@ function PlaceDetail({ currentPlace }) {
       <Row gutter={5}>
         {/* Thông tin chung */}
         <Col span={16}>
-          <Title level={2}>{capitalizeName(info?.name)}</Title>
+          <Title level={2}>
+            {capitalizeName(info?.name)}{' '}
+            <Tooltip
+              title={
+                !isFavorite
+                  ? 'Thêm vào danh sách yêu thích'
+                  : 'Xóa khỏi danh sách yêu thích'
+              }
+            >
+              <span
+                onClick={toggleFavorite}
+                style={{
+                  fontSize: 22,
+                  color: isFavorite ? 'red' : 'white',
+                  backgroundColor: 'rgba(0,0,0,0.4)',
+                  borderRadius: '50%',
+                  padding: 6,
+                  cursor: 'pointer'
+                }}
+              >
+                {isFavorite ? <HeartFilled /> : <HeartOutlined />}
+              </span>
+            </Tooltip>
+          </Title>
           <Paragraph style={{ fontSize: '16px' }}>
             <b>Địa chỉ:</b> {info?.address}
           </Paragraph>

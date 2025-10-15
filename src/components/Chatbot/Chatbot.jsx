@@ -15,7 +15,7 @@ const { Text } = Typography;
 export default function Chatbot() {
   const { bubbleChat, arrowBottom, wave } = styles;
   const dispatch = useDispatch();
-  const { chat, loading } = useSelector((state) => state.chat);
+  const { chat, loading, tripPlan } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
@@ -27,7 +27,9 @@ export default function Chatbot() {
     dispatch(sendMessageToAI({ question: message }));
     setMessage('');
   };
-  console.log(user);
+  const handleEditItinerary = () => {
+    console.log(tripPlan);
+  };
   return (
     <>
       {/* 💬 Bong bóng chào cố định trên nút chat */}
@@ -91,54 +93,78 @@ export default function Chatbot() {
               key={index}
               style={{
                 display: 'flex',
-                justifyContent:
-                  msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                marginBottom: 30
+                flexDirection: 'column'
               }}
             >
-              {msg.sender !== 'user' && (
-                <>
-                  <span
-                    style={{
-                      backgroundColor: '#787676ff',
-                      borderRadius: '50%',
-                      width: 25,
-                      marginTop: -15,
-                      paddingTop: 5,
-                      textAlign: 'center',
-                      height: 25
-                    }}
-                  >
-                    VT
-                  </span>
-                </>
-              )}
               <div
                 style={{
-                  background:
-                    msg.sender === 'user'
-                      ? 'linear-gradient(135deg, #1677ff, #4096ff)'
-                      : 'white',
-                  color: msg.sender === 'user' ? 'white' : '#333',
-                  padding: '10px 14px',
-                  borderRadius: 16,
-                  maxWidth: '75%',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-                  animation: 'slideIn 0.3s ease'
+                  display: 'flex',
+                  justifyContent:
+                    msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                  marginBottom: 30
                 }}
-                dangerouslySetInnerHTML={{ __html: msg.text }}
-              />
-              {msg.sender === 'user' && (
-                <img
-                  src={`http://localhost:3000${user?.avatarUrl}`}
-                  alt='User'
+              >
+                {msg.sender !== 'user' && (
+                  <>
+                    <span
+                      style={{
+                        backgroundColor: '#787676ff',
+                        borderRadius: '50%',
+                        width: 25,
+                        marginTop: -15,
+                        paddingTop: 5,
+                        textAlign: 'center',
+                        height: 25
+                      }}
+                    >
+                      VT
+                    </span>
+                  </>
+                )}
+                <div
                   style={{
-                    marginTop: -15,
-                    width: 25,
-                    height: 25,
-                    borderRadius: '50%'
+                    background:
+                      msg.sender === 'user'
+                        ? 'linear-gradient(135deg, #1677ff, #4096ff)'
+                        : 'white',
+                    color: msg.sender === 'user' ? 'white' : '#333',
+                    padding: '10px 14px',
+                    borderRadius: 16,
+                    maxWidth: '75%',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                    animation: 'slideIn 0.3s ease'
                   }}
+                  dangerouslySetInnerHTML={{ __html: msg.text }}
                 />
+                {msg.sender === 'user' && (
+                  <img
+                    src={`http://localhost:3000${user?.avatarUrl}`}
+                    alt='User'
+                    style={{
+                      marginTop: -15,
+                      width: 25,
+                      height: 25,
+                      borderRadius: '50%'
+                    }}
+                  />
+                )}
+              </div>
+              {msg.sender !== 'user' && msg.isTripPlan && (
+                <div
+                  style={{
+                    marginLeft: 30,
+                    marginTop: -20
+                  }}
+                >
+                  {' '}
+                  <Button
+                    color='cyan'
+                    variant='filled'
+                    onClick={handleEditItinerary}
+                  >
+                    Chỉnh sửa lịch trình
+                  </Button>
+                </div>
               )}
             </div>
           ))}

@@ -101,7 +101,7 @@ function Booking() {
       }
     }
 
-    const daysLeft = dayjs(checkInDate).diff(today, 'day');
+    const daysLeft = dayjs(checkInDate).diff(today, 'day') + 1;
     if (daysLeft > 0) {
       return <Tag color='purple'>{daysLeft} ngày đếm ngược</Tag>;
     }

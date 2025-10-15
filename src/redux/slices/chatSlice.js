@@ -19,11 +19,13 @@ const chatSlice = createSlice({
     chat: [
       {
         sender: 'bot',
-        text: 'Xin chào! 🤖 Tôi là Trợ lý Du lịch AI 🌴. Hãy hỏi tôi về các điểm đến, khách sạn hay lịch trình du lịch nhé!'
+        text: 'Xin chào! 🤖 Tôi là Trợ lý Du lịch AI 🌴. Hãy hỏi tôi về các điểm đến, khách sạn hay lịch trình du lịch nhé!',
+        isTripPlan: false
       }
     ],
     loading: false,
-    error: null
+    error: null,
+    tripPlan: null
   },
   reducers: {
     addUserMessage: (state, action) => {
@@ -40,7 +42,14 @@ const chatSlice = createSlice({
       })
       .addCase(sendMessageToAI.fulfilled, (state, action) => {
         state.loading = false;
-        state.chat.push({ sender: 'bot', text: action.payload.answer });
+        state.chat.push({
+          sender: 'bot',
+          text: action.payload.answer,
+          isTripPlan: action.payload.isTripPlan ? true : false
+        });
+        state.tripPlan = action.payload.tripPlan
+          ? action.payload.tripPlan
+          : null;
       })
       .addCase(sendMessageToAI.rejected, (state, action) => {
         state.loading = false;
