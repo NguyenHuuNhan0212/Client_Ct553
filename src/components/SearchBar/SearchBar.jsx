@@ -1,10 +1,10 @@
 // src/components/SearchBar/SearchBar.jsx
-import { Input, Select, Space } from 'antd';
+import { Input, Select, Space, Typography } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 
 const { Option } = Select;
-
+const { Text } = Typography;
 function SearchBar({ placeholder = 'Tìm kiếm...', onSearch, onFilterType }) {
   const [value, setValue] = useState('');
   const [selectedType, setSelectedType] = useState('');
@@ -39,6 +39,7 @@ function SearchBar({ placeholder = 'Tìm kiếm...', onSearch, onFilterType }) {
   ];
   return (
     <Space>
+      <Text strong>Chọn loại địa điểm: </Text>
       <Select
         placeholder='Chọn loại địa điểm'
         style={{ width: 200 }}
@@ -52,7 +53,7 @@ function SearchBar({ placeholder = 'Tìm kiếm...', onSearch, onFilterType }) {
           </Option>
         ))}
       </Select>
-
+      <Text strong>Nhập từ khóa: </Text>
       <Input
         prefix={<SearchOutlined />}
         placeholder={placeholder}

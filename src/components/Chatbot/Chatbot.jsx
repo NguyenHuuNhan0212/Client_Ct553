@@ -3,7 +3,8 @@ import { FloatButton, Drawer, Input, Button, Typography, Spin } from 'antd';
 import {
   WechatWorkOutlined,
   SendOutlined,
-  CloseOutlined
+  CloseOutlined,
+  MessageOutlined
 } from '@ant-design/icons';
 import styles from './style.module.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +16,7 @@ export default function Chatbot() {
   const { bubbleChat, arrowBottom, wave } = styles;
   const dispatch = useDispatch();
   const { chat, loading } = useSelector((state) => state.chat);
+  const { user } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
   const [message, setMessage] = useState('');
@@ -25,7 +27,7 @@ export default function Chatbot() {
     dispatch(sendMessageToAI({ question: message }));
     setMessage('');
   };
-
+  console.log(user);
   return (
     <>
       {/* 💬 Bong bóng chào cố định trên nút chat */}
@@ -60,13 +62,13 @@ export default function Chatbot() {
       <Drawer
         title={
           <Text strong style={{ color: '#1677ff' }}>
-            Trợ lý Du lịch AI 💬
+            VIGO TRAVEL AI <MessageOutlined />
           </Text>
         }
         placement='right'
         onClose={() => setOpen(false)}
         open={open}
-        width={400}
+        width={450}
         styles={{
           body: {
             display: 'flex',
@@ -91,9 +93,26 @@ export default function Chatbot() {
                 display: 'flex',
                 justifyContent:
                   msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                marginBottom: 10
+                marginBottom: 30
               }}
             >
+              {msg.sender !== 'user' && (
+                <>
+                  <span
+                    style={{
+                      backgroundColor: '#787676ff',
+                      borderRadius: '50%',
+                      width: 25,
+                      marginTop: -15,
+                      paddingTop: 5,
+                      textAlign: 'center',
+                      height: 25
+                    }}
+                  >
+                    VT
+                  </span>
+                </>
+              )}
               <div
                 style={{
                   background:
@@ -107,9 +126,20 @@ export default function Chatbot() {
                   boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
                   animation: 'slideIn 0.3s ease'
                 }}
-              >
-                {msg.text}
-              </div>
+                dangerouslySetInnerHTML={{ __html: msg.text }}
+              />
+              {msg.sender === 'user' && (
+                <img
+                  src={`http://localhost:3000${user?.avatarUrl}`}
+                  alt='User'
+                  style={{
+                    marginTop: -15,
+                    width: 25,
+                    height: 25,
+                    borderRadius: '50%'
+                  }}
+                />
+              )}
             </div>
           ))}
           {loading && (

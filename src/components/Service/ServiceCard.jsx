@@ -60,7 +60,7 @@ export default function ServiceCard({
 
   useEffect(() => {
     if (placesFavorite && placesFavorite.length > 0) {
-      const favoriteIds = placesFavorite.map((f) => f._id.toString());
+      const favoriteIds = placesFavorite.map((f) => f.placeId?._id.toString());
       setIsFavorite(favoriteIds.includes(_id.toString()));
     } else {
       setIsFavorite(false);

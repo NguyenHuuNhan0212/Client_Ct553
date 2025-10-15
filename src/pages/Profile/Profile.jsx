@@ -51,7 +51,7 @@ export default function Profile() {
     }
   ];
 
-  if (user?.role === 'provider') {
+  if (user?.role !== 'user') {
     menuItems.push(
       {
         key: '5',

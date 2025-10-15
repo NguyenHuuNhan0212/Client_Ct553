@@ -170,7 +170,7 @@ export default function Header() {
         )
       },
 
-      ...(user?.role === 'provider'
+      ...(user?.role !== 'user'
         ? [
             {
               key: 'services',

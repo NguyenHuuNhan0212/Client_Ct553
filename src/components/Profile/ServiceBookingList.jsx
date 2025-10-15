@@ -5,6 +5,7 @@ import {
   Descriptions,
   message,
   Modal,
+  Select,
   Space,
   Table,
   Tag,
@@ -28,15 +29,23 @@ function BookingList() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedPlace, setSelectedPlace] = useState(null);
   const [isOpenConfirmPaymentModal, setIsOpenConfirmPaymentModal] =
     useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const filteredBookings = selectedDate
-    ? bookingsOfSupplier.filter((b) =>
-        dayjs(b.checkInDate).isSame(dayjs(selectedDate, 'DD-MM-YYYY'), 'day')
-      )
-    : bookingsOfSupplier;
+  const filteredBookings = bookingsOfSupplier.filter((b) => {
+    const matchDate = selectedDate
+      ? dayjs(b.checkInDate).isSame(dayjs(selectedDate, 'DD-MM-YYYY'), 'day')
+      : true;
+
+    const matchPlace = selectedPlace
+      ? b.placeId?.name.toLowerCase() === selectedPlace.toLowerCase()
+      : true;
+
+    return matchDate && matchPlace;
+  });
+
   const renderContent = (record) => {
     if (
       record.paymentMethod === 'offline' &&
@@ -67,7 +76,12 @@ function BookingList() {
       return <Tag color='red'>Đã hủy</Tag>;
     }
   };
-
+  const options = bookingsOfSupplier?.map((b) => {
+    return {
+      value: b.placeId?.name,
+      label: b.placeId?.name
+    };
+  });
   const handleShowModal = (record) => {
     setIsOpenModal(true);
     setSelectedBooking(record);
@@ -112,6 +126,9 @@ function BookingList() {
     } else {
       setSelectedDate(dateString);
     }
+  };
+  const onChangeSelect = (value) => {
+    setSelectedPlace(value);
   };
   const columns = [
     {
@@ -230,6 +247,16 @@ function BookingList() {
       >
         <div style={{ textAlign: 'right', marginBottom: 10 }}>
           <Space>
+            <Text strong>Chọn địa điểm: </Text>
+            <Select
+              style={{ width: '100%' }}
+              showSearch
+              allowClear
+              placeholder='Chọn địa điểm cần xem đơn'
+              optionFilterProp='label'
+              onChange={onChangeSelect}
+              options={options}
+            />
             <Text strong>Chọn ngày cần xem: </Text>
             <DatePicker
               style={{ color: 'blue' }}

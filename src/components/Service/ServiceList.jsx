@@ -17,9 +17,17 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import ServiceCard from './ServiceCard';
-import { Col, Row } from 'antd';
+import { Button, Col, Row, Tooltip } from 'antd';
+import { useState } from 'react';
 
 export default function ServiceList({ places, isSlick = false }) {
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 8);
+  };
+
+  const displayedPlaces = places.slice(0, visibleCount);
   if (isSlick) {
     return (
       <div style={{ margin: '30px 0' }}>
@@ -51,12 +59,23 @@ export default function ServiceList({ places, isSlick = false }) {
 
   // Dạng grid mặc định
   return (
-    <Row gutter={[16, 16]}>
-      {places?.map((s) => (
-        <Col key={s._id} xs={24} sm={12} md={8} lg={6}>
-          <ServiceCard {...s} isHotel={s.type === 'hotel'} />
-        </Col>
-      ))}
-    </Row>
+    <>
+      <Row gutter={[16, 16]}>
+        {displayedPlaces?.map((s) => (
+          <Col key={s._id} xs={24} sm={12} md={8} lg={6}>
+            <ServiceCard {...s} isHotel={s.type === 'hotel'} />
+          </Col>
+        ))}
+      </Row>
+      {visibleCount < places.length && (
+        <div style={{ textAlign: 'center', marginTop: 20 }}>
+          <Tooltip title={'Nhấn để xem thêm'}>
+            <Button color='primary' variant='outlined' onClick={handleLoadMore}>
+              Xem Thêm
+            </Button>
+          </Tooltip>
+        </div>
+      )}
+    </>
   );
 }

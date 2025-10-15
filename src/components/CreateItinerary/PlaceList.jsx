@@ -55,7 +55,7 @@ export default function PlaceList({ form, places = [], addActivity }) {
       title={
         <>
           <Title level={2}>📍 Danh sách địa điểm</Title>
-          <Text disabled>
+          <Text type='danger'>
             Bạn sẽ thấy danh sách địa điểm tương ứng khi bạn chọn địa điểm đến.
           </Text>
         </>
