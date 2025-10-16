@@ -29,7 +29,6 @@ export default function CreateItineraryPro() {
   const dispatch = useDispatch();
   const { places } = useSelector((state) => state.place);
   const { token } = useSelector((state) => state.auth);
-
   // 🧮 Tính số ngày
   const handleDateChange = (dates) => {
     if (!dates || dates.length < 2) return;
@@ -76,12 +75,13 @@ export default function CreateItineraryPro() {
     }
 
     const details = form.details.flatMap((d) =>
-      d.activities.map((a) => ({
+      d.activities.map((a, actIndex) => ({
         placeId: a.placeId,
-        visitDay: `Ngày ${d.day}`,
+        visitDay: d.day,
         note: a.note,
         startTime: a.startTime,
-        endTime: a.endTime
+        endTime: a.endTime,
+        order: actIndex + 1
       }))
     );
 

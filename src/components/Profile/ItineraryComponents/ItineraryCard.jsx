@@ -74,7 +74,7 @@ export default function ItineraryCard({ item, onSelect }) {
                   justifyContent: 'center'
                 }}
               >
-                <Spin tip='Đang tải ảnh...' />
+                <Spin />
               </div>
             )}
             {!loading && (

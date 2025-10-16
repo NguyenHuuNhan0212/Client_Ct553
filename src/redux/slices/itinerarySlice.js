@@ -23,7 +23,17 @@ export const getAllItineraryByUserId = createAsyncThunk(
     }
   }
 );
-
+export const getItineraryDetail = createAsyncThunk(
+  'itinerary/getItineraryDetail',
+  async (itineraryId, { rejectWithValue }) => {
+    try {
+      const res = await itineraryApi.getItineraryDetail(itineraryId);
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
 const itinerarySlice = createSlice({
   name: 'itinerary',
   initialState: {
@@ -56,6 +66,17 @@ const itinerarySlice = createSlice({
       .addCase(getAllItineraryByUserId.rejected, (state) => {
         state.loading = false;
         state.itinerariesOfUser = [];
+      })
+      .addCase(getItineraryDetail.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentItinerary = action.payload;
+      })
+      .addCase(getItineraryDetail.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getItineraryDetail.rejected, (state) => {
+        state.loading = false;
+        state.currentItinerary = null;
       });
   }
 });

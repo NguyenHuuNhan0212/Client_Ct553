@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FilterBar from './ItineraryComponents/FilterBar';
 import ItineraryList from './ItineraryComponents/ItineraryList';
 import ItineraryDetail from './ItineraryComponents/ItineraryDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllItineraryByUserId } from '../../redux/slices/itinerarySlice';
+import { Button, Empty } from 'antd';
 
 export default function ItineraryComponent() {
+  const navigate = useNavigate();
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItinerary, setSelectedItinerary] = useState(null);
@@ -21,6 +24,9 @@ export default function ItineraryComponent() {
       i.destination.toLowerCase().includes(searchQuery.toLowerCase());
     return matchFilter && matchSearch;
   });
+  const handleCreateItinerary = () => {
+    navigate('/itinerary');
+  };
   useEffect(() => {
     dispatch(getAllItineraryByUserId());
   }, [dispatch]);
@@ -55,11 +61,21 @@ export default function ItineraryComponent() {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
           />
-
-          <ItineraryList
-            itineraries={filtered}
-            onSelect={setSelectedItinerary}
-          />
+          {!itineraries.length ? (
+            <>
+              <Empty description={'Bạn chưa tạo lịch trình du lịch nào.'} />{' '}
+              <div style={{ textAlign: 'center', marginTop: 10 }}>
+                <Button type='primary' onClick={handleCreateItinerary}>
+                  Tạo lịch trình ngay
+                </Button>
+              </div>
+            </>
+          ) : (
+            <ItineraryList
+              itineraries={filtered}
+              onSelect={setSelectedItinerary}
+            />
+          )}
         </>
       ) : (
         <ItineraryDetail
