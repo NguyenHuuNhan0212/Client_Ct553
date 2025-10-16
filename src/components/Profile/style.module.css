@@ -42,3 +42,13 @@
   justify-content: space-around;
   gap: 20px;
 }
+
+.hoverImageInItineraryCard {
+  height: 180px;
+  width: 100%;
+  object-fit: cover;
+}
+.hoverImageInItineraryCard:hover {
+  transform: scale(0.9);
+  transition: transform 0.8s ease;
+}

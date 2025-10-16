@@ -151,7 +151,7 @@ export default function Header() {
       {
         key: 'itinerary',
         icon: <ScheduleOutlined />,
-        label: <Link to='/profile?tab=2'>Lịch trình</Link>
+        label: <Link to='/profile?tab=2'>Lịch trình của tôi</Link>
       },
       {
         key: 'booking',

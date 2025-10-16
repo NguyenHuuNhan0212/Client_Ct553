@@ -1,24 +1,47 @@
-import React from 'react';
-import { Button, Card, List, Typography, Row, Col, Tag } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Card, List, Typography, Row, Col, Tag, Tooltip } from 'antd';
 import {
   CalendarOutlined,
   TeamOutlined,
   DollarOutlined,
   EnvironmentOutlined
 } from '@ant-design/icons';
-
+const UNSPLASH_KEY = '553eU4V8AG8l8WrGcyX_rD8K0lc2Wen7cNhKerqzUDg';
 export default function ItineraryDetail({ itinerary, onBack }) {
+  const [image, setImage] = useState('');
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const res = await fetch(
+          `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
+            itinerary.destination || 'travel'
+          )}&orientation=landscape&per_page=1&client_id=${UNSPLASH_KEY}`
+        );
+        const data = await res.json();
+        setImage(
+          data.results?.[0]?.urls?.regular ||
+            'http://localhost:3000/uploads/default-travel.jpg'
+        );
+      } catch (err) {
+        console.error('Lỗi khi tải ảnh:', err);
+      }
+    };
+    fetchImage();
+  }, [itinerary.destination]);
+
   return (
     <div style={{ maxWidth: 800, margin: '0 auto' }}>
-      <Button onClick={onBack} style={{ marginBottom: 16 }}>
-        ← Quay lại
-      </Button>
+      <Tooltip title={'Trở lại xem danh sách lịch trình'}>
+        <Button onClick={onBack} style={{ marginBottom: 16 }}>
+          ← Quay lại
+        </Button>
+      </Tooltip>
 
       <Card
         cover={
           <img
             alt={itinerary.title}
-            src={itinerary.image}
+            src={image}
             style={{ height: 300, objectFit: 'cover' }}
           />
         }

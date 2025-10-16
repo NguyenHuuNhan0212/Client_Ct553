@@ -38,7 +38,7 @@ export default function Profile() {
 
   const menuItems = [
     { key: '1', icon: <UserOutlined />, label: 'Thông tin cá nhân' },
-    { key: '2', icon: <CalendarOutlined />, label: 'Lịch trình' },
+    { key: '2', icon: <CalendarOutlined />, label: 'Lịch trình của tôi' },
     { key: '3', icon: <ShoppingCartOutlined />, label: 'Lịch sử đặt dịch vụ' },
     {
       key: '4',
@@ -65,76 +65,13 @@ export default function Profile() {
       }
     );
   }
-  // Gia lap
-  const mockItinerary = {
-    itineraryId: 1,
-    title: 'Hành trình Hà Nội - Hạ Long',
-    numDays: 3,
-    details: [
-      {
-        detailId: 1,
-        visitDay: 1,
-        note: 'Khởi hành từ Hà Nội',
-        places: [
-          {
-            name: 'Văn Miếu',
-            type: 'Historical',
-            description: 'Trường đại học đầu tiên của Việt Nam',
-            imageUrl:
-              'https://media-cdn.tripadvisor.com/media/photo-s/15/41/05/9d/temple-of-literature.jpg'
-          },
-          {
-            name: 'Hồ Gươm',
-            type: 'Nature',
-            description: 'Trái tim thủ đô',
-            imageUrl: 'https://static.vinwonders.com/2022/05/ho-hoan-kiem-1.jpg'
-          }
-        ]
-      },
-      {
-        detailId: 2,
-        visitDay: 2,
-        note: 'Tham quan và nghỉ đêm trên du thuyền',
-        places: [
-          {
-            name: 'Vịnh Hạ Long',
-            type: 'Nature',
-            description: 'Kỳ quan thiên nhiên thế giới',
-            imageUrl:
-              'https://ik.imagekit.io/tvlk/blog/2022/08/vinh-ha-long-3.jpg'
-          },
-          {
-            name: 'Hang Sửng Sốt',
-            type: 'Cave',
-            description: 'Một trong những hang đẹp nhất Hạ Long',
-            imageUrl:
-              'https://cdn.vntrip.vn/cam-nang/wp-content/uploads/2017/08/18.jpg'
-          }
-        ]
-      },
-      {
-        detailId: 3,
-        visitDay: 3,
-        note: 'Mua sắm và trở về',
-        places: [
-          {
-            name: 'Chợ đêm Hạ Long',
-            type: 'Shopping',
-            description: 'Địa điểm mua quà lưu niệm nổi tiếng',
-            imageUrl:
-              'https://ik.imagekit.io/tvlk/blog/2022/07/cho-dem-ha-long-2.jpg'
-          }
-        ]
-      }
-    ]
-  };
 
   const renderContent = () => {
     switch (selectedKey) {
       case '1':
         return <Info user={user} />;
       case '2':
-        return <ItineraryComponent itinerary={mockItinerary} />;
+        return <ItineraryComponent />;
       case '3':
         return <Booking />;
       case '4':

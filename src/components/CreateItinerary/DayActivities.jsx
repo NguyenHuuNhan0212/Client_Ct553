@@ -152,7 +152,6 @@ export default function DayActivities({ form, setForm, removeActivity }) {
 
   return (
     <Collapse
-      accordion
       items={collapseItems}
       style={{
         marginTop: 16,
