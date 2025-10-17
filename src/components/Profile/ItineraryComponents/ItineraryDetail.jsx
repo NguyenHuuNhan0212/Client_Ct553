@@ -11,7 +11,8 @@ import {
   message,
   Divider,
   Timeline,
-  Space
+  Space,
+  Modal
 } from 'antd';
 import {
   CalendarOutlined,
@@ -20,11 +21,18 @@ import {
   EnvironmentOutlined,
   UserOutlined,
   LineOutlined,
-  ClockCircleOutlined
+  ClockCircleOutlined,
+  EditOutlined,
+  FormOutlined,
+  DeleteOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
-import { getItineraryDetail } from '../../../redux/slices/itinerarySlice';
+import {
+  deleteItinerary,
+  getAllItineraryByUserId,
+  getItineraryDetail
+} from '../../../redux/slices/itinerarySlice';
 import itineraryApi from '../../../apis/itineraryService';
 import ItineraryPriceModal from './ItieraryPriceAndPeopleForm';
 import PlaceItineraryDetail from './PlaceItemInItineraryDetail';
@@ -34,6 +42,7 @@ export default function ItineraryDetail({ itinerary, onBack }) {
   const dispatch = useDispatch();
   const { currentItinerary } = useSelector((state) => state.itinerary);
   const [open, setOpen] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const today = dayjs();
   const isTrueDay = today.isAfter(
     dayjs(currentItinerary?.itinerary?.startDate)
@@ -53,7 +62,9 @@ export default function ItineraryDetail({ itinerary, onBack }) {
   const handleOpen = () => {
     setOpen(true);
   };
-
+  const handleOpenDeleteModal = () => {
+    setOpenDeleteModal(true);
+  };
   const handleSubmit = async (data) => {
     try {
       await itineraryApi.addPriceAndPeople(data);
@@ -61,6 +72,18 @@ export default function ItineraryDetail({ itinerary, onBack }) {
       dispatch(getItineraryDetail(data.itineraryId));
     } catch (err) {
       message.error(err.response?.data?.message || 'Có lỗi xảy ra.');
+    }
+  };
+
+  const handleDeleteItinerary = async () => {
+    try {
+      dispatch(deleteItinerary(currentItinerary?.itinerary?._id));
+      message.success('Xóa lịch trình thành công.');
+      dispatch(getAllItineraryByUserId());
+      setOpenDeleteModal(false);
+      onBack();
+    } catch (err) {
+      message.error(err.response?.data?.message || 'Lỗi khi xóa.');
     }
   };
   useEffect(() => {
@@ -106,12 +129,9 @@ export default function ItineraryDetail({ itinerary, onBack }) {
           />
         }
       >
-        <Typography.Title level={2}>
-          {currentItinerary?.itinerary?.title}
-        </Typography.Title>
-        <Row gutter={30} style={{ marginTop: 20 }}>
+        <Row gutter={30}>
           <Col
-            span={12}
+            span={16}
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -119,6 +139,9 @@ export default function ItineraryDetail({ itinerary, onBack }) {
               marginBottom: 12
             }}
           >
+            <Typography.Title level={2}>
+              {currentItinerary?.itinerary?.title}
+            </Typography.Title>
             <div style={{ color: '#06b6d4', fontWeight: 500 }}>
               <EnvironmentOutlined /> {currentItinerary?.itinerary?.destination}
             </div>
@@ -149,7 +172,17 @@ export default function ItineraryDetail({ itinerary, onBack }) {
               </Tag>
             </div>
           </Col>
-          <Col span={12} style={{ textAlign: 'right', marginTop: 30 }}>
+          <Col
+            span={8}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+              marginTop: 30,
+              justifyContent: 'center',
+              marginBottom: 12
+            }}
+          >
             {currentItinerary?.itinerary?.status === 'upcoming' &&
               isTrueDay && (
                 <Tooltip title={'Nhấn để xác nhận đã hoàn thành chuyến đi'}>
@@ -171,10 +204,26 @@ export default function ItineraryDetail({ itinerary, onBack }) {
                   style={{ fontWeight: 500 }}
                   onClick={handleOpen}
                 >
-                  Cập nhật chí phí và số người
+                  <FormOutlined /> Cập nhật chí phí và số người
                 </Button>
               </Tooltip>
             )}
+            <Tooltip title={'Nhấn để xóa lịch trình'}>
+              <Button
+                color='danger'
+                variant='filled'
+                style={{ fontWeight: 500 }}
+                onClick={handleOpenDeleteModal}
+              >
+                <DeleteOutlined /> Xóa lịch trình
+              </Button>
+            </Tooltip>
+
+            <Tooltip title={'Nhấn để chỉnh sửa lịch trình'}>
+              <Button color='cyan' variant='filled' style={{ fontWeight: 500 }}>
+                <EditOutlined /> Chỉnh sửa lịch trình
+              </Button>
+            </Tooltip>
           </Col>
         </Row>
 
@@ -222,7 +271,6 @@ export default function ItineraryDetail({ itinerary, onBack }) {
             </div>
 
             <Timeline
-              mode='alternate'
               items={day.places?.map((p) => ({
                 dot: <ClockCircleOutlined />,
 
@@ -238,6 +286,22 @@ export default function ItineraryDetail({ itinerary, onBack }) {
         onSubmit={handleSubmit}
         itinerary={currentItinerary?.itinerary}
       />
+      <Modal
+        open={openDeleteModal}
+        onCancel={() => setOpenDeleteModal(false)}
+        okText={'Xác nhận'}
+        onOk={handleDeleteItinerary}
+        cancelText={'Hủy'}
+      >
+        <Typography.Title level={4}>Xác nhận xóa lịch trình</Typography.Title>
+        <Typography.Text>
+          Bạn có chắc chắn muốn xóa lịch trình có tiêu đề{' '}
+          <Typography.Text type={'danger'} style={{ fontWeight: 500 }}>
+            {currentItinerary?.itinerary?.title}{' '}
+          </Typography.Text>{' '}
+          không?
+        </Typography.Text>
+      </Modal>
     </div>
   );
 }

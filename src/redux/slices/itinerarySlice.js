@@ -34,6 +34,17 @@ export const getItineraryDetail = createAsyncThunk(
     }
   }
 );
+export const deleteItinerary = createAsyncThunk(
+  'itinerary/deleteItinerary',
+  async (itineraryId, { rejectWithValue }) => {
+    try {
+      const res = await itineraryApi.deleteItinerary(itineraryId);
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
 const itinerarySlice = createSlice({
   name: 'itinerary',
   initialState: {
@@ -80,6 +91,16 @@ const itinerarySlice = createSlice({
       .addCase(getItineraryDetail.rejected, (state) => {
         state.loading = false;
         state.currentItinerary = null;
+      })
+      .addCase(deleteItinerary.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteItinerary.fulfilled, (state) => {
+        state.loading = false;
+        state.currentItinerary = null;
+      })
+      .addCase(deleteItinerary.rejected, (state) => {
+        state.loading = false;
       });
   }
 });

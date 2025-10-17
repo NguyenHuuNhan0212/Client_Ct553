@@ -15,4 +15,8 @@
   font-weight: bold;
   font-size: 20px;
   margin-right: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }

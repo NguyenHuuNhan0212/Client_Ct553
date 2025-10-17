@@ -25,7 +25,7 @@ import { getInfoUser } from '../../redux/slices/userSlice';
 import { logout } from '../../redux/slices/authSlice';
 import { capitalizeName } from '../../utils/capitalize';
 import { getPlacesFavorite, setPlaceType } from '../../redux/slices/placeSlice';
-
+import logoImage from '../../assets/images/logo.svg';
 const { Header: AntHeader } = Layout;
 
 export default function Header() {
@@ -114,15 +114,6 @@ export default function Header() {
         </Link>
       )
     },
-    {
-      key: 'itinerary',
-      icon: isMobile ? <CalendarOutlined /> : null,
-      label: (
-        <Link to='/itinerary' style={{ fontSize: '16px', fontWeight: '600' }}>
-          Tạo lịch trình
-        </Link>
-      )
-    },
     ...(user?.role === 'provider'
       ? [
           {
@@ -206,11 +197,13 @@ export default function Header() {
       style={{ display: 'flex', alignItems: 'center' }}
     >
       {/* Logo */}
-      <div className={logo}>
-        <Link to='/' style={{ color: 'white', fontWeight: 700, fontSize: 20 }}>
-          Vigo Travel
-        </Link>
-      </div>
+
+      <Link to='/'>
+        <div className={logo}>
+          <img src={logoImage} style={{ width: 40, height: '100%' }} alt='' />
+          <span>Vigo Travel</span>
+        </div>
+      </Link>
 
       {/* Menu trái */}
       {!isMobile && (

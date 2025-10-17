@@ -18,6 +18,9 @@ const itineraryApi = {
       `/itinerary/price-people/${data.itineraryId}`,
       data
     );
+  },
+  deleteItinerary(itineraryId) {
+    return axiosClient.delete(`/itinerary/${itineraryId}`);
   }
 };
 export default itineraryApi;

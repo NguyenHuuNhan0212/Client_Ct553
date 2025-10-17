@@ -10,11 +10,16 @@ import {
   Select,
   Typography
 } from 'antd';
-import { EnvironmentOutlined } from '@ant-design/icons';
+import {
+  CalendarOutlined,
+  CarOutlined,
+  EnvironmentOutlined,
+  SaveOutlined
+} from '@ant-design/icons';
 import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
-const { Text } = Typography;
+const { Title, Text } = Typography;
 export default function ItineraryForm({
   form,
   setForm,
@@ -36,10 +41,21 @@ export default function ItineraryForm({
   }, []);
   return (
     <Card
-      title='🗓️ Lên kế hoạch cho chuyến đi của bạn'
+      title={
+        <>
+          {' '}
+          <Title level={2} style={{ color: '#06b6d4' }}>
+            <CalendarOutlined /> Lên kế hoạch cho chuyến đi của bạn
+          </Title>
+          <Text type='secondary'>
+            <CarOutlined /> Hãy bắt đầu hành trình của bạn! Chỉ vài bước để tạo
+            lịch trình hoàn hảo.{' '}
+          </Text>
+        </>
+      }
       extra={
         <Button type='primary' onClick={handleSave}>
-          Lưu lịch trình
+          <SaveOutlined /> Lưu lịch trình
         </Button>
       }
       style={{ borderRadius: 16, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}

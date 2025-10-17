@@ -35,7 +35,8 @@ export default function ItineraryComponent() {
   };
   useEffect(() => {
     dispatch(getAllItineraryByUserId());
-  }, [dispatch]);
+  }, [dispatch, currentItinerary]);
+
   return (
     <div
       style={{

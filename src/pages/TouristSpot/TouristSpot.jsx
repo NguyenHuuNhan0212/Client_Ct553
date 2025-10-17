@@ -52,7 +52,6 @@ function TouristSpotPage() {
     };
     fetchRestaurant();
   }, [type]);
-  console.log(isSearch);
   return (
     <Layout>
       <Header />

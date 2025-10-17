@@ -121,6 +121,7 @@ export default function Banner() {
                       padding: '0 30px',
                       transition: 'all 0.8s ease'
                     }}
+                    onClick={() => navigate('itinerary/explore')}
                   >
                     <SearchOutlined /> Khám phá lịch trình
                   </Button>
