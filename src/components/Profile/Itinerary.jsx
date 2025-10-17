@@ -4,18 +4,24 @@ import FilterBar from './ItineraryComponents/FilterBar';
 import ItineraryList from './ItineraryComponents/ItineraryList';
 import ItineraryDetail from './ItineraryComponents/ItineraryDetail';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllItineraryByUserId } from '../../redux/slices/itinerarySlice';
+import {
+  clearCurrentItinerary,
+  getAllItineraryByUserId
+} from '../../redux/slices/itinerarySlice';
 import { Button, Empty } from 'antd';
 
 export default function ItineraryComponent() {
   const navigate = useNavigate();
-  const [selectedFilter, setSelectedFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedItinerary, setSelectedItinerary] = useState(null);
-  const dispatch = useDispatch();
-  const { itinerariesOfUser: itineraries } = useSelector(
+  const { itinerariesOfUser: itineraries, currentItinerary } = useSelector(
     (state) => state.itinerary
   );
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const [selectedItinerary, setSelectedItinerary] = useState(
+    currentItinerary || null
+  );
+  const dispatch = useDispatch();
 
   const filtered = itineraries.filter((i) => {
     const matchFilter = selectedFilter === 'all' || i.status === selectedFilter;
@@ -80,7 +86,10 @@ export default function ItineraryComponent() {
       ) : (
         <ItineraryDetail
           itinerary={selectedItinerary}
-          onBack={() => setSelectedItinerary(null)}
+          onBack={() => {
+            setSelectedItinerary(null);
+            dispatch(clearCurrentItinerary());
+          }}
         />
       )}
     </div>

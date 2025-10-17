@@ -43,9 +43,6 @@ function PlaceFavorite() {
         </Space>
       </div>
 
-      {!placesFavorite.length && (
-        <Empty description={'Chưa có địa điểm yêu thích nào'} />
-      )}
       <ServiceList places={filteredPlacesFavorite} />
     </>
   );

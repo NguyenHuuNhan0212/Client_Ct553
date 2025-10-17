@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Children, useEffect, useState } from 'react';
 import {
   Button,
   Card,
@@ -8,7 +8,10 @@ import {
   Col,
   Tag,
   Tooltip,
-  message
+  message,
+  Divider,
+  Timeline,
+  Space
 } from 'antd';
 import {
   CalendarOutlined,
@@ -16,13 +19,15 @@ import {
   DollarOutlined,
   EnvironmentOutlined,
   UserOutlined,
-  LineOutlined
+  LineOutlined,
+  ClockCircleOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { getItineraryDetail } from '../../../redux/slices/itinerarySlice';
 import itineraryApi from '../../../apis/itineraryService';
 import ItineraryPriceModal from './ItieraryPriceAndPeopleForm';
+import PlaceItineraryDetail from './PlaceItemInItineraryDetail';
 const UNSPLASH_KEY = '553eU4V8AG8l8WrGcyX_rD8K0lc2Wen7cNhKerqzUDg';
 export default function ItineraryDetail({ itinerary, onBack }) {
   const [image, setImage] = useState('');
@@ -33,6 +38,7 @@ export default function ItineraryDetail({ itinerary, onBack }) {
   const isTrueDay = today.isAfter(
     dayjs(currentItinerary?.itinerary?.startDate)
   );
+
   const handleUpdateStatus = async () => {
     try {
       await itineraryApi.updateStatusItinerary(
@@ -47,8 +53,8 @@ export default function ItineraryDetail({ itinerary, onBack }) {
   const handleOpen = () => {
     setOpen(true);
   };
+
   const handleSubmit = async (data) => {
-    console.log(data);
     try {
       await itineraryApi.addPriceAndPeople(data);
       message.success('Thêm chi phí và số người thành công.');
@@ -77,11 +83,14 @@ export default function ItineraryDetail({ itinerary, onBack }) {
     fetchImage();
   }, [itinerary.destination]);
   useEffect(() => {
-    dispatch(getItineraryDetail(itinerary._id));
-  }, [dispatch, itinerary._id]);
+    const itineraryId = itinerary.itineraryDetail
+      ? itinerary.itinerary?._id
+      : itinerary?._id;
+    dispatch(getItineraryDetail(itineraryId));
+  }, [dispatch, itinerary]);
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto' }}>
+    <div style={{ maxWidth: '100%', margin: '0 auto' }}>
       <Tooltip title={'Trở lại xem danh sách lịch trình'}>
         <Button onClick={onBack} style={{ marginBottom: 16 }}>
           ← Quay lại
@@ -143,24 +152,28 @@ export default function ItineraryDetail({ itinerary, onBack }) {
           <Col span={12} style={{ textAlign: 'right', marginTop: 30 }}>
             {currentItinerary?.itinerary?.status === 'upcoming' &&
               isTrueDay && (
+                <Tooltip title={'Nhấn để xác nhận đã hoàn thành chuyến đi'}>
+                  <Button
+                    color='purple'
+                    variant='filled'
+                    style={{ fontWeight: 500 }}
+                    onClick={handleUpdateStatus}
+                  >
+                    Đã hoàn thành chuyến đi
+                  </Button>
+                </Tooltip>
+              )}
+            {currentItinerary?.itinerary?.status === 'completed' && (
+              <Tooltip title={'Nhấn để cập nhật chi phí của chuyến đi'}>
                 <Button
                   color='purple'
                   variant='filled'
                   style={{ fontWeight: 500 }}
-                  onClick={handleUpdateStatus}
+                  onClick={handleOpen}
                 >
-                  Đã hoàn thành chuyến đi
+                  Cập nhật chí phí và số người
                 </Button>
-              )}
-            {currentItinerary?.itinerary?.status === 'completed' && (
-              <Button
-                color='purple'
-                variant='filled'
-                style={{ fontWeight: 500 }}
-                onClick={handleOpen}
-              >
-                Cập nhật chí phí và số người
-              </Button>
+              </Tooltip>
             )}
           </Col>
         </Row>
@@ -197,20 +210,27 @@ export default function ItineraryDetail({ itinerary, onBack }) {
           )}
         </Row>
 
-        <Typography.Title level={4} style={{ marginTop: 24 }}>
-          Hoạt động
-        </Typography.Title>
-        <List
-          dataSource={currentItinerary?.itineraryDetail}
-          renderItem={(item) => (
-            <List.Item>
-              <Typography.Text>
-                Ngày {item.visitDay} - {item.placeId?.name} {item.note} (
-                {item.startTime || '...'} → {item.endTime || '...'})
+        <Divider style={{ marginTop: 24, fontSize: 24 }}>
+          Chi tiết hành trình
+        </Divider>
+        {currentItinerary?.itineraryDetail?.map((day) => (
+          <div key={day.day}>
+            <div style={{ textAlign: 'center', marginBottom: 20 }}>
+              <Typography.Text italic style={{ fontSize: 20 }}>
+                {day.day}
               </Typography.Text>
-            </List.Item>
-          )}
-        />
+            </div>
+
+            <Timeline
+              mode='alternate'
+              items={day.places?.map((p) => ({
+                dot: <ClockCircleOutlined />,
+
+                children: <PlaceItineraryDetail place={p} />
+              }))}
+            />
+          </div>
+        ))}
       </Card>
       <ItineraryPriceModal
         open={open}

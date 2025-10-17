@@ -17,7 +17,7 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import ServiceCard from './ServiceCard';
-import { Button, Col, Row, Tooltip } from 'antd';
+import { Button, Col, Empty, Row, Tooltip } from 'antd';
 import { useState } from 'react';
 
 export default function ServiceList({ places, isSlick = false }) {
@@ -28,6 +28,9 @@ export default function ServiceList({ places, isSlick = false }) {
   };
 
   const displayedPlaces = places.slice(0, visibleCount);
+  if (!places.length) {
+    return <Empty description={'Chưa có địa điểm nào'} />;
+  }
   if (isSlick) {
     return (
       <div style={{ margin: '30px 0' }}>

@@ -1,6 +1,10 @@
 import React from 'react';
-import { Input, Segmented } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Input, Segmented, Typography } from 'antd';
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  SearchOutlined
+} from '@ant-design/icons';
 
 export default function FilterBar({
   selectedFilter,
@@ -27,9 +31,30 @@ export default function FilterBar({
         />
         <Segmented
           options={[
-            { label: 'Tất cả', value: 'all' },
-            { label: 'Sắp tới', value: 'upcoming' },
-            { label: 'Đã hoàn thành', value: 'completed' }
+            {
+              label: (
+                <Typography.Text style={{ color: '#444', fontWeight: 500 }}>
+                  Tất cả
+                </Typography.Text>
+              ),
+              value: 'all'
+            },
+            {
+              label: (
+                <Typography.Text style={{ color: '#b67d00', fontWeight: 500 }}>
+                  <ClockCircleOutlined /> Sắp tới / Đang diễn ra
+                </Typography.Text>
+              ),
+              value: 'upcoming'
+            },
+            {
+              label: (
+                <Typography.Text style={{ color: '#08979c', fontWeight: 500 }}>
+                  <CheckCircleOutlined /> Đã hoàn thành
+                </Typography.Text>
+              ),
+              value: 'completed'
+            }
           ]}
           value={selectedFilter}
           onChange={setSelectedFilter}

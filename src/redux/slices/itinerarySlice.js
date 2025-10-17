@@ -42,15 +42,18 @@ const itinerarySlice = createSlice({
     itinerariesOfUser: [],
     loading: false
   },
-  reducers: [],
+  reducers: {
+    clearCurrentItinerary: (state) => {
+      state.currentItinerary = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createItinerary.pending, (state) => {
         state.loading = true;
       })
-      .addCase(createItinerary.fulfilled, (state, action) => {
+      .addCase(createItinerary.fulfilled, (state) => {
         state.loading = false;
-        state.currentItinerary = action.payload;
       })
       .addCase(createItinerary.rejected, (state) => {
         state.loading = false;
@@ -80,5 +83,5 @@ const itinerarySlice = createSlice({
       });
   }
 });
-
+export const { clearCurrentItinerary } = itinerarySlice.actions;
 export default itinerarySlice.reducer;

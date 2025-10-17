@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Card, Tag, Spin, Tooltip } from 'antd';
 import {
+  CalendarOutlined,
   ClockCircleOutlined,
   EnvironmentOutlined,
+  LineOutlined,
   UserOutlined
 } from '@ant-design/icons';
 import styles from '../style.module.css';
+import dayjs from 'dayjs';
 const UNSPLASH_KEY = '553eU4V8AG8l8WrGcyX_rD8K0lc2Wen7cNhKerqzUDg';
 
 export default function ItineraryCard({ item, onSelect }) {
   const { hoverImageInItineraryCard } = styles;
   const [image, setImage] = useState('');
   const [loading, setLoading] = useState(true);
+  const today = dayjs();
+  const isTrueDay = today.isAfter(dayjs(item?.startDate));
 
   useEffect(() => {
     let isMounted = true;
@@ -100,11 +105,21 @@ export default function ItineraryCard({ item, onSelect }) {
           <div style={{ marginTop: 12, color: '#3b82f6', fontWeight: 500 }}>
             <ClockCircleOutlined /> {item.numDays} ngày, {item.numDays - 1} đêm
           </div>
+          <div style={{ color: '#8fe624ff', fontWeight: 500 }}>
+            <CalendarOutlined /> {dayjs(item.startDate).format('DD/MM/YYYY')}{' '}
+            <LineOutlined /> {dayjs(item.endDate).format('DD/MM/YYYY')}
+          </div>
           <div style={{ color: '#9333ea', fontWeight: 500 }}>
             <UserOutlined /> Người tạo: {item.creatorName}
           </div>
           <Tag
-            color={item.status === 'upcoming' ? 'gold' : 'cyan'}
+            color={
+              item?.status === 'completed'
+                ? 'cyan'
+                : item?.status === 'upcoming' && !isTrueDay
+                ? 'gold'
+                : 'blue'
+            }
             style={{
               width: '100%',
               textAlign: 'center',
@@ -113,7 +128,11 @@ export default function ItineraryCard({ item, onSelect }) {
               fontWeight: 600
             }}
           >
-            {item.status === 'upcoming' ? 'Sắp tới' : 'Đã hoàn thành'}
+            {item?.status === 'completed'
+              ? 'Đã hoàn thành'
+              : item?.status === 'upcoming' && !isTrueDay
+              ? 'Sắp tới'
+              : 'Đang thực hiện...'}
           </Tag>
         </div>
       </Card>

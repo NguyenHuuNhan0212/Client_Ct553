@@ -24,7 +24,6 @@ const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 function PlaceDetail({ currentPlace }) {
-  console.log(currentPlace);
   const [mainImage, setMainImage] = useState(null);
   const { user } = useSelector((state) => state.user);
   const [isFavorite, setIsFavorite] = useState(false);
