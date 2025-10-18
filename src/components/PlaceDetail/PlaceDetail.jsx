@@ -59,7 +59,7 @@ function PlaceDetail({ currentPlace }) {
   };
 
   useEffect(() => {
-    if (user?._id) {
+    if (user?.userId) {
       dispatch(getPlacesFavorite());
     }
   }, [dispatch, user]);

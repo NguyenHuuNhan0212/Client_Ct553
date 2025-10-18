@@ -25,6 +25,7 @@ export default function ServiceCard({
   const { user } = useSelector((state) => state.user);
   const [isFavorite, setIsFavorite] = useState(false);
   const { placesFavorite } = useSelector((state) => state.place);
+  const [isHover, setIsHover] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toggleFavorite = async (e) => {
@@ -53,7 +54,7 @@ export default function ServiceCard({
   };
 
   useEffect(() => {
-    if (user?._id) {
+    if (user?.userId) {
       dispatch(getPlacesFavorite());
     }
   }, [dispatch, user]);
@@ -71,15 +72,44 @@ export default function ServiceCard({
       hoverable
       cover={
         <div style={{ position: 'relative' }}>
-          <img
-            alt={name}
-            src={
-              images && images.length > 0
-                ? `http://localhost:3000/${images[0]}`
-                : ''
-            }
-            style={{ height: 180, objectFit: 'cover', width: '100%' }}
-          />
+          <div
+            style={{
+              position: 'relative',
+              height: 180,
+              overflow: 'hidden'
+            }}
+            onMouseEnter={() => setIsHover(true)}
+            onMouseLeave={() => setIsHover(false)}
+          >
+            <img
+              src={`http://localhost:3000/${images[0]}`}
+              alt={name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                opacity: isHover ? 0 : 1,
+                transition: 'opacity 0.8s ease'
+              }}
+            />
+            <img
+              src={`http://localhost:3000/${images[1] ? images[1] : images[0]}`}
+              alt={name}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                opacity: isHover ? 1 : 0,
+                transition: 'opacity 0.8s ease'
+              }}
+            />
+          </div>
           <Tooltip
             title={
               !isFavorite

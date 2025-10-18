@@ -9,9 +9,9 @@ import {
   getAllItineraryTemplate
 } from '../../redux/slices/itinerarySlice';
 import ItineraryList from '../../components/Profile/ItineraryComponents/ItineraryList';
-import ItineraryDetail from '../../components/Profile/ItineraryComponents/ItineraryDetail';
 import { motion } from 'motion/react'; //eslint-disable-line
-import { EnvironmentOutlined } from '@ant-design/icons';
+import { ContainerOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import ItineraryDetail from '../../components/Profile/ItineraryComponents/ItineraryDetail';
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
@@ -23,9 +23,17 @@ export default function ItineraryExplore() {
   const { loading, itinerariesTemplate } = useSelector(
     (state) => state.itinerary
   );
-  const filteredItinerary = !selectedLocation
+  const { user } = useSelector((state) => state.user);
+
+  const itineraries = !user
     ? itinerariesTemplate
     : itinerariesTemplate.filter((i) => {
+        return i.userId?.toString() !== user?.userId?.toString();
+      });
+  console.log(user);
+  const filteredItinerary = !selectedLocation
+    ? itineraries
+    : itineraries.filter((i) => {
         return i.destination
           .toLowerCase()
           .includes(selectedLocation.toLocaleLowerCase());
@@ -46,12 +54,11 @@ export default function ItineraryExplore() {
     };
     fetchCities();
   }, []);
-  console.log(selectedLocation);
   return (
     <>
       <Header />
       <Content
-        style={{ minHeight: '100vh', padding: '0 100px', margin: '70px auto' }}
+        style={{ minHeight: '600px', padding: '0 100px', margin: '75px auto' }}
       >
         {loading ? (
           <Spin size='large' />
@@ -62,7 +69,7 @@ export default function ItineraryExplore() {
             transition={{ duration: 0.8, ease: 'easeOut' }}
           >
             <Title style={{ textAlign: 'center' }} level={2}>
-              Cùng khám phá các lịch trình
+              <ContainerOutlined /> Khám phá và chọn lịch trình phù hợp cho bạn
             </Title>
             <Row justify='end' style={{ marginBottom: 16 }}>
               <Col>
@@ -103,6 +110,7 @@ export default function ItineraryExplore() {
               setSelectedItinerary(null);
               dispatch(clearCurrentItinerary());
             }}
+            isTemplate
           />
         )}
       </Content>

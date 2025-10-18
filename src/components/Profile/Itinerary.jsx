@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FilterBar from './ItineraryComponents/FilterBar';
 import ItineraryList from './ItineraryComponents/ItineraryList';
-import ItineraryDetail from './ItineraryComponents/ItineraryDetail';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   clearCurrentItinerary,
   getAllItineraryByUserId
 } from '../../redux/slices/itinerarySlice';
 import { Button, Empty } from 'antd';
+import ItineraryDetail from './ItineraryComponents/ItineraryDetail';
 
 export default function ItineraryComponent() {
   const navigate = useNavigate();
@@ -18,9 +18,7 @@ export default function ItineraryComponent() {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [selectedItinerary, setSelectedItinerary] = useState(
-    currentItinerary || null
-  );
+  const [selectedItinerary, setSelectedItinerary] = useState(null);
   const dispatch = useDispatch();
 
   const filtered = itineraries.filter((i) => {

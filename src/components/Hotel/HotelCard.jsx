@@ -42,14 +42,15 @@ export default function HotelCard({ hotel }) {
   };
 
   useEffect(() => {
-    if (user?._id) {
+    if (user?.userId) {
       dispatch(getPlacesFavorite());
     }
   }, [dispatch, user]);
 
   useEffect(() => {
     if (placesFavorite && placesFavorite.length > 0) {
-      const favoriteIds = placesFavorite.map((f) => f._id.toString());
+      const favoriteIds = placesFavorite.map((f) => f.placeId?._id.toString());
+      console.log(favoriteIds);
       setIsFavorite(favoriteIds.includes(hotel.hotelId.toString()));
     } else {
       setIsFavorite(false);

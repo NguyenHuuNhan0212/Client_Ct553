@@ -24,11 +24,14 @@ import {
   ClockCircleOutlined,
   EditOutlined,
   FormOutlined,
-  DeleteOutlined
+  DeleteOutlined,
+  CheckCircleOutlined,
+  ArrowLeftOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  clearCurrentItinerary,
   deleteItinerary,
   getAllItineraryByUserId,
   getItineraryDetail
@@ -37,10 +40,15 @@ import itineraryApi from '../../../apis/itineraryService';
 import ItineraryPriceModal from './ItieraryPriceAndPeopleForm';
 import PlaceItineraryDetail from './PlaceItemInItineraryDetail';
 const UNSPLASH_KEY = '553eU4V8AG8l8WrGcyX_rD8K0lc2Wen7cNhKerqzUDg';
-export default function ItineraryDetail({ itinerary, onBack }) {
+export default function ItineraryDetail({
+  itinerary,
+  onBack,
+  isTemplate = false
+}) {
   const [image, setImage] = useState('');
   const dispatch = useDispatch();
   const { currentItinerary } = useSelector((state) => state.itinerary);
+  const { user } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const today = dayjs();
@@ -106,11 +114,16 @@ export default function ItineraryDetail({ itinerary, onBack }) {
       dispatch(getItineraryDetail(itinerary._id));
     }
   }, [dispatch, itinerary._id, currentItinerary]);
+  useEffect(() => {
+    return () => dispatch(clearCurrentItinerary());
+  }, [dispatch]);
   return (
     <div style={{ maxWidth: '100%', margin: '0 auto' }}>
       <Tooltip title={'Trở lại xem danh sách lịch trình'}>
         <Button onClick={onBack} style={{ marginBottom: 16 }}>
-          ← Quay lại
+          <Typography.Text strong>
+            <ArrowLeftOutlined /> Quay lại
+          </Typography.Text>
         </Button>
       </Tooltip>
 
@@ -142,26 +155,28 @@ export default function ItineraryDetail({ itinerary, onBack }) {
             <div style={{ color: '#9333ea', fontWeight: 500 }}>
               <UserOutlined /> Người tạo: {currentItinerary?.creatorName}
             </div>
-            <div style={{ fontWeight: 500 }}>
-              <Typography.Text style={{ color: '#f6971bff' }}>
-                Trạng thái:{' '}
-              </Typography.Text>
-              <Tag
-                color={
-                  currentItinerary?.status === 'completed'
-                    ? 'cyan'
+            {!isTemplate && (
+              <div style={{ fontWeight: 500 }}>
+                <Typography.Text style={{ color: '#f6971bff' }}>
+                  Trạng thái:{' '}
+                </Typography.Text>
+                <Tag
+                  color={
+                    currentItinerary?.status === 'completed'
+                      ? 'cyan'
+                      : currentItinerary?.status === 'upcoming' && !isTrueDay
+                      ? 'gold'
+                      : 'blue'
+                  }
+                >
+                  {currentItinerary?.status === 'completed'
+                    ? 'Đã hoàn thành'
                     : currentItinerary?.status === 'upcoming' && !isTrueDay
-                    ? 'gold'
-                    : 'blue'
-                }
-              >
-                {currentItinerary?.status === 'completed'
-                  ? 'Đã hoàn thành'
-                  : currentItinerary?.status === 'upcoming' && !isTrueDay
-                  ? 'Sắp tới'
-                  : 'Đang thực hiện...'}
-              </Tag>
-            </div>
+                    ? 'Sắp tới'
+                    : 'Đang thực hiện...'}
+                </Tag>
+              </div>
+            )}
           </Col>
           <Col
             span={8}
@@ -174,77 +189,106 @@ export default function ItineraryDetail({ itinerary, onBack }) {
               marginBottom: 12
             }}
           >
-            {currentItinerary?.itinerary?.status === 'upcoming' &&
-              isTrueDay && (
-                <Tooltip title={'Nhấn để xác nhận đã hoàn thành chuyến đi'}>
+            {!isTemplate && (
+              <>
+                {currentItinerary?.status === 'upcoming' && isTrueDay && (
+                  <Tooltip title={'Nhấn để xác nhận đã hoàn thành chuyến đi'}>
+                    <Button
+                      color='purple'
+                      variant='filled'
+                      style={{ fontWeight: 500 }}
+                      onClick={handleUpdateStatus}
+                    >
+                      <CheckCircleOutlined /> Đã hoàn thành chuyến đi
+                    </Button>
+                  </Tooltip>
+                )}
+                {currentItinerary?.status === 'completed' && (
+                  <Tooltip title={'Nhấn để cập nhật chi phí của chuyến đi'}>
+                    <Button
+                      color='purple'
+                      variant='filled'
+                      style={{ fontWeight: 500 }}
+                      onClick={handleOpen}
+                    >
+                      <FormOutlined /> Cập nhật chí phí và số người
+                    </Button>
+                  </Tooltip>
+                )}
+                <Tooltip title={'Nhấn để xóa lịch trình'}>
                   <Button
-                    color='purple'
+                    color='danger'
                     variant='filled'
                     style={{ fontWeight: 500 }}
-                    onClick={handleUpdateStatus}
+                    onClick={handleOpenDeleteModal}
                   >
-                    Đã hoàn thành chuyến đi
+                    <DeleteOutlined /> Xóa lịch trình
                   </Button>
                 </Tooltip>
-              )}
-            {currentItinerary?.status === 'completed' && (
-              <Tooltip title={'Nhấn để cập nhật chi phí của chuyến đi'}>
+
+                <Tooltip title={'Nhấn để chỉnh sửa lịch trình'}>
+                  <Button
+                    color='cyan'
+                    variant='filled'
+                    style={{ fontWeight: 500 }}
+                  >
+                    <EditOutlined /> Chỉnh sửa lịch trình
+                  </Button>
+                </Tooltip>
+              </>
+            )}
+            {isTemplate && user && (
+              <Tooltip title={'Chọn và chỉnh sửa lịch trình'}>
                 <Button
-                  color='purple'
+                  color='cyan'
                   variant='filled'
                   style={{ fontWeight: 500 }}
-                  onClick={handleOpen}
                 >
-                  <FormOutlined /> Cập nhật chí phí và số người
+                  <EditOutlined /> Sử dụng lịch trình
                 </Button>
               </Tooltip>
             )}
-            <Tooltip title={'Nhấn để xóa lịch trình'}>
-              <Button
-                color='danger'
-                variant='filled'
-                style={{ fontWeight: 500 }}
-                onClick={handleOpenDeleteModal}
-              >
-                <DeleteOutlined /> Xóa lịch trình
-              </Button>
-            </Tooltip>
-
-            <Tooltip title={'Nhấn để chỉnh sửa lịch trình'}>
-              <Button color='cyan' variant='filled' style={{ fontWeight: 500 }}>
-                <EditOutlined /> Chỉnh sửa lịch trình
-              </Button>
-            </Tooltip>
           </Col>
         </Row>
 
         <Row gutter={[16, 16]} style={{ marginTop: 20 }}>
           <Col span={8}>
             <Card style={{ color: '#8fe624ff', fontWeight: 600 }}>
-              <div>Ngày dự kiến</div>
-              <CalendarOutlined />{' '}
-              {dayjs(currentItinerary?.startDate).format('DD/MM/YYYY')}
-              <LineOutlined />
-              {dayjs(currentItinerary?.endDate).format('DD/MM/YYYY')}
+              <div>{!isTemplate ? 'Ngày dự kiến' : 'Thời gian chuyến đi'}</div>
+              {!isTemplate && (
+                <>
+                  <CalendarOutlined />{' '}
+                  {dayjs(currentItinerary?.startDate).format('DD/MM/YYYY')}
+                  <LineOutlined />
+                  {dayjs(currentItinerary?.endDate).format('DD/MM/YYYY')}
+                </>
+              )}
+              {isTemplate && (
+                <div>
+                  <CalendarOutlined /> {currentItinerary?.numDays} ngày
+                </div>
+              )}
             </Card>
           </Col>
-          {currentItinerary?.people && (
-            <Col span={8}>
-              <Card style={{ color: '#0f5879ff', fontWeight: 600 }}>
-                <div>Số lượng người theo chi phí</div>
-                <TeamOutlined /> {currentItinerary?.people} người
-              </Card>
-            </Col>
-          )}
-          {currentItinerary?.priceForItinerary && (
-            <Col span={8}>
-              <Card style={{ color: '#eb2f96', fontWeight: 600 }}>
-                <div>Chi phí</div>
-                <DollarOutlined />{' '}
-                {currentItinerary?.priceForItinerary.toLocaleString()} VNĐ
-              </Card>
-            </Col>
-          )}
+
+          <Col span={8}>
+            <Card style={{ color: '#0f5879ff', fontWeight: 600 }}>
+              <div>Số lượng người theo chi phí</div>
+              <TeamOutlined /> {currentItinerary?.people ||
+                'Chưa cung cấp'}{' '}
+              {currentItinerary?.people ? 'người' : ''}
+            </Card>
+          </Col>
+
+          <Col span={8}>
+            <Card style={{ color: '#eb2f96', fontWeight: 600 }}>
+              <div>Chi phí</div>
+              <DollarOutlined />{' '}
+              {currentItinerary?.priceForItinerary?.toLocaleString() ||
+                'Chưa cung cấp'}{' '}
+              {currentItinerary?.priceForItinerary ? 'VNĐ' : ''}
+            </Card>
+          </Col>
         </Row>
 
         <Divider style={{ marginTop: 24, fontSize: 24 }}>
@@ -272,7 +316,7 @@ export default function ItineraryDetail({ itinerary, onBack }) {
         open={open}
         onClose={() => setOpen(false)}
         onSubmit={handleSubmit}
-        itinerary={currentItinerary?.itinerary}
+        itinerary={currentItinerary}
       />
       <Modal
         open={openDeleteModal}

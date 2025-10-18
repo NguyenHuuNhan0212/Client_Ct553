@@ -71,7 +71,6 @@ const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
       formData.append(key, payload[key]);
     });
 
-    // Lấy danh sách ảnh cuối cùng (sau khi user chỉnh sửa trên Upload)
     fileList.forEach((file) => {
       if (file.originFileObj) {
         // Ảnh mới upload -> gửi file để multer xử lý
