@@ -44,17 +44,13 @@ export default function ItineraryDetail({ itinerary, onBack }) {
   const [open, setOpen] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const today = dayjs();
-  const isTrueDay = today.isAfter(
-    dayjs(currentItinerary?.itinerary?.startDate)
-  );
+  const isTrueDay = today.isAfter(dayjs(currentItinerary?.startDate));
 
   const handleUpdateStatus = async () => {
     try {
-      await itineraryApi.updateStatusItinerary(
-        currentItinerary?.itinerary?._id
-      );
+      await itineraryApi.updateStatusItinerary(currentItinerary?._id);
       message.success('Cập nhật trạng thái thành công.');
-      dispatch(getItineraryDetail(currentItinerary?.itinerary?._id));
+      dispatch(getItineraryDetail(currentItinerary?._id));
     } catch (err) {
       message.error(err.response?.data?.message || 'Có lỗi xảy ra.');
     }
@@ -77,7 +73,7 @@ export default function ItineraryDetail({ itinerary, onBack }) {
 
   const handleDeleteItinerary = async () => {
     try {
-      dispatch(deleteItinerary(currentItinerary?.itinerary?._id));
+      dispatch(deleteItinerary(currentItinerary?._id));
       message.success('Xóa lịch trình thành công.');
       dispatch(getAllItineraryByUserId());
       setOpenDeleteModal(false);
@@ -104,14 +100,12 @@ export default function ItineraryDetail({ itinerary, onBack }) {
       }
     };
     fetchImage();
-  }, [itinerary.destination]);
+  }, [itinerary?.destination]);
   useEffect(() => {
-    const itineraryId = itinerary.itineraryDetail
-      ? itinerary.itinerary?._id
-      : itinerary?._id;
-    dispatch(getItineraryDetail(itineraryId));
-  }, [dispatch, itinerary]);
-
+    if (!currentItinerary || currentItinerary._id !== itinerary._id) {
+      dispatch(getItineraryDetail(itinerary._id));
+    }
+  }, [dispatch, itinerary._id, currentItinerary]);
   return (
     <div style={{ maxWidth: '100%', margin: '0 auto' }}>
       <Tooltip title={'Trở lại xem danh sách lịch trình'}>
@@ -123,7 +117,7 @@ export default function ItineraryDetail({ itinerary, onBack }) {
       <Card
         cover={
           <img
-            alt={currentItinerary?.itinerary?.title}
+            alt={currentItinerary?.title}
             src={image}
             style={{ height: 300, objectFit: 'cover' }}
           />
@@ -140,14 +134,13 @@ export default function ItineraryDetail({ itinerary, onBack }) {
             }}
           >
             <Typography.Title level={2}>
-              {currentItinerary?.itinerary?.title}
+              {currentItinerary?.title}
             </Typography.Title>
             <div style={{ color: '#06b6d4', fontWeight: 500 }}>
-              <EnvironmentOutlined /> {currentItinerary?.itinerary?.destination}
+              <EnvironmentOutlined /> {currentItinerary?.destination}
             </div>
             <div style={{ color: '#9333ea', fontWeight: 500 }}>
-              <UserOutlined /> Người tạo:{' '}
-              {currentItinerary?.itinerary?.creatorName}
+              <UserOutlined /> Người tạo: {currentItinerary?.creatorName}
             </div>
             <div style={{ fontWeight: 500 }}>
               <Typography.Text style={{ color: '#f6971bff' }}>
@@ -155,18 +148,16 @@ export default function ItineraryDetail({ itinerary, onBack }) {
               </Typography.Text>
               <Tag
                 color={
-                  currentItinerary?.itinerary?.status === 'completed'
+                  currentItinerary?.status === 'completed'
                     ? 'cyan'
-                    : currentItinerary?.itinerary?.status === 'upcoming' &&
-                      !isTrueDay
+                    : currentItinerary?.status === 'upcoming' && !isTrueDay
                     ? 'gold'
                     : 'blue'
                 }
               >
-                {currentItinerary?.itinerary?.status === 'completed'
+                {currentItinerary?.status === 'completed'
                   ? 'Đã hoàn thành'
-                  : currentItinerary?.itinerary?.status === 'upcoming' &&
-                    !isTrueDay
+                  : currentItinerary?.status === 'upcoming' && !isTrueDay
                   ? 'Sắp tới'
                   : 'Đang thực hiện...'}
               </Tag>
@@ -196,7 +187,7 @@ export default function ItineraryDetail({ itinerary, onBack }) {
                   </Button>
                 </Tooltip>
               )}
-            {currentItinerary?.itinerary?.status === 'completed' && (
+            {currentItinerary?.status === 'completed' && (
               <Tooltip title={'Nhấn để cập nhật chi phí của chuyến đi'}>
                 <Button
                   color='purple'
@@ -232,28 +223,25 @@ export default function ItineraryDetail({ itinerary, onBack }) {
             <Card style={{ color: '#8fe624ff', fontWeight: 600 }}>
               <div>Ngày dự kiến</div>
               <CalendarOutlined />{' '}
-              {dayjs(currentItinerary?.itinerary?.startDate).format(
-                'DD/MM/YYYY'
-              )}
+              {dayjs(currentItinerary?.startDate).format('DD/MM/YYYY')}
               <LineOutlined />
-              {dayjs(currentItinerary?.itinerary?.endDate).format('DD/MM/YYYY')}
+              {dayjs(currentItinerary?.endDate).format('DD/MM/YYYY')}
             </Card>
           </Col>
-          {currentItinerary?.itinerary?.people && (
+          {currentItinerary?.people && (
             <Col span={8}>
               <Card style={{ color: '#0f5879ff', fontWeight: 600 }}>
                 <div>Số lượng người theo chi phí</div>
-                <TeamOutlined /> {currentItinerary?.itinerary?.people} người
+                <TeamOutlined /> {currentItinerary?.people} người
               </Card>
             </Col>
           )}
-          {currentItinerary?.itinerary?.priceForItinerary && (
+          {currentItinerary?.priceForItinerary && (
             <Col span={8}>
               <Card style={{ color: '#eb2f96', fontWeight: 600 }}>
                 <div>Chi phí</div>
                 <DollarOutlined />{' '}
-                {currentItinerary?.itinerary?.priceForItinerary.toLocaleString()}{' '}
-                VNĐ
+                {currentItinerary?.priceForItinerary.toLocaleString()} VNĐ
               </Card>
             </Col>
           )}

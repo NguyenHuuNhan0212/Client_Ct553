@@ -21,6 +21,9 @@ const itineraryApi = {
   },
   deleteItinerary(itineraryId) {
     return axiosClient.delete(`/itinerary/${itineraryId}`);
+  },
+  getAllItineraryTemplate() {
+    return axiosClient.get('/itinerary/template');
   }
 };
 export default itineraryApi;
