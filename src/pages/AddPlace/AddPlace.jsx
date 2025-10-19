@@ -2,7 +2,7 @@ import Footer from '../../components/Footer/Footer';
 import FormAddPlace from '../../components/FormPlace/FormAddPlace';
 import Header from '../../components/Header/Header';
 import { Layout } from 'antd';
-import bgGlobal from '../../assets/images/bgGlobal.svg';
+import bgGlobal from '../../assets/images/bgAddPlace.png';
 const { Content } = Layout;
 function AddPlace() {
   return (
@@ -12,14 +12,13 @@ function AddPlace() {
         style={{
           backgroundImage: `url(${bgGlobal})`,
           backgroundRepeat: 'no-repeat',
-          marginTop: -25,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
+          backgroundSize: 'contain',
+          backgroundPosition: 'center',
+          marginTop: -25
         }}
       >
         <FormAddPlace />
       </Content>
-
       <Footer />
     </>
   );

@@ -51,10 +51,14 @@ const AddressSelector = () => {
       <Col span={12}>
         <Form.Item
           name='ward'
-          label='Xã'
-          rules={[{ required: true, message: 'Vui lòng chọn Xã' }]}
+          label='Xã/Phường'
+          rules={[{ required: true, message: 'Vui lòng chọn Xã/Phường' }]}
         >
-          <Select placeholder='Chọn Xã' disabled={!selectedProvince} allowClear>
+          <Select
+            placeholder='Chọn Xã/Phường'
+            disabled={!selectedProvince}
+            allowClear
+          >
             {districts.map((d) => (
               <Option key={d.code} value={d.name}>
                 {d.name}
