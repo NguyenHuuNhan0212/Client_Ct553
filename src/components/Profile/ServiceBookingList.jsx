@@ -76,10 +76,13 @@ function BookingList() {
       return <Tag color='red'>Đã hủy</Tag>;
     }
   };
-  const options = bookingsOfSupplier?.map((b) => {
+  const uniqueNames = [
+    ...new Set(bookingsOfSupplier?.map((b) => b.placeId?.name))
+  ];
+  const options = uniqueNames.map((name) => {
     return {
-      value: b.placeId?.name,
-      label: b.placeId?.name
+      value: name,
+      label: name
     };
   });
   const handleShowModal = (record) => {

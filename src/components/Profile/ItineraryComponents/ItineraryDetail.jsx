@@ -39,6 +39,7 @@ import {
 import itineraryApi from '../../../apis/itineraryService';
 import ItineraryPriceModal from './ItieraryPriceAndPeopleForm';
 import PlaceItineraryDetail from './PlaceItemInItineraryDetail';
+import { useNavigate } from 'react-router-dom';
 const UNSPLASH_KEY = '553eU4V8AG8l8WrGcyX_rD8K0lc2Wen7cNhKerqzUDg';
 export default function ItineraryDetail({
   itinerary,
@@ -47,6 +48,7 @@ export default function ItineraryDetail({
 }) {
   const [image, setImage] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { currentItinerary } = useSelector((state) => state.itinerary);
   const { user } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
@@ -225,16 +227,20 @@ export default function ItineraryDetail({
                     <DeleteOutlined /> Xóa lịch trình
                   </Button>
                 </Tooltip>
-
-                <Tooltip title={'Nhấn để chỉnh sửa lịch trình'}>
-                  <Button
-                    color='cyan'
-                    variant='filled'
-                    style={{ fontWeight: 500 }}
-                  >
-                    <EditOutlined /> Chỉnh sửa lịch trình
-                  </Button>
-                </Tooltip>
+                {currentItinerary?.status !== 'completed' && (
+                  <Tooltip title={'Nhấn để chỉnh sửa lịch trình'}>
+                    <Button
+                      color='cyan'
+                      variant='filled'
+                      style={{ fontWeight: 500 }}
+                      onClick={() =>
+                        navigate(`/itinerary/${currentItinerary._id}`)
+                      }
+                    >
+                      <EditOutlined /> Chỉnh sửa lịch trình
+                    </Button>
+                  </Tooltip>
+                )}
               </>
             )}
             {isTemplate && user && (

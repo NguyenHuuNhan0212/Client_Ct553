@@ -9,7 +9,8 @@ import {
   Divider,
   Space,
   message,
-  Tooltip
+  Tooltip,
+  Select
 } from 'antd';
 import {
   CheckCircleOutlined,
@@ -36,12 +37,12 @@ function Booking() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { currentBooking } = useSelector((state) => state.booking);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [conditionFiltered, setConditionFiltered] = useState('new');
   const [openModalDelete, setOpenModalDelete] = useState(false);
   const [openModalCancel, setOpenModalCancel] = useState(false);
-  useEffect(() => {
-    dispatch(getBookings());
-  }, [dispatch]);
 
+  const filteredBookings =
+    conditionFiltered === 'new' ? bookings : [...bookings].reverse();
   const showDetail = (record) => {
     dispatch(getBookingDetail(record._id));
     setIsModalVisible(true);
@@ -57,6 +58,9 @@ function Booking() {
   const showModalCancel = (record) => {
     setOpenModalCancel(true);
     setSelectedBooking(record);
+  };
+  const handleChangeOption = (value) => {
+    setConditionFiltered(value);
   };
   const handleDelete = async () => {
     if (!selectedBooking) return;
@@ -191,7 +195,9 @@ function Booking() {
       )
     }
   ];
-
+  useEffect(() => {
+    dispatch(getBookings());
+  }, [dispatch]);
   return (
     <>
       <Card
@@ -203,8 +209,20 @@ function Booking() {
         }
         style={{ borderRadius: 10, padding: 20, background: '#fafafa' }}
       >
+        <div style={{ textAlign: 'right' }}>
+          <Select
+            defaultValue='new'
+            style={{ width: 100 }}
+            onChange={handleChangeOption}
+            options={[
+              { value: 'new', label: 'Mới nhất' },
+              { value: 'old', label: 'Cũ nhất' }
+            ]}
+          />
+        </div>
+
         <Table
-          dataSource={bookings}
+          dataSource={filteredBookings}
           rowKey='_id'
           columns={columns}
           pagination={{ pageSize: 5 }}

@@ -1,4 +1,4 @@
-import { Carousel, Button, Typography } from 'antd';
+import { Carousel, Button, Typography, message } from 'antd';
 import banner1 from '../../assets/images/wellcome.png';
 import banner2 from '../../assets/images/banner2.png';
 import banner3 from '../../assets/images/banner.png';
@@ -6,6 +6,7 @@ import styles from './style.module.css';
 import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import CreateItineraryChoiceModal from './CreateItineraryModal';
 
 const { Title, Paragraph } = Typography;
 
@@ -26,9 +27,18 @@ export default function Banner() {
       image: banner3
     }
   ];
+  const [openModal, setOpenModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isHoveredCreate, setIsHoveredCreate] = useState(false);
   const navigate = useNavigate();
+  const handleSelectOption = (type) => {
+    setOpenModal(false);
+    if (type === 'manual') {
+      navigate('/itinerary');
+    } else {
+      message.success('Chọn tạo lịch trình bằng AI 🤖');
+    }
+  };
   return (
     <div style={{ position: 'relative' }}>
       <Carousel autoplay autoplaySpeed={4000} speed={800} effect='fade'>
@@ -102,7 +112,7 @@ export default function Banner() {
                       padding: '0 30px',
                       transition: 'all 0.8s ease'
                     }}
-                    onClick={() => navigate('/itinerary')}
+                    onClick={() => setOpenModal(true)}
                   >
                     <PlusCircleOutlined /> Tạo lịch trình ngay
                   </Button>
@@ -131,6 +141,11 @@ export default function Banner() {
           </div>
         ))}
       </Carousel>
+      <CreateItineraryChoiceModal
+        open={openModal}
+        onCancel={() => setOpenModal(false)}
+        onSelect={handleSelectOption}
+      />
     </div>
   );
 }

@@ -97,8 +97,13 @@ export default function ItineraryForm({
 
         <RangePicker
           size='large'
+          value={
+            form.startDate && form.endDate
+              ? [dayjs(form.startDate), dayjs(form.endDate)]
+              : null
+          }
           onChange={handleDateChange}
-          format='YYYY-MM-DD'
+          format='DD-MM-YYYY'
           style={{ width: '100%' }}
           disabledDate={(current) => {
             return current && current < dayjs().startOf('day');

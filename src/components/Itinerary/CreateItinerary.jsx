@@ -10,7 +10,7 @@ import PlaceList from './PlaceList';
 import { useNavigate } from 'react-router-dom';
 import { getPlacesByAddressAndType } from '../../redux/slices/placeSlice';
 import { motion, AnimatePresence } from 'motion/react'; // eslint-disable-line
-export default function CreateItineraryPro() {
+export default function CreateItinerary() {
   const [form, setForm] = useState(() => {
     const saved = localStorage.getItem('itineraryForm');
     return (
@@ -31,7 +31,16 @@ export default function CreateItineraryPro() {
   const { token } = useSelector((state) => state.auth);
   // 🧮 Tính số ngày
   const handleDateChange = (dates) => {
-    if (!dates || dates.length < 2) return;
+    if (!dates || dates.length < 2) {
+      setForm({
+        ...form,
+        startDate: '',
+        endDate: '',
+        numDays: 0,
+        details: []
+      });
+      return;
+    }
     const [start, end] = dates;
     const diff = dayjs(end).diff(dayjs(start), 'day') + 1;
 
@@ -70,7 +79,14 @@ export default function CreateItineraryPro() {
   };
 
   const handleSave = async () => {
-    if (!form.title || !form.creatorName || !form.startDate || !form.endDate) {
+    if (
+      !form.title ||
+      !form.creatorName ||
+      !form.startDate ||
+      !form.endDate ||
+      !form.startDate ||
+      !form.endDate
+    ) {
       return message.error('Vui lòng nhập đầy đủ thông tin!');
     }
 

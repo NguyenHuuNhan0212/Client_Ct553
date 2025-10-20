@@ -1,5 +1,13 @@
 import { useState } from 'react';
-import { FloatButton, Drawer, Input, Button, Typography, Spin } from 'antd';
+import {
+  FloatButton,
+  Drawer,
+  Input,
+  Button,
+  Typography,
+  Spin,
+  message
+} from 'antd';
 import {
   WechatWorkOutlined,
   SendOutlined,
@@ -9,30 +17,36 @@ import {
 import styles from './style.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUserMessage, sendMessageToAI } from '../../redux/slices/chatSlice';
+import { useNavigate } from 'react-router-dom';
 
 const { Text } = Typography;
 
 export default function Chatbot() {
   const { bubbleChat, arrowBottom, wave } = styles;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { chat, loading, tripPlan } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
-  const [message, setMessage] = useState('');
+  const [messageUser, setMessageUser] = useState('');
 
   const handleSend = () => {
-    if (!message.trim()) return;
-    dispatch(addUserMessage(message));
-    dispatch(sendMessageToAI({ question: message }));
-    setMessage('');
+    if (!user) {
+      message.error('Hãy đăng nhập để được tư vấn.');
+      navigate('/login');
+      return;
+    }
+    if (!messageUser.trim()) return;
+    dispatch(addUserMessage(messageUser));
+    dispatch(sendMessageToAI({ question: messageUser }));
+    setMessageUser('');
   };
   const handleEditItinerary = () => {
     console.log(tripPlan);
   };
   return (
     <>
-      {/* 💬 Bong bóng chào cố định trên nút chat */}
       {showIntro && (
         <div className={bubbleChat}>
           <span style={{ flex: 1 }}>
@@ -188,8 +202,8 @@ export default function Chatbot() {
         >
           <Input
             placeholder='Nhập câu hỏi...'
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={messageUser}
+            onChange={(e) => setMessageUser(e.target.value)}
             onPressEnter={handleSend}
             style={{ marginRight: 8, borderRadius: 20 }}
           />

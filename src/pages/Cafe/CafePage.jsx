@@ -91,7 +91,7 @@ function CafeAndChillPage() {
                 Kết quả tìm kiếm
               </Divider>
               {!cafesPopular.length ? (
-                <Empty description='Không tìm thấy quán ăn phù hợp' />
+                <Empty description='Không tìm thấy quán cafes phù hợp' />
               ) : (
                 <ServiceList places={cafesPopular} />
               )}

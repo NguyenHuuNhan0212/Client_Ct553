@@ -30,7 +30,6 @@ export default function ItineraryExplore() {
     : itinerariesTemplate.filter((i) => {
         return i.userId?.toString() !== user?.userId?.toString();
       });
-  console.log(user);
   const filteredItinerary = !selectedLocation
     ? itineraries
     : itineraries.filter((i) => {

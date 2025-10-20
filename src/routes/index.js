@@ -30,11 +30,15 @@ const routes = [
   },
   {
     path: 'itinerary',
-    component: lazy(() => import('../pages/CreateItinerary/CreateItinerary'))
+    component: lazy(() => import('../pages/Itinerary/CreateItinerary'))
   },
   {
     path: 'itinerary/explore',
     component: lazy(() => import('../pages/ItineraryExplore/ItineraryExplore'))
+  },
+  {
+    path: 'itinerary/:itineraryId',
+    component: lazy(() => import('../pages/Itinerary/EditItinerary'))
   },
   {
     path: 'forgot-password',

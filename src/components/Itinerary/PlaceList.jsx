@@ -115,7 +115,8 @@ export default function PlaceList({ form, places = [], addActivity }) {
                   overflow: 'hidden',
                   boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
                   transition: 'transform 0.2s ease',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  height: '100%'
                 }}
                 styles={{ body: { padding: 0 } }}
                 onMouseEnter={(e) =>
