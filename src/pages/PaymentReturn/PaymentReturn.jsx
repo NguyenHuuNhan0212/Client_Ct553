@@ -31,7 +31,7 @@ const PaymentResult = () => {
             subTitle={
               <>
                 <Paragraph>
-                  Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi 💙
+                  Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi
                 </Paragraph>
                 <Text strong style={{ fontSize: '16px' }}>
                   Số tiền: {amount.toLocaleString()} VND
@@ -67,7 +67,7 @@ const PaymentResult = () => {
         return (
           <Result
             status='warning'
-            title='Kết quả không hợp lệ!'
+            title='Thanh toán thất bại!'
             subTitle='Không thể xác minh kết quả giao dịch. Vui lòng kiểm tra lại hoặc liên hệ hỗ trợ.'
             extra={
               <Button type='primary' onClick={() => navigate('/')}>

@@ -8,27 +8,37 @@ import { motion, AnimatePresence } from 'motion/react'; // eslint-disable-line
 import ItineraryForm from './ItineraryForm';
 import DayActivities from './DayActivities';
 import PlaceList from './PlaceList';
-import { getItineraryDetail } from '../../redux/slices/itinerarySlice';
+import {
+  createItinerary,
+  getAllItineraryByUserId,
+  getItineraryDetail,
+  updateItinerary
+} from '../../redux/slices/itinerarySlice';
 import { getPlacesByAddressAndType } from '../../redux/slices/placeSlice';
 
 export default function EditItinerary() {
   const { itineraryId } = useParams();
+  const LOCAL_KEY = `editItinerary_${itineraryId}`;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { currentItinerary, loading } = useSelector((state) => state.itinerary);
+  const { currentItinerary, loading, isCopy } = useSelector(
+    (state) => state.itinerary
+  );
   const { places } = useSelector((state) => state.place);
-  const { token } = useSelector((state) => state.auth);
-
+  const { user } = useSelector((state) => state.user);
   const [form, setForm] = useState(null);
-
-  // 🧭 Lấy chi tiết lịch trình khi vào trang
   useEffect(() => {
     dispatch(getItineraryDetail(itineraryId));
   }, [dispatch, itineraryId]);
-
-  // 🧭 Khi currentItinerary có dữ liệu thì setForm
   useEffect(() => {
+    const saved = localStorage.getItem(LOCAL_KEY);
+
+    if (saved) {
+      setForm(JSON.parse(saved));
+      return;
+    }
+
     if (currentItinerary) {
       const {
         title,
@@ -55,16 +65,19 @@ export default function EditItinerary() {
       setForm({
         title,
         destination,
-        creatorName,
-        startDate: dayjs(startDate),
-        endDate: dayjs(endDate),
-        numDays,
+        creatorName: isCopy ? '' : creatorName,
+        startDate: isCopy
+          ? ''
+          : !itineraryDetail.length
+          ? ''
+          : dayjs(startDate),
+        endDate: isCopy ? '' : !itineraryDetail.length ? '' : dayjs(endDate),
+        numDays: !itineraryDetail.length ? 0 : numDays,
         details: formattedDetails
       });
     }
-  }, [currentItinerary]);
+  }, [currentItinerary, isCopy, LOCAL_KEY]);
 
-  // 🧭 Cập nhật danh sách địa điểm khi thay đổi điểm đến
   useEffect(() => {
     if (form?.destination) {
       dispatch(
@@ -72,7 +85,11 @@ export default function EditItinerary() {
       );
     }
   }, [dispatch, form?.destination]);
-
+  useEffect(() => {
+    if (form) {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(form));
+    }
+  }, [form, LOCAL_KEY]);
   const handleDateChange = (dates) => {
     if (!dates || dates.length < 2) {
       setForm({
@@ -99,7 +116,6 @@ export default function EditItinerary() {
     });
   };
 
-  // 🧭 Thêm địa điểm
   const addActivity = (dayIndex, place) => {
     const updated = [...form.details];
     updated[dayIndex].activities.push({
@@ -116,54 +132,49 @@ export default function EditItinerary() {
     message.success(`Đã thêm ${place.name} vào Ngày ${dayIndex + 1}`);
   };
 
-  // 🧭 Xóa hoạt động
   const removeActivity = (dayIndex, actIndex) => {
     const updated = [...form.details];
     updated[dayIndex].activities.splice(actIndex, 1);
     setForm({ ...form, details: updated });
   };
 
-  // 🧭 Lưu chỉnh sửa
   const handleSave = async () => {
     if (!form.title || !form.creatorName || !form.startDate || !form.endDate) {
       return message.error('Vui lòng nhập đầy đủ thông tin!');
     }
 
-    // const details = form.details.flatMap((d) =>
-    //   d.activities.map((a, actIndex) => ({
-    //     placeId: a.placeId,
-    //     visitDay: d.day,
-    //     note: a.note,
-    //     startTime: a.startTime,
-    //     endTime: a.endTime,
-    //     order: actIndex + 1
-    //   }))
-    // );
+    const details = form.details.flatMap((d) =>
+      d.activities.map((a, actIndex) => ({
+        placeId: a.placeId,
+        visitDay: d.day,
+        note: a.note,
+        startTime: a.startTime,
+        endTime: a.endTime,
+        order: actIndex + 1
+      }))
+    );
 
     try {
-      if (token) {
-        // await dispatch(
-        //   updateItinerary({
-        //     itineraryId,
-        //     data: {
-        //       title: form.title,
-        //       destination: form.destination,
-        //       creatorName: form.creatorName,
-        //       startDate: form.startDate,
-        //       endDate: form.endDate,
-        //       numDays: form.numDays,
-        //       details
-        //     }
-        //   })
-        // );
-        message.success('Cập nhật lịch trình thành công 🎉');
-        navigate('/profile?tab=2');
+      const data = {
+        title: form.title,
+        destination: form.destination,
+        startDate: form.startDate,
+        creatorName: form.creatorName,
+        endDate: form.endDate,
+        details: details
+      };
+      if (user?._id.toString() === currentItinerary?.userId.toString()) {
+        await dispatch(updateItinerary({ itineraryId, data: data })).unwrap();
+        message.success('Cập nhật lịch trình thành công.');
       } else {
-        message.warning('Vui lòng đăng nhập để chỉnh sửa.');
-        navigate('/login');
+        await dispatch(createItinerary(data)).unwrap();
+        message.success('Sao chép lịch trình thành công.');
       }
+      await dispatch(getAllItineraryByUserId()).unwrap();
+      navigate('/profile?tab=2');
+      localStorage.removeItem(LOCAL_KEY);
     } catch (err) {
-      message.error('Lỗi khi cập nhật lịch trình', err);
+      message.error(err.message);
     }
   };
 
@@ -174,7 +185,6 @@ export default function EditItinerary() {
       </div>
     );
   }
-
   return (
     <AnimatePresence mode='wait'>
       <motion.div

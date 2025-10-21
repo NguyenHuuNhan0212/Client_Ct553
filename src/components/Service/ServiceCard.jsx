@@ -54,7 +54,7 @@ export default function ServiceCard({
   };
 
   useEffect(() => {
-    if (user?.userId) {
+    if (user?._id) {
       dispatch(getPlacesFavorite());
     }
   }, [dispatch, user]);

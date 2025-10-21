@@ -322,6 +322,9 @@ function BookingList() {
               <Descriptions.Item label='Ngày check-in'>
                 {dayjs(selectedBooking?.checkInDate).format('DD-MM-YYYY')}
               </Descriptions.Item>
+              <Descriptions.Item label='Ngày check-out'>
+                {dayjs(selectedBooking?.checkOutDate).format('DD-MM-YYYY')}
+              </Descriptions.Item>
               <Descriptions.Item label='Trạng thái'>
                 {renderContent(selectedBooking)}
               </Descriptions.Item>

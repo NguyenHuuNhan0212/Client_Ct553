@@ -56,17 +56,39 @@ export const getAllItineraryTemplate = createAsyncThunk(
     }
   }
 );
+
+export const updateItinerary = createAsyncThunk(
+  'itinerary/updateItinerary',
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await itineraryApi.updateItinerary(
+        data.itineraryId,
+        data.data
+      );
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
 const itinerarySlice = createSlice({
   name: 'itinerary',
   initialState: {
     currentItinerary: null,
     itinerariesTemplate: [],
     itinerariesOfUser: [],
+    isCopy: false,
     loading: false
   },
   reducers: {
     clearCurrentItinerary: (state) => {
       state.currentItinerary = null;
+    },
+    setIsCopy: (state) => {
+      state.isCopy = true;
+    },
+    clearIsCopy: (state) => {
+      state.isCopy = false;
     }
   },
   extraReducers: (builder) => {
@@ -76,10 +98,12 @@ const itinerarySlice = createSlice({
       })
       .addCase(createItinerary.fulfilled, (state) => {
         state.loading = false;
+        state.isCopy = false;
       })
       .addCase(createItinerary.rejected, (state) => {
         state.loading = false;
         state.currentItinerary = null;
+        state.isCopy = false;
       })
       .addCase(getAllItineraryByUserId.fulfilled, (state, action) => {
         state.itinerariesOfUser = action.payload.itineraries;
@@ -123,8 +147,15 @@ const itinerarySlice = createSlice({
       .addCase(getAllItineraryTemplate.rejected, (state) => {
         state.loading = false;
         state.itinerariesTemplate = [];
+      })
+      .addCase(updateItinerary.rejected, (state) => {
+        state.currentItinerary = null;
+      })
+      .addCase(updateItinerary.fulfilled, (state) => {
+        state.currentItinerary = null;
       });
   }
 });
-export const { clearCurrentItinerary } = itinerarySlice.actions;
+export const { clearCurrentItinerary, setIsCopy, clearIsCopy } =
+  itinerarySlice.actions;
 export default itinerarySlice.reducer;

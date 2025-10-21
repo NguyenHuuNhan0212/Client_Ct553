@@ -202,9 +202,11 @@ export default function PlaceList({ form, places = [], addActivity }) {
 
                   <Space wrap>
                     {form.details.map((d, i) => (
-                      <Tooltip title={`Thêm địa điểm vào ngày ${d.day}`}>
+                      <Tooltip
+                        key={i}
+                        title={`Thêm địa điểm vào ngày ${d.day}`}
+                      >
                         <Button
-                          key={i}
                           size='small'
                           type='primary'
                           onClick={() => addActivity(i, place)}

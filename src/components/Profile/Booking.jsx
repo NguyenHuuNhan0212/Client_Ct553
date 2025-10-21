@@ -348,7 +348,7 @@ function Booking() {
                       <Text type='secondary'>Số lượng: {item.quantity}</Text>
                     </div>
 
-                    {item.roomTypeName && (
+                    {item.roomTypeName ? (
                       <div
                         style={{
                           display: 'flex',
@@ -366,7 +366,8 @@ function Booking() {
                         </Text>
                         <Text type='secondary'>
                           Tổng tiền:{' '}
-                          {Number(item.priceAtBooking) *
+                          {(
+                            Number(item.priceAtBooking) *
                             Number(item.quantity) *
                             Number(
                               Math.ceil(
@@ -374,7 +375,24 @@ function Booking() {
                                   new Date(currentBooking.checkInDate)) /
                                   (1000 * 60 * 60 * 24)
                               )
-                            )}{' '}
+                            )
+                          ).toLocaleString()}{' '}
+                          VNĐ
+                        </Text>{' '}
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between'
+                        }}
+                      >
+                        <Text></Text>
+                        <Text type='secondary'>
+                          Tổng tiền:{' '}
+                          {(
+                            Number(item.priceAtBooking) * Number(item.quantity)
+                          ).toLocaleString()}
                           VNĐ
                         </Text>{' '}
                       </div>

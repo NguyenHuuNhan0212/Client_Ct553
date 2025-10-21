@@ -17,6 +17,8 @@ import {
   SaveOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { useDispatch } from 'react-redux';
+import { clearIsCopy } from '../../redux/slices/itinerarySlice';
 
 const { RangePicker } = DatePicker;
 const { Title, Text } = Typography;
@@ -26,6 +28,7 @@ export default function ItineraryForm({
   handleDateChange,
   handleSave
 }) {
+  const dispatch = useDispatch();
   const [cities, setCities] = useState([]);
   useEffect(() => {
     const fetchCities = async () => {
@@ -39,6 +42,9 @@ export default function ItineraryForm({
     };
     fetchCities();
   }, []);
+  useEffect(() => {
+    return () => dispatch(clearIsCopy());
+  }, [dispatch]);
   return (
     <Card
       title={

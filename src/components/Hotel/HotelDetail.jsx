@@ -128,7 +128,7 @@ function HotelDetail() {
   }, [dispatch, id, checkIn, checkOut, guests]);
 
   useEffect(() => {
-    if (user?.userId) {
+    if (user?._id) {
       dispatch(getPlacesFavorite());
     }
   }, [dispatch, user]);

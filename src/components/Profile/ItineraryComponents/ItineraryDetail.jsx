@@ -34,7 +34,8 @@ import {
   clearCurrentItinerary,
   deleteItinerary,
   getAllItineraryByUserId,
-  getItineraryDetail
+  getItineraryDetail,
+  setIsCopy
 } from '../../../redux/slices/itinerarySlice';
 import itineraryApi from '../../../apis/itineraryService';
 import ItineraryPriceModal from './ItieraryPriceAndPeopleForm';
@@ -249,8 +250,12 @@ export default function ItineraryDetail({
                   color='cyan'
                   variant='filled'
                   style={{ fontWeight: 500 }}
+                  onClick={() => {
+                    dispatch(setIsCopy());
+                    navigate(`/itinerary/${currentItinerary._id}`);
+                  }}
                 >
-                  <EditOutlined /> Sử dụng lịch trình
+                  <EditOutlined /> Sao chép lịch trình
                 </Button>
               </Tooltip>
             )}

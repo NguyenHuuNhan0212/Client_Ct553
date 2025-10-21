@@ -31,6 +31,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [radioValue, setRadioValue] = useState(0);
   const [isChecked, setChecked] = useState(false);
+  const [serviceQuantities, setServiceQuantities] = useState({});
   const { checkIn, checkOut } = useSelector((state) => state.hotel);
   // 🔥 Hàm tính tổng tiền
   const calculateTotal = (values) => {
@@ -46,7 +47,8 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
 
     const serviceCost = (values.services || []).reduce((sum, id) => {
       const s = room.services.find((srv) => srv._id === id);
-      return sum + (s ? s.price : 0);
+      const qty = serviceQuantities[id] || 1;
+      return sum + (s ? s.price * qty : 0);
     }, 0);
 
     return roomCost + serviceCost;
@@ -68,12 +70,11 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
         pricePerNight: room.pricePerNight
       };
 
-      // build detail cho service
       const serviceDetails = (values.services || []).map((id) => {
         const s = room.services.find((srv) => srv._id === id);
         return {
           serviceId: s._id,
-          quantity: 1,
+          quantity: serviceQuantities[id] || 1,
           price: s.price
         };
       });
@@ -200,16 +201,52 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
           </Form.Item>
 
           <Form.Item label='Dịch vụ thêm' name='services'>
-            <Checkbox.Group style={{ width: '100%' }}>
-              {room.services?.map((service) => (
-                <Checkbox key={service._id} value={service._id}>
-                  {service.name} ({service.price.toLocaleString()})
-                </Checkbox>
-              ))}
+            <Checkbox.Group
+              style={{ width: '100%' }}
+              onChange={() => {
+                const values = form.getFieldsValue();
+                setTotalPrice(calculateTotal(values));
+              }}
+            >
+              {room.services?.map((service) => {
+                const selected = form
+                  .getFieldValue('services')
+                  ?.includes(service._id);
+                return (
+                  <div
+                    key={service._id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: 8
+                    }}
+                  >
+                    <Checkbox value={service._id}>
+                      {service.name} ({service.price.toLocaleString()}đ)
+                    </Checkbox>
+                    {selected && (
+                      <InputNumber
+                        min={1}
+                        max={10}
+                        value={serviceQuantities[service._id] || 1}
+                        onChange={(val) => {
+                          setServiceQuantities((prev) => ({
+                            ...prev,
+                            [service._id]: val || 1
+                          }));
+                          const values = form.getFieldsValue();
+                          setTotalPrice(calculateTotal(values));
+                        }}
+                        style={{ width: 70, marginLeft: 8 }}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </Checkbox.Group>
           </Form.Item>
 
-          {/* ✅ Hiển thị tổng tiền realtime */}
           <Divider />
           <Title level={4} style={{ textAlign: 'right' }}>
             Tổng tiền:{' '}

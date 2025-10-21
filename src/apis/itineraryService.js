@@ -11,7 +11,7 @@ const itineraryApi = {
     return axiosClient.get(`/itinerary/${itineraryId}`);
   },
   updateStatusItinerary(itineraryId) {
-    return axiosClient.patch(`/itinerary/${itineraryId}`);
+    return axiosClient.patch(`/itinerary/status/${itineraryId}`);
   },
   addPriceAndPeople(data) {
     return axiosClient.patch(
@@ -24,6 +24,9 @@ const itineraryApi = {
   },
   getAllItineraryTemplate() {
     return axiosClient.get('/itinerary/template');
+  },
+  updateItinerary(itineraryId, data) {
+    return axiosClient.patch(`/itinerary/${itineraryId}`, data);
   }
 };
 export default itineraryApi;

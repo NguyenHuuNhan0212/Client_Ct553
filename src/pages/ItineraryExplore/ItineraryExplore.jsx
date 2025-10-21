@@ -28,7 +28,7 @@ export default function ItineraryExplore() {
   const itineraries = !user
     ? itinerariesTemplate
     : itinerariesTemplate.filter((i) => {
-        return i.userId?.toString() !== user?.userId?.toString();
+        return i.userId?.toString() !== user?._id?.toString();
       });
   const filteredItinerary = !selectedLocation
     ? itineraries
@@ -78,6 +78,7 @@ export default function ItineraryExplore() {
                   </Text>
                   <Select
                     showSearch
+                    allowClear
                     placeholder='Chọn địa điểm'
                     filterOption={(input, option) =>
                       (option?.label ?? '')

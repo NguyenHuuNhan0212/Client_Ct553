@@ -42,7 +42,7 @@ export default function HotelCard({ hotel }) {
   };
 
   useEffect(() => {
-    if (user?.userId) {
+    if (user?._id) {
       dispatch(getPlacesFavorite());
     }
   }, [dispatch, user]);
