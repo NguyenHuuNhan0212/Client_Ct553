@@ -8,7 +8,8 @@ import {
   ShoppingCartOutlined,
   AppstoreOutlined,
   BarChartOutlined,
-  HeartOutlined
+  HeartOutlined,
+  UnorderedListOutlined
 } from '@ant-design/icons';
 
 import Info from '../../components/Profile/Info';
@@ -21,6 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './style.module.css';
 import { getInfoUser } from '../../redux/slices/userSlice';
 import PlaceFavorite from '../../components/Profile/Favorite';
+import Revenue from '../../components/Profile/Revenue';
 const { Content, Sider } = Layout;
 
 export default function Profile() {
@@ -60,8 +62,13 @@ export default function Profile() {
       },
       {
         key: '6',
-        icon: <BarChartOutlined />,
+        icon: <UnorderedListOutlined />,
         label: 'Danh sách đặt dịch vụ'
+      },
+      {
+        key: '7',
+        icon: <BarChartOutlined />,
+        label: 'Thống kê địa điểm'
       }
     );
   }
@@ -80,6 +87,8 @@ export default function Profile() {
         return <ServiceProvide />;
       case '6':
         return <BookingList />;
+      case '7':
+        return <Revenue />;
       default:
         return null;
     }

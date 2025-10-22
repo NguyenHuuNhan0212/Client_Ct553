@@ -27,6 +27,12 @@ const bookingApi = {
   },
   createBookingInternal(data) {
     return axiosClient.post('/bookings/internal', data);
+  },
+  getStats() {
+    return axiosClient.get('/bookings/stats');
+  },
+  cancelBookingForSupplier(bookingId) {
+    return axiosClient.patch(`/bookings/supplier/${bookingId}`);
   }
 };
 export default bookingApi;

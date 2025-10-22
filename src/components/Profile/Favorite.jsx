@@ -20,7 +20,7 @@ function PlaceFavorite() {
 
   return (
     <>
-      <Title level={2} style={{ textAlign: 'center' }}>
+      <Title level={1} style={{ textAlign: 'center' }}>
         Danh sách địa điểm yêu thích
       </Title>
       <div style={{ marginBottom: 10, textAlign: 'right' }}>

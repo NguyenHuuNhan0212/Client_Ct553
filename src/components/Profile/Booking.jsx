@@ -203,7 +203,7 @@ function Booking() {
       <Card
         variant='borderless'
         title={
-          <Title level={2} style={{ textAlign: 'center', marginBottom: 0 }}>
+          <Title level={1} style={{ textAlign: 'center', marginBottom: 0 }}>
             Lịch sử đơn đặt dịch vụ
           </Title>
         }

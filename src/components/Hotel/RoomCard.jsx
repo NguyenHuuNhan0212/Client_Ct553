@@ -226,20 +226,23 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
                       {service.name} ({service.price.toLocaleString()}đ)
                     </Checkbox>
                     {selected && (
-                      <InputNumber
-                        min={1}
-                        max={10}
-                        value={serviceQuantities[service._id] || 1}
-                        onChange={(val) => {
-                          setServiceQuantities((prev) => ({
-                            ...prev,
-                            [service._id]: val || 1
-                          }));
-                          const values = form.getFieldsValue();
-                          setTotalPrice(calculateTotal(values));
-                        }}
-                        style={{ width: 70, marginLeft: 8 }}
-                      />
+                      <>
+                        <Text strong>Số lượng:</Text>
+                        <InputNumber
+                          min={1}
+                          max={10}
+                          value={serviceQuantities[service._id] || 1}
+                          onChange={(val) => {
+                            setServiceQuantities((prev) => ({
+                              ...prev,
+                              [service._id]: val || 1
+                            }));
+                            const values = form.getFieldsValue();
+                            setTotalPrice(calculateTotal(values));
+                          }}
+                          style={{ width: 70, marginLeft: 8 }}
+                        />
+                      </>
                     )}
                   </div>
                 );

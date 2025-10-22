@@ -7,9 +7,10 @@ import {
   clearCurrentItinerary,
   getAllItineraryByUserId
 } from '../../redux/slices/itinerarySlice';
-import { Button, Empty } from 'antd';
+import { Button, Empty, Typography } from 'antd';
 import ItineraryDetail from './ItineraryComponents/ItineraryDetail';
 
+const { Title } = Typography;
 export default function ItineraryComponent() {
   const navigate = useNavigate();
   const { itinerariesOfUser: itineraries, currentItinerary } = useSelector(
@@ -46,16 +47,14 @@ export default function ItineraryComponent() {
     >
       {!selectedItinerary ? (
         <>
-          <h1
+          <Title
+            level={1}
             style={{
-              fontSize: 30,
-              textAlign: 'center',
-              fontWeight: 600,
-              marginBottom: 8
+              textAlign: 'center'
             }}
           >
             Lịch trình của tôi
-          </h1>
+          </Title>
           <p style={{ textAlign: 'center', color: '#777', marginBottom: 24 }}>
             Quản lý và theo dõi các chuyến đi
           </p>

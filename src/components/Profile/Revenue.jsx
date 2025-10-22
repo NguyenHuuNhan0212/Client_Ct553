@@ -1,17 +1,14 @@
 // src/pages/Revenue.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Row, Col, Statistic, Table, Typography } from 'antd';
 import { DollarOutlined, ShopOutlined } from '@ant-design/icons';
-import RevenueChart from '../../components/RevenueChart/RevenueChart';
+import RevenueChart from './RevenueChart/RevenueChart';
+import bookingApi from '../../apis/bookingService';
 
 const { Title } = Typography;
 
 const Revenue = () => {
-  const revenueSummary = {
-    totalRevenue: 154_000_000,
-    totalBookings: 320,
-    totalPlaces: 5
-  };
+  const [revenueSummary, setRevenueSummary] = useState({});
 
   const monthlyRevenue = [
     { month: 'Jan', revenue: 10000000 },
@@ -22,27 +19,28 @@ const Revenue = () => {
     { month: 'Jun', revenue: 19000000 }
   ];
 
-  const placeRevenue = [
-    { key: 1, name: 'Villa Biển Đà Nẵng', revenue: 58000000, bookings: 120 },
-    { key: 2, name: 'Homestay Đà Lạt', revenue: 34000000, bookings: 85 },
-    { key: 3, name: 'Resort Phú Quốc', revenue: 41000000, bookings: 96 },
-    { key: 4, name: 'Căn hộ Nha Trang', revenue: 21000000, bookings: 45 }
-  ];
-
   const columns = [
-    { title: 'Địa điểm', dataIndex: 'name', key: 'name' },
+    { title: 'Địa điểm', dataIndex: 'placeName', key: 'name' },
     {
       title: 'Doanh thu',
-      dataIndex: 'revenue',
+      dataIndex: 'totalRevenue',
       key: 'revenue',
-      render: (value) => value.toLocaleString('vi-VN') + ' ₫'
+      render: (value) => value.toLocaleString() + ' VNĐ'
     },
-    { title: 'Lượt đặt', dataIndex: 'bookings', key: 'bookings' }
+    { title: 'Lượt đặt', dataIndex: 'totalBookings', key: 'bookings' }
   ];
-
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await bookingApi.getStats();
+      setRevenueSummary(res);
+    };
+    fetchData();
+  }, []);
   return (
     <div style={{ padding: 24 }}>
-      <Title level={3}>📊 Tổng quan doanh thu</Title>
+      <Title level={1} style={{ textAlign: 'center' }}>
+        Tổng quan doanh thu
+      </Title>
 
       <Row gutter={16}>
         <Col span={8}>
@@ -52,7 +50,7 @@ const Revenue = () => {
               value={revenueSummary.totalRevenue}
               prefix={<DollarOutlined />}
               valueStyle={{ color: '#3f8600' }}
-              suffix='₫'
+              suffix='VNĐ'
             />
           </Card>
         </Col>
@@ -80,7 +78,12 @@ const Revenue = () => {
       </Card>
 
       <Card title='Doanh thu theo địa điểm' style={{ marginTop: 24 }}>
-        <Table columns={columns} dataSource={placeRevenue} pagination={false} />
+        <Table
+          columns={columns}
+          dataSource={revenueSummary?.revenueByPlace}
+          pagination={false}
+          rowKey={(record) => record.placeId}
+        />
       </Card>
     </div>
   );

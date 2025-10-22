@@ -18,18 +18,22 @@ import { getAllForSupplier } from '../../redux/slices/bookingSlice';
 import dayjs from 'dayjs';
 import {
   CheckCircleOutlined,
+  CloseCircleOutlined,
   DeleteOutlined,
   EyeOutlined
 } from '@ant-design/icons';
 import bookingApi from '../../apis/bookingService';
+import { capitalizeName } from '../../utils/capitalize';
 const { Title, Text } = Typography;
 function BookingList() {
   const dispatch = useDispatch();
   const { bookingsOfSupplier } = useSelector((state) => state.booking);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
-  const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenCancelBookingModal, setIsOpenCancelBookingModal] =
+    useState(false);
   const [isOpenConfirmPaymentModal, setIsOpenConfirmPaymentModal] =
     useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -49,7 +53,8 @@ function BookingList() {
   const renderContent = (record) => {
     if (
       record.paymentMethod === 'offline' &&
-      record.paymentStatus === 'pending'
+      record.paymentStatus === 'pending' &&
+      record.status !== 'cancelled'
     ) {
       return <Tag color='gold'>Chưa thanh toán</Tag>;
     } else if (
@@ -97,6 +102,22 @@ function BookingList() {
     setIsOpenConfirmPaymentModal(true);
     setSelectedBooking(record);
   };
+  const handleShowModalCancelBooking = (record) => {
+    setSelectedBooking(record);
+    setIsOpenCancelBookingModal(true);
+  };
+  const handleCancel = async () => {
+    if (!selectedBooking) return;
+    try {
+      await bookingApi.cancelBookingForSupplier(selectedBooking._id);
+      await dispatch(getAllForSupplier()).unwrap();
+      setIsOpenCancelBookingModal(false);
+      message.success('Hủy đơn đặt của khách hàng thành công.');
+    } catch (err) {
+      setIsOpenCancelBookingModal(false);
+      message.error(err.response?.data?.message);
+    }
+  };
   const handleConfirmPayment = async () => {
     if (!selectedBooking) {
       return;
@@ -108,7 +129,7 @@ function BookingList() {
       message.success('Cập nhật thanh toán thành công');
     } catch (err) {
       setIsOpenConfirmPaymentModal(false);
-      message.error(err.response?.data);
+      message.error(err.message);
     }
   };
   const handleRemovePlace = async () => {
@@ -144,7 +165,8 @@ function BookingList() {
       title: 'Khách hàng',
       align: 'center',
       dataIndex: ['userId', 'fullName'],
-      key: 'customer'
+      key: 'customer',
+      render: (value) => capitalizeName(value)
     },
     {
       title: 'Loại đơn đặt',
@@ -203,35 +225,52 @@ function BookingList() {
       align: 'center',
       key: 'status',
       render: (_, record) => (
-        <Space size='large' style={{ fontSize: 20 }}>
-          <Tooltip title={'Xem chi tiết đơn đặt'}>
-            <EyeOutlined
-              style={{ color: 'blue', cursor: 'pointer' }}
-              onClick={() => handleShowModal(record)}
-            />
-          </Tooltip>
-
-          {record.isDeleted && (
-            <Tooltip title={'Xóa đơn đặt'}>
-              <DeleteOutlined
-                style={{ color: '#ff4d4f', cursor: 'pointer' }}
-                onClick={() => handleShowModalDelete(record)}
+        <>
+          <Space size='large' style={{ fontSize: 20, marginBottom: 5 }}>
+            <Tooltip title={'Xem chi tiết đơn đặt'}>
+              <EyeOutlined
+                style={{ color: 'blue', cursor: 'pointer' }}
+                onClick={() => handleShowModal(record)}
               />
             </Tooltip>
-          )}
-          {Number(record.totalPrice) !== Number(record.paymentAmount) &&
-            record.status !== 'cancelled' && (
-              <Tooltip title={'Xác nhận đã thu tiền đầy đủ'}>
+
+            {record.deleted && (
+              <Tooltip title={'Xóa đơn đặt'}>
+                <DeleteOutlined
+                  style={{ color: '#ff4d4f', cursor: 'pointer' }}
+                  onClick={() => handleShowModalDelete(record)}
+                />
+              </Tooltip>
+            )}
+            {Number(record.totalPrice) !== Number(record.paymentAmount) &&
+              record.status !== 'cancelled' && (
+                <Tooltip title={'Xác nhận đã thu tiền đầy đủ'}>
+                  <Button
+                    color='cyan'
+                    variant='filled'
+                    onClick={() => handleShowModalConfirmPayment(record)}
+                  >
+                    <CheckCircleOutlined /> Đã thu tiền
+                  </Button>
+                </Tooltip>
+              )}
+          </Space>
+          {record.status !== 'cancelled' &&
+            dayjs().isAfter(dayjs(record.checkInDate), 'day') &&
+            Number(record.totalPrice) !== Number(record.paymentAmount) && (
+              <Tooltip
+                title={'Khách không đến, chủ địa điểm có thể hủy đơn này.'}
+              >
                 <Button
-                  color='cyan'
+                  color='red'
                   variant='filled'
-                  onClick={() => handleShowModalConfirmPayment(record)}
+                  onClick={() => handleShowModalCancelBooking(record)}
                 >
-                  <CheckCircleOutlined /> Đã thu tiền
+                  <CloseCircleOutlined /> Hủy (khách không đến)
                 </Button>
               </Tooltip>
             )}
-        </Space>
+        </>
       )
     }
   ];
@@ -276,7 +315,7 @@ function BookingList() {
 
         <Table
           dataSource={filteredBookings}
-          rowKey='_id'
+          rowKey={(record) => record._id}
           columns={columns}
           pagination={{ pageSize: 5 }}
         />
@@ -427,6 +466,16 @@ function BookingList() {
           Bạn có chắc chắn muốn xác nhận đã thu tiền đầy đủ cho đơn đặt này
           không?
         </p>
+      </Modal>
+      <Modal
+        title='Xác nhận hủy đơn đặt do khách không đến.'
+        open={isOpenCancelBookingModal}
+        onOk={handleCancel}
+        onCancel={() => setIsOpenCancelBookingModal(false)}
+        okText='Xác nhận'
+        cancelText='Hủy'
+      >
+        <p>Bạn có chắc chắn hủy đơn đặt này không?</p>
       </Modal>
     </>
   );
