@@ -35,7 +35,7 @@ const RevenueByLocationChart = ({ data }) => {
       },
       title: {
         display: true,
-        text: 'Doanh thu theo địa điểm (VNĐ)',
+        text: 'Doanh thu theo địa điểm (tháng)',
         font: {
           size: 18
         }

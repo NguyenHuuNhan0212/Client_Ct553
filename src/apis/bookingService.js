@@ -43,6 +43,10 @@ const bookingApi = {
     const queryString = params.length ? `?${params.join('&')}` : '';
 
     return axiosClient.get(`/bookings/revenue/by-location${queryString}`);
+  },
+  getRevenueByDate(params) {
+    const query = params.date ? `?date=${params.date}` : '';
+    return axiosClient.get(`/bookings/revenue/by-date${query}`);
   }
 };
 export default bookingApi;
