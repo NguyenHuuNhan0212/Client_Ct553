@@ -33,6 +33,16 @@ const bookingApi = {
   },
   cancelBookingForSupplier(bookingId) {
     return axiosClient.patch(`/bookings/supplier/${bookingId}`);
+  },
+  getRevenueByLocation(data) {
+    const params = [];
+
+    if (data?.from) params.push(`from=${data.from}`);
+    if (data?.to) params.push(`to=${data.to}`);
+
+    const queryString = params.length ? `?${params.join('&')}` : '';
+
+    return axiosClient.get(`/bookings/revenue/by-location${queryString}`);
   }
 };
 export default bookingApi;

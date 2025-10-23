@@ -106,7 +106,10 @@ function Booking() {
     }
 
     const daysLeft = dayjs(checkInDate).diff(today, 'day') + 1;
-    if (daysLeft > 0) {
+    if (
+      daysLeft > 0 &&
+      !today.isBetween(dayjs(checkInDate), dayjs(checkOutDate), 'day', '[]')
+    ) {
       return <Tag color='purple'>{daysLeft} ngày đếm ngược</Tag>;
     }
 
@@ -290,19 +293,23 @@ function Booking() {
                       style={{
                         fontSize: 16,
                         color:
-                          currentBooking.payment?.method === 'offline' ||
+                          (currentBooking.payment?.method === 'offline' &&
+                            Number(currentBooking?.totalPrice) !==
+                              Number(currentBooking?.payment?.amount)) ||
                           (currentBooking.payment?.method !== 'offline' &&
                             currentBooking.payment?.paymentType !== 'full')
                             ? '#ff4d4f'
                             : '#52c41a'
                       }}
                     >
-                      {currentBooking.payment?.method === 'offline'
+                      {currentBooking.payment?.method === 'offline' &&
+                      Number(currentBooking?.totalPrice) !==
+                        Number(currentBooking?.payment?.amount)
                         ? 'Thanh toán khi sử dụng dịch vụ'
                         : currentBooking.payment?.method !== 'offline' &&
-                          currentBooking.payment?.paymentType === 'full'
-                        ? 'Đã thanh toán'
-                        : `Thanh toán 1 phần (${currentBooking.payment?.amount?.toLocaleString()} VNĐ)`}
+                          currentBooking.payment?.paymentType === 'deposit'
+                        ? `Thanh toán 1 phần (${currentBooking.payment?.amount?.toLocaleString()} VNĐ)`
+                        : 'Đã thanh toán'}
                     </Text>
                   </Descriptions.Item>
                   {

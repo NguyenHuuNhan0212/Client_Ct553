@@ -1,23 +1,68 @@
 // src/pages/Revenue.jsx
 import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, Statistic, Table, Typography } from 'antd';
+import {
+  Card,
+  Row,
+  Col,
+  Statistic,
+  Table,
+  Typography,
+  message,
+  Spin
+} from 'antd';
 import { DollarOutlined, ShopOutlined } from '@ant-design/icons';
-import RevenueChart from './RevenueChart/RevenueChart';
 import bookingApi from '../../apis/bookingService';
+import DateFilter from './RevenueChart/DateFilter';
+import RevenueByLocationChart from './RevenueChart/RevenueByLocationChart';
+import dayjs from 'dayjs';
 
 const { Title } = Typography;
 
 const Revenue = () => {
   const [revenueSummary, setRevenueSummary] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [filter, setFilter] = useState(null);
+  const [data, setData] = useState(null);
 
-  const monthlyRevenue = [
-    { month: 'Jan', revenue: 10000000 },
-    { month: 'Feb', revenue: 15000000 },
-    { month: 'Mar', revenue: 18000000 },
-    { month: 'Apr', revenue: 25000000 },
-    { month: 'May', revenue: 22000000 },
-    { month: 'Jun', revenue: 19000000 }
-  ];
+  const fetchRevenue = async (from, to) => {
+    setIsLoading(true);
+    try {
+      const res = await bookingApi.getRevenueByLocation({ from, to });
+      const raw = res;
+      const months = [...new Set(raw.map((m) => m.month))].sort(
+        (a, b) => a - b
+      );
+      const locations = [...new Set(raw.map((l) => l.location))];
+      const datasets = locations.map((loc, idx) => {
+        return {
+          label: loc,
+          data: months.map((m) => {
+            const item = raw.find((i) => i.month === m && i.location === loc);
+            return item ? item.totalRevenue : 0;
+          }),
+          borderColor: ['#36A2EB', '#FF6384', '#4BC0C0', '#9966FF'][idx % 4],
+          tension: 0.3
+        };
+      });
+      setData({
+        labels: months.map((m) => `Tháng ${m}`),
+        datasets
+      });
+    } catch (err) {
+      message.error(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const chartData = data ? data : { labels: [], datasets: [] };
+  useEffect(() => {
+    if (filter) {
+      if (dayjs(filter.to).isAfter(dayjs())) {
+        filter.to = dayjs();
+      }
+      fetchRevenue(filter.from, filter.to);
+    }
+  }, [filter]);
 
   const columns = [
     { title: 'Địa điểm', dataIndex: 'placeName', key: 'name' },
@@ -35,6 +80,7 @@ const Revenue = () => {
       setRevenueSummary(res);
     };
     fetchData();
+    fetchRevenue();
   }, []);
   return (
     <div style={{ padding: 24 }}>
@@ -74,7 +120,14 @@ const Revenue = () => {
       </Row>
 
       <Card style={{ marginTop: 24 }}>
-        <RevenueChart data={monthlyRevenue} />
+        {isLoading ? (
+          <Spin />
+        ) : (
+          <>
+            <DateFilter onChange={setFilter} />
+            <RevenueByLocationChart data={chartData} />{' '}
+          </>
+        )}
       </Card>
 
       <Card title='Doanh thu theo địa điểm' style={{ marginTop: 24 }}>
