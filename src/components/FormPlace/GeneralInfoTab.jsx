@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Form, Input, Select, Upload, Row, Col, Image } from 'antd';
+import { Form, Input, Select, Upload, Row, Col, Image, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AddressSelector from './AddressSelector';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 const { Option } = Select;
-
+const { Text } = Typography;
 const GeneralInfoTab = ({
   fileList,
   handleChange,
@@ -67,6 +67,9 @@ const GeneralInfoTab = ({
         required
         style={{ marginBottom: 40 }}
       >
+        <Text type='danger' italic>
+          Ảnh đầu tiên là ảnh bìa hiển thị
+        </Text>
         <Upload
           multiple
           listType='picture-card'

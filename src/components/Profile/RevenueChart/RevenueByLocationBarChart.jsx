@@ -8,8 +8,9 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+import { Typography } from 'antd';
 import { Bar } from 'react-chartjs-2';
-
+const { Title: AntTitle } = Typography;
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -31,11 +32,7 @@ const RevenueByLocationBarChart = ({ data }) => {
         position: 'top'
       },
       title: {
-        display: true,
-        text: 'Doanh thu theo địa điểm (ngày)',
-        font: {
-          size: 18
-        }
+        display: false
       }
     },
     scales: {
@@ -48,7 +45,12 @@ const RevenueByLocationBarChart = ({ data }) => {
     }
   };
 
-  return <Bar data={chartData} options={options} />;
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <AntTitle level={4}>Doanh thu theo địa điểm (Ngày)</AntTitle>
+      <Bar data={chartData} options={options} />;
+    </div>
+  );
 };
 
 export default RevenueByLocationBarChart;

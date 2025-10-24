@@ -16,7 +16,7 @@ import bookingApi from '../../../apis/bookingService';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { Title } = Typography;
-const InternalBookingForm = ({ placeId }) => {
+const InternalBookingForm = ({ placeId, onClose }) => {
   const [form] = Form.useForm();
   const [roomTypes, setRoomTypes] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -73,6 +73,7 @@ const InternalBookingForm = ({ placeId }) => {
       message.success('Tạo booking nội bộ thành công!');
       form.resetFields();
       setTotalPrice(0);
+      onClose(false);
     } catch (err) {
       message.error(err.response?.data?.error || 'Không thể tạo booking.');
     }

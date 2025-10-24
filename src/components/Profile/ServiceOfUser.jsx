@@ -319,7 +319,12 @@ function ServiceProvide() {
         footer={null}
         width={800}
       >
-        {selectedPlace && <InternalBookingForm placeId={selectedPlace._id} />}
+        {selectedPlace && (
+          <InternalBookingForm
+            placeId={selectedPlace._id}
+            onClose={setOpenCreateBooking}
+          />
+        )}
       </Modal>
     </Card>
   );

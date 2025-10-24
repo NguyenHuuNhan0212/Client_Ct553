@@ -334,17 +334,23 @@ function BookingList() {
       >
         {selectedBooking && (
           <>
-            <Descriptions title='Thông tin khách hàng' bordered column={1}>
-              <Descriptions.Item label='Họ tên'>
-                {selectedBooking?.userId?.fullName}
-              </Descriptions.Item>
-              <Descriptions.Item label='Email'>
-                {selectedBooking?.userId?.email}
-              </Descriptions.Item>
-              <Descriptions.Item label='SĐT'>
-                {selectedBooking?.userId?.phone || '—'}
-              </Descriptions.Item>
-            </Descriptions>
+            {!selectedBooking.userId ? (
+              <Title level={3} style={{ textAlign: 'center', color: 'red' }}>
+                Đây là đơn nội bộ
+              </Title>
+            ) : (
+              <Descriptions title='Thông tin khách hàng' bordered column={1}>
+                <Descriptions.Item label='Họ tên'>
+                  {selectedBooking?.userId?.fullName}
+                </Descriptions.Item>
+                <Descriptions.Item label='Email'>
+                  {selectedBooking?.userId?.email}
+                </Descriptions.Item>
+                <Descriptions.Item label='SĐT'>
+                  {selectedBooking?.userId?.phone || '—'}
+                </Descriptions.Item>
+              </Descriptions>
+            )}
 
             <Descriptions
               title='Thông tin đơn đặt'

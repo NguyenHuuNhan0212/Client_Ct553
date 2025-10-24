@@ -11,9 +11,14 @@ import {
   Spin,
   DatePicker,
   Space,
-  Button
+  Button,
+  Tooltip
 } from 'antd';
-import { DollarOutlined, ShopOutlined } from '@ant-design/icons';
+import {
+  ContainerOutlined,
+  DollarOutlined,
+  ShopOutlined
+} from '@ant-design/icons';
 import bookingApi from '../../apis/bookingService';
 import DateFilter from './RevenueChart/DateFilter';
 import RevenueByLocationChart from './RevenueChart/RevenueByLocationLineChart';
@@ -32,15 +37,33 @@ const Revenue = () => {
   const [dailyData, setDailyData] = useState(null);
 
   const columns = [
-    { title: 'Địa điểm', dataIndex: 'placeName', key: 'name' },
+    {
+      title: 'Địa điểm',
+      dataIndex: 'placeName',
+      key: 'name'
+    },
     {
       title: 'Doanh thu',
       dataIndex: 'totalRevenue',
       key: 'revenue',
-      render: (value) => value.toLocaleString() + ' VNĐ'
+      render: (value) => value.toLocaleString() + ' VNĐ',
+      sorter: (a, b) => a.totalRevenue - b.totalRevenue,
+      sortDirections: ['descend', 'ascend']
     },
-    { title: 'Lượt đặt', dataIndex: 'totalBookings', key: 'bookings' }
+    {
+      title: 'Lượt đặt',
+      dataIndex: 'totalBookings',
+      key: 'bookings',
+      sorter: (a, b) => a.totalBookings - b.totalBookings,
+      sortDirections: ['descend', 'ascend']
+    }
   ];
+
+  const randomColor = () =>
+    `#${Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, '0')}`;
+
   const fetchRevenue = async (from, to) => {
     setIsLoadingLine(true);
     try {
@@ -50,14 +73,14 @@ const Revenue = () => {
         (a, b) => a - b
       );
       const locations = [...new Set(raw.map((l) => l.location))];
-      const datasets = locations.map((loc, idx) => {
+      const datasets = locations.map((loc) => {
         return {
           label: loc,
           data: months.map((m) => {
             const item = raw.find((i) => i.month === m && i.location === loc);
             return item ? item.totalRevenue : 0;
           }),
-          borderColor: ['#36A2EB', '#FF6384', '#4BC0C0', '#9966FF'][idx % 4],
+          borderColor: randomColor(),
           tension: 0.3
         };
       });
@@ -71,10 +94,6 @@ const Revenue = () => {
       setIsLoadingLine(false);
     }
   };
-  const randomColor = () =>
-    `#${Math.floor(Math.random() * 16777215)
-      .toString(16)
-      .padStart(6, '0')}`;
 
   const fetchRevenueByDate = async (date) => {
     setIsLoadingBar(true);
@@ -108,7 +127,7 @@ const Revenue = () => {
       }
       fetchRevenue(filter.from, filter.to);
     }
-  }, [filter]);
+  }, [filter]); // eslint-disable-line
 
   useEffect(() => {
     const fetchData = async () => {
@@ -129,7 +148,7 @@ const Revenue = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title='Tổng doanh thu'
+              title={<Text strong>Tổng doanh thu</Text>}
               value={revenueSummary.totalRevenue}
               prefix={<DollarOutlined />}
               valueStyle={{ color: '#3f8600' }}
@@ -140,17 +159,20 @@ const Revenue = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title='Tổng lượt đặt'
+              title={<Text strong>Tổng lượt đặt</Text>}
               value={revenueSummary.totalBookings}
+              prefix={<ContainerOutlined />}
+              valueStyle={{ color: '#865e00ff' }}
             />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
             <Statistic
-              title='Số địa điểm đang hoạt động'
+              title={<Text strong>Số địa điểm đang hoạt động</Text>}
               value={revenueSummary.totalPlaces}
               prefix={<ShopOutlined />}
+              valueStyle={{ color: '#008655ff' }}
             />
           </Card>
         </Col>
@@ -199,9 +221,7 @@ const Revenue = () => {
                   }}
                 >
                   <Space style={{ width: '100%', textAlign: 'center' }}>
-                    <Text disabled style={{ fontWeight: 600 }}>
-                      Chọn ngày:{' '}
-                    </Text>
+                    <Text strong>Chọn ngày: </Text>
 
                     <DatePicker
                       allowClear={false}
@@ -214,6 +234,7 @@ const Revenue = () => {
                         setDate(formatted);
                         fetchRevenueByDate(formatted);
                       }}
+                      placeholder='Chọn ngày'
                     />
                     <Button
                       color='primary'
@@ -242,7 +263,7 @@ const Revenue = () => {
           </Row>
 
           <Card
-            title='Tổng doanh thu theo địa điểm'
+            title={<Title level={3}>Tổng doanh thu theo địa điểm</Title>}
             style={{ marginTop: 24, textAlign: 'center' }}
           >
             <Table

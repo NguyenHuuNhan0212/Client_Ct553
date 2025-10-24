@@ -33,9 +33,9 @@ export default function ItineraryExplore() {
   const filteredItinerary = !selectedLocation
     ? itineraries
     : itineraries.filter((i) => {
-        return i.destination
-          .toLowerCase()
-          .includes(selectedLocation.toLocaleLowerCase());
+        return selectedLocation
+          .toLocaleLowerCase()
+          .includes(i.destination.toLowerCase());
       });
 
   useEffect(() => {

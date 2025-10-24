@@ -177,14 +177,16 @@ function Booking() {
             />
           </Tooltip>
 
-          {record.status !== 'cancelled' && (
-            <Tooltip title={'Hủy đơn đặt'}>
-              <CloseCircleOutlined
-                style={{ color: 'red', cursor: 'pointer' }}
-                onClick={() => showModalCancel(record)}
-              />
-            </Tooltip>
-          )}
+          {(record.status !== 'cancelled' &&
+            Number(record.totalPrice) !== Number(record.paymentInfo?.amount)) ||
+            (dayjs().isBefore(dayjs(record.checkInDate), 'day') && (
+              <Tooltip title={'Hủy đơn đặt'}>
+                <CloseCircleOutlined
+                  style={{ color: 'red', cursor: 'pointer' }}
+                  onClick={() => showModalCancel(record)}
+                />
+              </Tooltip>
+            ))}
 
           {record.status === 'cancelled' && (
             <Tooltip title={'Xóa đơn đặt'}>

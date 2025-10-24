@@ -25,7 +25,8 @@ const chatSlice = createSlice({
     ],
     loading: false,
     error: null,
-    tripPlan: null
+    tripPlan: null,
+    city: null
   },
   reducers: {
     addUserMessage: (state, action) => {
@@ -33,6 +34,9 @@ const chatSlice = createSlice({
     },
     clearChat: (state) => {
       state.chat = [];
+    },
+    clearIsTripPlan: (state) => {
+      state.chat = state.chat?.map((msg) => ({ ...msg, isTripPlan: false }));
     }
   },
   extraReducers: (builder) => {
@@ -50,6 +54,7 @@ const chatSlice = createSlice({
         state.tripPlan = action.payload.tripPlan
           ? action.payload.tripPlan
           : null;
+        state.city = action.payload.city ? action.payload.city : null;
       })
       .addCase(sendMessageToAI.rejected, (state, action) => {
         state.loading = false;
@@ -58,5 +63,5 @@ const chatSlice = createSlice({
   }
 });
 
-export const { addUserMessage, clearChat } = chatSlice.actions;
+export const { addUserMessage, clearChat, clearIsTripPlan } = chatSlice.actions;
 export default chatSlice.reducer;

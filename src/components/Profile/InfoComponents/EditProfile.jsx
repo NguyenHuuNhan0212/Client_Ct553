@@ -13,7 +13,6 @@ function EditProfile({ open, onClose }) {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values);
       const res = await dispatch(updateProfile(values));
       if (res.meta.requestStatus === 'fulfilled') {
         toast.success('Cập nhật thông tin thành công!');
@@ -41,12 +40,12 @@ function EditProfile({ open, onClose }) {
         if (visible && user) {
           form.setFieldsValue({
             fullName: user.fullName,
-            email: user.email
+            email: user.email,
+            phone: user.phone
           });
         }
         if (visible && user && user?.role === 'provider') {
           form.setFieldsValue({
-            phone: user.phone,
             bankName: user.bankName,
             bankAccount: user.bankAccount,
             cardHolderName: user.cardHolderName,
@@ -73,22 +72,22 @@ function EditProfile({ open, onClose }) {
         >
           <Input />
         </Form.Item>
+        <Form.Item
+          name='phone'
+          label='Số điện thoại'
+          rules={[
+            { required: true, message: 'Vui lòng nhập số điện thoại' },
+            {
+              pattern: /^(0|\+84)(\d{9})$/,
+              message:
+                'Số điện thoại không hợp lệ (VD: 0349414282 hoặc +84349414282)'
+            }
+          ]}
+        >
+          <Input placeholder='Nhập số điện thoại' maxLength={12} />
+        </Form.Item>
         {user?.role === 'provider' && (
           <>
-            <Form.Item
-              name='phone'
-              label='Số điện thoại'
-              rules={[
-                { required: true, message: 'Vui lòng nhập số điện thoại' },
-                {
-                  pattern: /^(0|\+84)(\d{9})$/,
-                  message:
-                    'Số điện thoại không hợp lệ (VD: 0349414282 hoặc +84349414282)'
-                }
-              ]}
-            >
-              <Input placeholder='Nhập số điện thoại' maxLength={12} />
-            </Form.Item>
             <Form.Item
               name='cardHolderName'
               label='Tên chủ thẻ'

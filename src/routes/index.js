@@ -41,6 +41,12 @@ const routes = [
     component: lazy(() => import('../pages/Itinerary/EditItinerary'))
   },
   {
+    path: 'itinerary/edit-chatbot',
+    component: lazy(() =>
+      import('../pages/Itinerary/EditItineraryWitchChatbot')
+    )
+  },
+  {
     path: 'forgot-password',
     component: lazy(() => import('../pages/ForgotPassword/ForgotPassword'))
   },

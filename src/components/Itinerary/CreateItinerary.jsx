@@ -113,7 +113,7 @@ export default function CreateItinerary() {
         })
       ).unwrap();
       navigate('/profile?tab=2');
-      message.success('Tạo lịch trình thành công 🎉');
+      message.success('Tạo lịch trình thành công');
       localStorage.removeItem('itineraryForm');
     } catch (err) {
       message.error(err.message);

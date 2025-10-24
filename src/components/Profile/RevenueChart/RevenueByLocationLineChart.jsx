@@ -9,7 +9,10 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+import { Typography } from 'antd';
 import { Line } from 'react-chartjs-2';
+
+const { Text, Title: AntTitle } = Typography;
 
 ChartJS.register(
   CategoryScale,
@@ -34,11 +37,7 @@ const RevenueByLocationChart = ({ data }) => {
         position: 'top'
       },
       title: {
-        display: true,
-        text: 'Doanh thu theo địa điểm (tháng)',
-        font: {
-          size: 18
-        }
+        display: false
       }
     },
     scales: {
@@ -52,7 +51,12 @@ const RevenueByLocationChart = ({ data }) => {
   };
 
   return (
-    <div>
+    <div style={{ textAlign: 'center' }}>
+      <AntTitle level={4}>Doanh thu theo địa điểm (Tháng)</AntTitle>
+      <Text disabled style={{ fontWeight: 500 }}>
+        Nhấn vào tên địa điểm để ẩn địa điểm đi
+      </Text>
+
       <Line data={chartData} options={options} />
     </div>
   );

@@ -8,7 +8,8 @@ import {
   Modal,
   Checkbox,
   Radio,
-  message
+  message,
+  Tooltip
 } from 'antd';
 import { FaBed, FaVuejs } from 'react-icons/fa';
 import styles from './style.module.css';
@@ -117,7 +118,9 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
           </div>
         }
       >
-        <Title level={4}>{capitalizeName(room.name)}</Title>
+        <Tooltip title='Nhấn để xem chi tiết'>
+          <Title level={4}>{capitalizeName(room.name)}</Title>
+        </Tooltip>
         <Space size='small' wrap>
           <Tag color='blue'>{room.capacity} người</Tag>
           <Tag color='green'>{room.pricePerNight.toLocaleString()} / ngày</Tag>

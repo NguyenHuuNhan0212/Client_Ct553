@@ -26,9 +26,7 @@ const DateFilter = ({ onChange }) => {
   return (
     <ConfigProvider locale={viVN}>
       <Space style={{ width: '100%' }}>
-        <Text disabled style={{ fontWeight: 600 }}>
-          Chọn tháng:{' '}
-        </Text>
+        <Text strong>Chọn tháng: </Text>
         <RangePicker
           format='MM-YYYY'
           picker='month'

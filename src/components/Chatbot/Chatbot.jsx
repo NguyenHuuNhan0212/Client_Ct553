@@ -16,7 +16,11 @@ import {
 } from '@ant-design/icons';
 import styles from './style.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { addUserMessage, sendMessageToAI } from '../../redux/slices/chatSlice';
+import {
+  addUserMessage,
+  clearIsTripPlan,
+  sendMessageToAI
+} from '../../redux/slices/chatSlice';
 import { useNavigate } from 'react-router-dom';
 
 const { Text } = Typography;
@@ -25,7 +29,7 @@ export default function Chatbot() {
   const { bubbleChat, arrowBottom, wave } = styles;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { chat, loading, tripPlan } = useSelector((state) => state.chat);
+  const { chat, loading } = useSelector((state) => state.chat);
   const { user } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
@@ -43,7 +47,8 @@ export default function Chatbot() {
     setMessageUser('');
   };
   const handleEditItinerary = () => {
-    console.log(tripPlan);
+    dispatch(clearIsTripPlan());
+    navigate('/itinerary/edit-chatbot');
   };
   return (
     <>
@@ -174,7 +179,7 @@ export default function Chatbot() {
                   <Button
                     color='cyan'
                     variant='filled'
-                    onClick={handleEditItinerary}
+                    onClick={() => handleEditItinerary()}
                   >
                     Chỉnh sửa lịch trình
                   </Button>
