@@ -9,10 +9,13 @@ import { getPlacesByAddressAndType } from '../../redux/slices/placeSlice';
 import { createItinerary } from '../../redux/slices/itinerarySlice';
 import { useNavigate } from 'react-router-dom';
 
-function EditItineraryByChatbot() {
+function EditItineraryByChatbot({ isTripPlan = false }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { tripPlan, city } = useSelector((state) => state.chat);
+  const { tripPlan: planAI, itineraryInfoAI } = useSelector(
+    (state) => state.itinerary
+  );
   const { places } = useSelector((state) => state.place);
   const [form, setForm] = useState({
     title: '',
@@ -103,32 +106,63 @@ function EditItineraryByChatbot() {
       message.error(err.message);
     }
   };
+
   useEffect(() => {
-    if (tripPlan && tripPlan.length > 0) {
-      const details = tripPlan.map((dayData) => ({
-        day: dayData.day,
-        activities: dayData.activities.map((a) => ({
-          placeId: a.placeId,
-          placeName: a.name,
-          address: a.address,
-          note: '',
-          image: a.image,
-          services: a.services || [],
-          startTime: '',
-          endTime: ''
-        }))
-      }));
-      setForm({
-        title: `Lịch trình khám phá ${city || 'chưa đặt tên'}`,
-        creatorName: '',
-        destination: city || '',
-        startDate: '',
-        endDate: '',
-        numDays: tripPlan.length,
-        details
-      });
+    if (!isTripPlan) {
+      if (tripPlan && tripPlan.length > 0) {
+        const details = tripPlan.map((dayData) => ({
+          day: dayData.day,
+          activities: dayData.activities.map((a) => ({
+            placeId: a.placeId,
+            placeName: a.name,
+            address: a.address,
+            note: '',
+            image: a.image,
+            services: a.services || [],
+            startTime: '',
+            endTime: ''
+          }))
+        }));
+        setForm({
+          title: `Lịch trình khám phá ${city || 'chưa đặt tên'}`,
+          creatorName: '',
+          destination: city || '',
+          startDate: '',
+          endDate: '',
+          numDays: tripPlan.length,
+          details
+        });
+      }
     }
-  }, [tripPlan, city]);
+  }, [tripPlan, city, isTripPlan]);
+  useEffect(() => {
+    if (isTripPlan) {
+      if (planAI && planAI.length > 0) {
+        const details = planAI.map((dayData) => ({
+          day: dayData.day,
+          activities: dayData.activities.map((a) => ({
+            placeId: a.placeId,
+            placeName: a.name,
+            address: a.address,
+            note: '',
+            image: a.image,
+            services: a.services || [],
+            startTime: '',
+            endTime: ''
+          }))
+        }));
+        setForm({
+          title: itineraryInfoAI.title || '',
+          creatorName: itineraryInfoAI.creatorName || '',
+          destination: itineraryInfoAI.destination || '',
+          startDate: itineraryInfoAI.startDate || '',
+          endDate: itineraryInfoAI.endDate || '',
+          numDays: planAI.length,
+          details
+        });
+      }
+    }
+  }, [planAI, itineraryInfoAI, isTripPlan]);
   useEffect(() => {
     if (form?.destination) {
       dispatch(

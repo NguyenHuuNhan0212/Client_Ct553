@@ -33,6 +33,10 @@ const routes = [
     component: lazy(() => import('../pages/Itinerary/CreateItinerary'))
   },
   {
+    path: '/trip-plans/create',
+    component: lazy(() => import('../pages/Itinerary/TripPlanWithAI'))
+  },
+  {
     path: 'itinerary/explore',
     component: lazy(() => import('../pages/ItineraryExplore/ItineraryExplore'))
   },

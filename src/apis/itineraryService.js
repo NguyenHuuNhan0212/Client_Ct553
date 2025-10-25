@@ -27,6 +27,9 @@ const itineraryApi = {
   },
   updateItinerary(itineraryId, data) {
     return axiosClient.patch(`/itinerary/${itineraryId}`, data);
+  },
+  createItineraryWithAI(data) {
+    return axiosClient.post('/itinerary/trip-plan', data);
   }
 };
 export default itineraryApi;

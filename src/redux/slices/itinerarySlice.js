@@ -71,10 +71,29 @@ export const updateItinerary = createAsyncThunk(
     }
   }
 );
+export const createItineraryWithAI = createAsyncThunk(
+  'itinerary/createWithAI',
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await itineraryApi.createItineraryWithAI(data);
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data);
+    }
+  }
+);
 const itinerarySlice = createSlice({
   name: 'itinerary',
   initialState: {
     currentItinerary: null,
+    itineraryInfoAI: {
+      title: null,
+      startDate: null,
+      destination: null,
+      endDate: null,
+      creatorName: null
+    },
+    tripPlan: null,
     itinerariesTemplate: [],
     itinerariesOfUser: [],
     isCopy: false,
@@ -89,6 +108,24 @@ const itinerarySlice = createSlice({
     },
     clearIsCopy: (state) => {
       state.isCopy = false;
+    },
+    setItineraryInfoAI: (state, action) => {
+      state.itineraryInfoAI = {
+        title: action.payload.title,
+        startDate: action.payload.startDate,
+        destination: action.payload.city,
+        endDate: action.payload.endDate,
+        creatorName: action.payload.creatorName
+      };
+    },
+    clearItineraryInfoAI: (state) => {
+      state.itineraryInfoAI = {
+        title: null,
+        startDate: null,
+        destination: null,
+        endDate: null,
+        creatorName: null
+      };
     }
   },
   extraReducers: (builder) => {
@@ -153,9 +190,25 @@ const itinerarySlice = createSlice({
       })
       .addCase(updateItinerary.fulfilled, (state) => {
         state.currentItinerary = null;
+      })
+      .addCase(createItineraryWithAI.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tripPlan = action.payload;
+      })
+      .addCase(createItineraryWithAI.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createItineraryWithAI.rejected, (state) => {
+        state.loading = false;
+        state.tripPlan = null;
       });
   }
 });
-export const { clearCurrentItinerary, setIsCopy, clearIsCopy } =
-  itinerarySlice.actions;
+export const {
+  clearCurrentItinerary,
+  setIsCopy,
+  clearIsCopy,
+  setItineraryInfoAI,
+  clearItineraryInfoAI
+} = itinerarySlice.actions;
 export default itinerarySlice.reducer;

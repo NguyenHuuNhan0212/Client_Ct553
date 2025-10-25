@@ -3,15 +3,15 @@ import Footer from '../../components/Footer/Footer';
 import Header from '../../components/Header/Header';
 import EditItineraryByChatbot from '../../components/Itinerary/EditItineraryWithChatbot';
 
-function EditItineraryByChatbotPage() {
+function TripPlanWithAIPage() {
   return (
     <>
       <Header />
-      <EditItineraryByChatbot />
+      <EditItineraryByChatbot isTripPlan />
       <Footer />
       <Chatbot />
     </>
   );
 }
 
-export default EditItineraryByChatbotPage;
+export default TripPlanWithAIPage;

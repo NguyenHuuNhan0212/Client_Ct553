@@ -1,4 +1,4 @@
-import { Carousel, Button, Typography, message } from 'antd';
+import { Carousel, Button, Typography } from 'antd';
 import banner1 from '../../assets/images/wellcome.png';
 import banner2 from '../../assets/images/banner2.png';
 import banner3 from '../../assets/images/banner.png';
@@ -7,6 +7,7 @@ import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CreateItineraryChoiceModal from './CreateItineraryModal';
+import TripPlanFormWithAI from './CreateItineraryWithAI';
 
 const { Title, Paragraph } = Typography;
 
@@ -30,13 +31,17 @@ export default function Banner() {
   const [openModal, setOpenModal] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isHoveredCreate, setIsHoveredCreate] = useState(false);
+  const [
+    isOpenModalCreateItineraryWithAI,
+    setIsOpenModalCreateItineraryWithAI
+  ] = useState(false);
   const navigate = useNavigate();
   const handleSelectOption = (type) => {
     setOpenModal(false);
     if (type === 'manual') {
       navigate('/itinerary');
     } else {
-      message.success('Chọn tạo lịch trình bằng AI 🤖');
+      setIsOpenModalCreateItineraryWithAI(true);
     }
   };
   return (
@@ -145,6 +150,10 @@ export default function Banner() {
         open={openModal}
         onCancel={() => setOpenModal(false)}
         onSelect={handleSelectOption}
+      />
+      <TripPlanFormWithAI
+        open={isOpenModalCreateItineraryWithAI}
+        onClose={() => setIsOpenModalCreateItineraryWithAI(false)}
       />
     </div>
   );

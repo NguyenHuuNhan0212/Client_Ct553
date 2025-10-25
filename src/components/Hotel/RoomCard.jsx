@@ -25,6 +25,7 @@ import PaymentMethodSelect from '../PaymentMethod/PaymentMethod';
 import CancelPolicy from '../Profile/BookingComponents/CancelPolicy';
 
 const RoomCard = ({ room, onBook, facilities = [] }) => {
+  console.log(room);
   const { roomCard, roomCover, roomIcon, roomOverlay, amenitiesWrap } = styles;
   const [open, setOpen] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -119,12 +120,29 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
         }
       >
         <Tooltip title='Nhấn để xem chi tiết'>
-          <Title level={4}>{capitalizeName(room.name)}</Title>
+          <Title level={4} style={{ marginTop: 5 }}>
+            {capitalizeName(room.name)}
+          </Title>
         </Tooltip>
-        <Space size='small' wrap>
+        <Space wrap>
+          <Text type='secondary'>Số người tối đa:</Text>
           <Tag color='blue'>{room.capacity} người</Tag>
+        </Space>
+        <Space wrap>
+          <Text type='secondary'>Chi phí:</Text>
           <Tag color='green'>{room.pricePerNight.toLocaleString()} / ngày</Tag>
         </Space>
+        {room.availableRooms ? (
+          <Space wrap>
+            <Text type='secondary'>Số phòng trống:</Text>
+            <Tag color='cyan'>{room.availableRooms} phòng</Tag>
+          </Space>
+        ) : (
+          <Space wrap>
+            <Text type='secondary'>Số phòng có tại địa điểm:</Text>
+            <Tag color='cyan'>{room.totalRooms} phòng</Tag>
+          </Space>
+        )}
       </Card>
 
       {/* Modal chi tiết */}
