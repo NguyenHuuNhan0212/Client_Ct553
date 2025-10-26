@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import Confetti from 'react-confetti';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
+import { useSelector } from 'react-redux';
 
 const { Paragraph, Text } = Typography;
 
@@ -13,7 +14,7 @@ const PaymentResult = () => {
   const status = params.get('status');
   const amount = Number(params.get('amount')) || 0;
   const [showConfetti, setShowConfetti] = useState(false);
-
+  const { user } = useSelector((state) => state.user);
   useEffect(() => {
     if (status === 'success') setShowConfetti(true);
 
@@ -78,7 +79,11 @@ const PaymentResult = () => {
         );
     }
   };
-
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
   return (
     <>
       <Header />

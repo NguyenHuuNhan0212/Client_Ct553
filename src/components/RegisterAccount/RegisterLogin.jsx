@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Typography, Card } from 'antd';
+import { Form, Input, Button, Typography, Card, Spin } from 'antd';
 import { LockOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import authApi from '../../apis/authService';
-import Loading from '../Loading/Loading';
 import { toast } from 'react-toastify';
 import styles from './style.module.css';
 const { Title } = Typography;
@@ -160,7 +159,7 @@ export default function RegisterLogin() {
               background: 'linear-gradient(90deg, #3b82f6, #2563eb)'
             }}
           >
-            {isLoading ? <Loading /> : 'Đăng ký'}
+            {isLoading ? <Spin size='small' /> : 'Đăng ký'}
           </Button>
         </Form.Item>
       </Form>

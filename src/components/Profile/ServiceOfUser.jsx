@@ -107,7 +107,7 @@ function ServiceProvide() {
       variant='borderless'
       title={
         <Title level={1} style={{ textAlign: 'center' }}>
-          Địa điểm du lịch của tôi
+          Danh sách địa điểm du lịch
         </Title>
       }
       style={{ borderRadius: 10, padding: 20 }}

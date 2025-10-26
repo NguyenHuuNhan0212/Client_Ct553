@@ -32,7 +32,6 @@ const TripPlanFormWithAI = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.user);
-  const { tripPlan } = useSelector((state) => state.itinerary);
   const [isLoading, setIsLoading] = useState(false);
   const [cities, setCities] = useState([]);
   const handleFinish = async (values) => {
@@ -81,7 +80,6 @@ const TripPlanFormWithAI = ({ open, onClose }) => {
     };
     fetchCities();
   }, []);
-  console.log(tripPlan);
   return (
     <Modal
       open={open}

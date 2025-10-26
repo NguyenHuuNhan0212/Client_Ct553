@@ -57,7 +57,7 @@ function Info({ user }) {
   return (
     <Card className={container}>
       <Title level={1} className={title}>
-        Trang thông tin cá nhân
+        Thông tin cá nhân
       </Title>
       {/* Avatar có thể đổi */}
       <div style={{ position: 'relative', display: 'inline-block' }}>

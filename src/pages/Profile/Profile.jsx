@@ -107,6 +107,11 @@ export default function Profile() {
   useEffect(() => {
     setSelectedKey(params.get('tab'));
   }, [params]);
+  useEffect(() => {
+    if (!user && !token) {
+      navigate('/login');
+    }
+  }, [user, navigate, token]);
   return (
     <>
       <Header />

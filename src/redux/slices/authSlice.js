@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authApi from '../../apis/authService';
-import { toast } from 'react-toastify';
 import { getInfoUser } from './userSlice';
 
-// === LOGIN ===
 export const login = createAsyncThunk(
   'auth/login',
   async (data, { dispatch, rejectWithValue }) => {
@@ -14,10 +12,8 @@ export const login = createAsyncThunk(
 
       await dispatch(getInfoUser());
 
-      toast.success('Đăng nhập thành công');
       return res;
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Đăng nhập thất bại');
       return rejectWithValue(err.response?.data);
     }
   }
@@ -37,11 +33,18 @@ const authSlice = createSlice({
       sessionStorage.removeItem('username');
       sessionStorage.removeItem('refreshToken');
       window.location.replace('/');
+    },
+    logoutForAdmin(state) {
+      state.token = null;
+      state.username = null;
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('username');
+      sessionStorage.removeItem('refreshToken');
     }
   },
   extraReducers: (builder) => {
     builder
-      // LOGIN
+
       .addCase(login.pending, (state) => {
         state.loading = true;
       })
@@ -55,5 +58,5 @@ const authSlice = createSlice({
   }
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, logoutForAdmin } = authSlice.actions;
 export default authSlice.reducer;

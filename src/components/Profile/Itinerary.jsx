@@ -53,7 +53,7 @@ export default function ItineraryComponent() {
               textAlign: 'center'
             }}
           >
-            Lịch trình của tôi
+            Danh sách lịch trình
           </Title>
           <p style={{ textAlign: 'center', color: '#777', marginBottom: 24 }}>
             Quản lý và theo dõi các chuyến đi

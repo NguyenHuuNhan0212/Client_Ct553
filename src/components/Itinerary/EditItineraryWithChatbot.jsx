@@ -170,7 +170,6 @@ function EditItineraryByChatbot({ isTripPlan = false }) {
       );
     }
   }, [dispatch, form?.destination]);
-  console.log(form);
   return (
     <div
       style={{

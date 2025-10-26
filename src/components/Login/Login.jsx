@@ -1,11 +1,13 @@
 import React from 'react';
-import { Form, Input, Button, Typography, Card } from 'antd';
+import { Form, Input, Button, Typography, Card, Spin } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../redux/slices/authSlice';
-import Loading from '../Loading/Loading';
+
 import styles from './style.module.css';
+import { toast } from 'react-toastify';
+import { getInfoUser } from '../../redux/slices/userSlice';
 
 const { Title } = Typography;
 
@@ -18,7 +20,19 @@ export default function Login() {
   const onFinish = async (values) => {
     const result = await dispatch(login(values));
     if (login.fulfilled.match(result)) {
-      navigate('/');
+      const userInfo = await dispatch(getInfoUser()).unwrap();
+      if (userInfo?.role !== 'admin') {
+        toast.success('Đăng nhập thành công');
+        navigate('/');
+      } else {
+        toast.warning(
+          'Đây là tài khoản quản trị. Hãy đăng nhập bằng tài khoản bình thường.'
+        );
+        navigate('/login');
+      }
+    } else if (login.rejected.match(result)) {
+      console.log(result);
+      toast.error(result?.payload?.message);
     }
   };
 
@@ -102,7 +116,7 @@ export default function Login() {
               background: 'linear-gradient(90deg, #3b82f6, #2563eb)'
             }}
           >
-            {loading ? <Loading /> : 'Đăng nhập'}
+            {loading ? <Spin size='small' /> : 'Đăng nhập'}
           </Button>
         </Form.Item>
       </Form>

@@ -77,6 +77,14 @@ const routes = [
   {
     path: 'payment-return',
     component: lazy(() => import('../pages/PaymentReturn/PaymentReturn'))
+  },
+  {
+    path: 'admin/dashboard',
+    component: lazy(() => import('../pages/Admin/DashBoard'))
+  },
+  {
+    path: 'admin/login',
+    component: lazy(() => import('../pages/LoginAdmin/Login'))
   }
 ];
 

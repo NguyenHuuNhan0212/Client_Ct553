@@ -1,5 +1,5 @@
 import { Layout, Menu, Dropdown, Button, Drawer, Divider, Badge } from 'antd';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   DownOutlined,
   UserOutlined,
@@ -31,7 +31,6 @@ const { Header: AntHeader } = Layout;
 
 export default function Header() {
   const { container, logo } = styles;
-  const navigate = useNavigate();
   const location = useLocation();
   const username = JSON.parse(sessionStorage.getItem('username')) || null;
   const { token } = useSelector((state) => state.auth);
@@ -49,7 +48,6 @@ export default function Header() {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/');
   };
 
   // Menu trái
@@ -115,7 +113,7 @@ export default function Header() {
         </Link>
       )
     },
-    ...(user?.role === 'provider'
+    ...(user?.role !== 'user'
       ? [
           {
             key: 'add-place',
