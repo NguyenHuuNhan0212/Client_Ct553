@@ -29,7 +29,6 @@ const FormAddPlace = () => {
 
   // Submit
   const onFinish = async (values) => {
-    console.log(values);
     const address = `${values.ward}, ${values.province}`;
     const payload = { ...values, address };
 

@@ -251,6 +251,16 @@ function ServiceProvide() {
                     )}{' '}
                   </>
                 )}
+                {!record.isApprove && (
+                  <Space size={'large'} style={{ fontSize: 20 }}>
+                    <Tooltip title={'Xóa địa điểm'}>
+                      <DeleteOutlined
+                        style={{ color: 'red', cursor: 'pointer' }}
+                        onClick={() => showModal(record)}
+                      />
+                    </Tooltip>
+                  </Space>
+                )}
               </>
             )
           }

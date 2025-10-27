@@ -18,6 +18,12 @@ const userApi = {
   },
   upgradeToProvider(data) {
     return axiosClient.post('/upgrade-to-provider', data);
+  },
+  getStatsUser() {
+    return axiosClient.get('/users/stats');
+  },
+  getQuantityAccountAwaitConfirm() {
+    return axiosClient.get('/users/upgrade');
   }
 };
 export default userApi;

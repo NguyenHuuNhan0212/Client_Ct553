@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  AreaChartOutlined,
   BarChartOutlined,
+  DashboardOutlined,
   DownOutlined,
   IssuesCloseOutlined,
   LogoutOutlined,
@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons';
 import {
   Avatar,
+  Badge,
   Button,
   Dropdown,
   Layout,
@@ -26,6 +27,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutForAdmin } from '../../redux/slices/authSlice';
 import { getInfoUser } from '../../redux/slices/userSlice';
+import Dashboard from '../../components/AdminPage/Dashboard';
+import VerifyPlace from '../../components/AdminPage/VerifyPlace';
+import User from '../../components/AdminPage/User';
+import RoleAndPermission from '../../components/AdminPage/RoleAndPermission';
+import Transaction from '../../components/AdminPage/Transaction';
+import Stats from '../../components/AdminPage/Stats';
 const { Header, Sider, Content, Footer } = Layout;
 const { Text, Title } = Typography;
 const App = () => {
@@ -37,18 +44,25 @@ const App = () => {
   const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.user);
   const defaultKey = params.get('tab') || '1';
+  const [totalUpgrade, setTotalUpgrade] = useState(0);
+  const [totalAccountAwaitApprove, setTotalAccountAwaitApprove] = useState(0);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(defaultKey);
   const items = [
     {
       key: '1',
-      icon: <AreaChartOutlined />,
-      label: 'DashBoard'
+      icon: <DashboardOutlined />,
+      label: 'Bảng điều khiển'
     },
     {
       key: '2',
       icon: <IssuesCloseOutlined />,
-      label: 'Kiểm duyệt địa điểm'
+      label: (
+        <Space>
+          Kiểm duyệt địa điểm
+          <Badge count={totalAccountAwaitApprove} showZero color='#faad14' />
+        </Space>
+      )
     },
     {
       key: '3',
@@ -58,7 +72,12 @@ const App = () => {
     {
       key: '4',
       icon: <TeamOutlined />,
-      label: 'Vai trò & Phân quyền'
+      label: (
+        <Space>
+          Vai trò & Phân quyền
+          <Badge count={totalUpgrade} showZero color='#faad14' />
+        </Space>
+      )
     },
     {
       key: '5',
@@ -94,33 +113,48 @@ const App = () => {
   const renderContent = (key) => {
     switch (key) {
       case '1':
-        return 'Tab 1';
+        return (
+          <Dashboard
+            onSetUpgrade={setTotalUpgrade}
+            onSetAwaitApprove={setTotalAccountAwaitApprove}
+          />
+        );
       case '2':
-        return 'Tab 2';
+        return <VerifyPlace />;
       case '3':
-        return 'Tab 3';
+        return <User />;
       case '4':
-        return 'Tab 4';
+        return <RoleAndPermission />;
       case '5':
-        return 'Tab 5';
+        return <Transaction />;
       case '6':
-        return 'Tab 6';
+        return <Stats />;
       default:
-        return 'Tab 1';
+        return <Dashboard />;
     }
   };
   useEffect(() => {
     if (!token) {
+      dispatch(logoutForAdmin());
       navigate('/admin/login');
     }
-  }, [token, navigate]);
+  }, [token, navigate, dispatch]);
   useEffect(() => {
     dispatch(getInfoUser());
   }, [dispatch]);
+  useEffect(() => {
+    if (user) {
+      if (user.role !== 'admin') {
+        dispatch(logoutForAdmin());
+        navigate('/admin/login');
+      }
+    }
+  }, [user, dispatch, navigate]);
+
   return (
     <>
       <Layout style={{ minHeight: '92vh' }}>
-        <Sider trigger={null} collapsible collapsed={collapsed} width={220}>
+        <Sider trigger={null} collapsible collapsed={collapsed} width={250}>
           <div
             className={collapsed ? logoSmall : logo}
             onClick={() => {

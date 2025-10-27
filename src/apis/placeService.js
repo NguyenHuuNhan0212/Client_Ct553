@@ -54,6 +54,12 @@ const placeApi = {
   },
   getPlacesFavorite() {
     return axiosClient.get('/places/favorite');
+  },
+  getStatsPlace() {
+    return axiosClient.get('/places/stats');
+  },
+  getPlacesAwaitApprove() {
+    return axiosClient.get('/places/await-approve');
   }
 };
 export default placeApi;
