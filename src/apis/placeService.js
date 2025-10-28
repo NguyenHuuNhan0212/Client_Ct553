@@ -60,6 +60,15 @@ const placeApi = {
   },
   getPlacesAwaitApprove() {
     return axiosClient.get('/places/await-approve');
+  },
+  approvePlace(placeId) {
+    return axiosClient.patch(`/places/approve/${placeId}`);
+  },
+  getAllAdmin() {
+    return axiosClient.get('/places/admin');
+  },
+  rejectPlace(placeId) {
+    return axiosClient.patch(`/places/reject/${placeId}`);
   }
 };
 export default placeApi;

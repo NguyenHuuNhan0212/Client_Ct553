@@ -116,7 +116,9 @@ const App = () => {
         return (
           <Dashboard
             onSetUpgrade={setTotalUpgrade}
+            totalUpgrade={totalUpgrade}
             onSetAwaitApprove={setTotalAccountAwaitApprove}
+            totalAwaitApprove={totalAccountAwaitApprove}
           />
         );
       case '2':

@@ -24,6 +24,7 @@ import {
   setItineraryInfoAI
 } from '../../redux/slices/itinerarySlice';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 
@@ -195,6 +196,9 @@ const TripPlanFormWithAI = ({ open, onClose }) => {
             style={{ width: '100%', borderRadius: 8 }}
             placeholder={['Ngày bắt đầu', 'Ngày kết thúc']}
             suffixIcon={<CalendarOutlined style={{ color: '#1677ff' }} />}
+            disabledDate={(current) =>
+              current && current < dayjs().endOf('day')
+            }
           />
         </Form.Item>
 

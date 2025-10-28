@@ -3,36 +3,9 @@ import {
   ShopOutlined,
   UserOutlined
 } from '@ant-design/icons';
-import { Card, Col, message, Row, Statistic, Typography } from 'antd';
-import { useEffect, useState } from 'react';
-import userApi from '../../../apis/userService';
-import placeApi from '../../../apis/placeService';
+import { Card, Col, Row, Statistic, Typography } from 'antd';
 const { Text } = Typography;
-function Overview() {
-  const [totalUser, setTotalUser] = useState(0);
-  const [totalProvider, setTotalProvider] = useState(0);
-  const [totalPlace, setTotalPlace] = useState(0);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const resUser = await userApi.getStatsUser();
-        const resPlace = await placeApi.getStatsPlace();
-        setTotalPlace(resPlace.totalPlace);
-        if (resUser?.userGroupByRole && resUser?.userGroupByRole?.length > 0) {
-          if (resUser.userGroupByRole[0]._id === 'user') {
-            setTotalUser(resUser.userGroupByRole[0]?.totalUser || 0);
-            setTotalProvider(resUser.userGroupByRole[1]?.totalUser || 0);
-          } else {
-            setTotalProvider(resUser.userGroupByRole[0]?.totalUser || 0);
-            setTotalUser(resUser.userGroupByRole[1]?.totalUser || 0);
-          }
-        }
-      } catch (err) {
-        message.error(err.message);
-      }
-    };
-    fetchData();
-  }, []);
+function Overview({ totalUser, totalPlace, totalProvider }) {
   return (
     <Row gutter={[16, 16]} style={{ marginTop: 10 }}>
       <Col xs={24} sm={12} md={12} lg={8}>
