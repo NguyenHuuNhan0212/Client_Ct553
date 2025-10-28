@@ -98,7 +98,16 @@ function ServiceProvide() {
     setOpen(false);
     setSelectedPlace(null);
   };
-
+  const renderStatusApprove = (record) => {
+    const { isApprove, createdAt, updatedAt } = record;
+    if (!isApprove && createdAt === updatedAt) {
+      return <Tag color='warning'>Đang chờ phê duyệt</Tag>;
+    } else if (!isApprove && createdAt !== updatedAt) {
+      return <Tag color='error'>Từ chối địa điểm</Tag>;
+    } else if (isApprove) {
+      return <Tag color='success'>Địa điểm được phê duyệt</Tag>;
+    }
+  };
   useEffect(() => {
     dispatch(getAllPlaceOfUser()).unwrap();
   }, [dispatch]);
@@ -194,15 +203,8 @@ function ServiceProvide() {
           },
           {
             title: 'Trạng thái phê duyệt',
-            dataIndex: 'isApprove',
             align: 'center',
-            render: (value) => (
-              <Space>
-                <Tag color={value ? 'green' : 'red'}>
-                  {value ? 'Đã duyệt' : 'Đang chờ phê duyệt'}
-                </Tag>
-              </Space>
-            )
+            render: (record) => renderStatusApprove(record)
           },
           {
             title: 'Số lượng dịch vụ',

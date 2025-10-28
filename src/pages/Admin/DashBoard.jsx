@@ -48,6 +48,7 @@ const App = () => {
   const [totalAccountAwaitApprove, setTotalAccountAwaitApprove] = useState(0);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState(defaultKey);
+
   const items = [
     {
       key: '1',
@@ -122,7 +123,12 @@ const App = () => {
           />
         );
       case '2':
-        return <VerifyPlace />;
+        return (
+          <VerifyPlace
+            onSetAwaitApprove={setTotalAccountAwaitApprove}
+            totalAwaitApprove={totalAccountAwaitApprove}
+          />
+        );
       case '3':
         return <User />;
       case '4':

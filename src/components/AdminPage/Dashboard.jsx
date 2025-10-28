@@ -6,6 +6,7 @@ import userApi from '../../apis/userService';
 import placeApi from '../../apis/placeService';
 import { motion } from 'motion/react'; //eslint-disable-line
 import ListPlaceAwaitingApprove from './DashboardComponents/ListPlaceAwaitingApprove';
+import ListUser from './DashboardComponents/ListUser';
 const { Title, Text } = Typography;
 function Dashboard({
   totalUpgrade,
@@ -18,6 +19,7 @@ function Dashboard({
   const [totalProvider, setTotalProvider] = useState(0);
   const [totalPlace, setTotalPlace] = useState(0);
   const [placesAwaitingApprove, setPlacesAwaitingApprove] = useState([]);
+  const [users, setUsers] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,6 +45,7 @@ function Dashboard({
     const fetchData = async () => {
       try {
         const res = await userApi.getQuantityAccountAwaitConfirm();
+        setUsers(res.usersUpgrade);
         onSetUpgrade(res.total);
       } catch (err) {
         console.log(err.message || 'Lỗi lấy số lượng tài khoản chờ duyệt.');
@@ -86,13 +89,24 @@ function Dashboard({
           totalPlace={totalPlace}
           totalProvider={totalProvider}
         />
-        <Divider />
-        <Title level={3}>Danh sách địa điểm chờ duyệt</Title>
-        <ListPlaceAwaitingApprove
-          places={placesAwaitingApprove}
-          setPlaces={setPlacesAwaitingApprove}
-          onSetAwaitApprove={onSetAwaitApprove}
-        />
+
+        <>
+          <Divider />
+          <Title level={3}>Danh sách địa điểm chờ duyệt</Title>
+          <ListPlaceAwaitingApprove
+            places={placesAwaitingApprove}
+            setPlacesAwaitingApprove={setPlacesAwaitingApprove}
+            onSetAwaitApprove={onSetAwaitApprove}
+          />
+        </>
+
+        <>
+          <Divider />
+          <Title level={3}>
+            Danh sách người dùng đăng ký nâng cấp tài khoản
+          </Title>
+          <ListUser users={users} />
+        </>
       </Card>
     </motion.div>
   );

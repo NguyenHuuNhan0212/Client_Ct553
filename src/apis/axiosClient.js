@@ -86,7 +86,9 @@ axiosClient.interceptors.response.use(
         processQueue(err, null);
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('refreshToken');
-        window.location.href = '/login';
+        const isAdmin = window.location.pathname.startsWith('/admin');
+        window.location.href = isAdmin ? '/admin/login' : '/login';
+        // window.location.href = '/login';
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

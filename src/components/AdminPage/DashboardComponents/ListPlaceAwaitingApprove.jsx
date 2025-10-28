@@ -1,13 +1,21 @@
-import { Button, Empty, message, Space, Table, Tag } from 'antd';
+import { Button, Empty, message, Modal, Space, Table, Tag } from 'antd';
 import { capitalizeName } from '../../../utils/capitalize';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import ModalApprove from './ModalApprove';
 import placeApi from '../../../apis/placeService';
 
-function ListPlaceAwaitingApprove({ places, setPlaces, onSetAwaitApprove }) {
+function ListPlaceAwaitingApprove({
+  places,
+  setPlacesAwaitingApprove,
+  onSetAwaitApprove,
+  setPlaces,
+  isVerifyPlace = false
+}) {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
+  const [isShowModalApprove, setIsShowModalApprove] = useState(false);
+  const [isShowModalReject, setIsShowModalReject] = useState(false);
   const renderType = (type) => {
     switch (type) {
       case 'hotel':
@@ -34,26 +42,48 @@ function ListPlaceAwaitingApprove({ places, setPlaces, onSetAwaitApprove }) {
     setSelectedPlace(record);
     setIsOpenModal(true);
   };
+  const handleShowApproveModal = (record) => {
+    setSelectedPlace(record);
+    setIsShowModalApprove(true);
+  };
   const handleApprove = async (place) => {
     try {
       await placeApi.approvePlace(place._id);
-      message.success(`${place.name} đã được phê duyệt.`);
+      message.success(`${place?.name} đã được phê duyệt.`);
       const res = await placeApi.getPlacesAwaitApprove();
-      setPlaces(res.places);
+      if (!isVerifyPlace) {
+        setPlacesAwaitingApprove(res.places);
+      }
       onSetAwaitApprove(res.total);
       setIsOpenModal(false);
+      setIsShowModalApprove(false);
+      if (isVerifyPlace) {
+        const resPlace = await placeApi.getAllAdmin();
+        setPlaces(resPlace);
+      }
     } catch (err) {
       message.error(err?.message || 'Có lỗi khi phê duyệt');
     }
+  };
+  const handleShowRejectModal = (record) => {
+    setSelectedPlace(record);
+    setIsShowModalReject(true);
   };
   const handleReject = async (place) => {
     try {
       await placeApi.rejectPlace(place._id);
       message.success(`Từ chối địa điểm ${place.name} thành công.`);
       const res = await placeApi.getPlacesAwaitApprove();
-      setPlaces(res.places);
+      if (!isVerifyPlace) {
+        setPlacesAwaitingApprove(res.places);
+      }
+
       onSetAwaitApprove(res.total);
-      setIsOpenModal(false);
+      setIsShowModalReject(false);
+      if (isVerifyPlace) {
+        const resPlace = await placeApi.getAllAdmin();
+        setPlaces(resPlace);
+      }
     } catch (err) {
       message.error(err?.message || 'Có lỗi khi phê duyệt');
     }
@@ -76,7 +106,7 @@ function ListPlaceAwaitingApprove({ places, setPlaces, onSetAwaitApprove }) {
                 size='small'
                 color='green'
                 variant='solid'
-                onClick={() => handleApprove(record)}
+                onClick={() => handleShowApproveModal(record)}
               >
                 Phê duyệt
               </Button>
@@ -84,7 +114,7 @@ function ListPlaceAwaitingApprove({ places, setPlaces, onSetAwaitApprove }) {
                 size='small'
                 color='danger'
                 variant='solid'
-                onClick={() => handleReject(record)}
+                onClick={() => handleShowRejectModal(record)}
               >
                 Từ chối
               </Button>
@@ -125,7 +155,10 @@ function ListPlaceAwaitingApprove({ places, setPlaces, onSetAwaitApprove }) {
             title: 'Ngày đăng',
             align: 'center',
             dataIndex: 'createdAt',
-            render: (value) => dayjs(value).format('DD-MM-YYYY')
+            render: (value) => dayjs(value).format('DD-MM-YYYY'),
+            sorter: (a, b) =>
+              dayjs(a.createdAt).valueOf() - dayjs(b.createdAt).valueOf(),
+            sortDirections: ['descend', 'ascend']
           },
           {
             title: 'Trạng thái phê duyệt',
@@ -146,6 +179,29 @@ function ListPlaceAwaitingApprove({ places, setPlaces, onSetAwaitApprove }) {
         onCancel={setIsOpenModal}
         place={selectedPlace}
       />
+      <Modal
+        title={'Xác nhận phê duyệt địa điểm'}
+        open={isShowModalApprove}
+        onOk={() => handleApprove(selectedPlace)}
+        onCancel={() => setIsShowModalApprove(false)}
+        okText={'Xác nhận'}
+        cancelText={'Đóng'}
+      >
+        <p>Xác nhận duyệt địa điểm {selectedPlace ? selectedPlace.name : ''}</p>
+      </Modal>
+
+      <Modal
+        title={'Xác nhận từ chối địa điểm'}
+        open={isShowModalReject}
+        onOk={() => handleReject(selectedPlace)}
+        onCancel={() => setIsShowModalReject(false)}
+        okText={'Xác nhận'}
+        cancelText={'Đóng'}
+      >
+        <p>
+          Xác nhận từ chối địa điểm {selectedPlace ? selectedPlace.name : ''}
+        </p>
+      </Modal>
     </>
   );
 }
