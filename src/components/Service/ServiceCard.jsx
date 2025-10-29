@@ -110,6 +110,7 @@ export default function ServiceCard({
               }}
             />
           </div>
+
           <Tooltip
             title={
               !isFavorite

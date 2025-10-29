@@ -7,11 +7,11 @@ function ModalApprove({ open, onOk, onCancel, place }) {
       open={open}
       onCancel={() => onCancel(false)}
       onOk={onOk}
-      footer={place?.isApprove ? false : true}
+      footer={place?.isApprove ? false : undefined}
       okText='Phê duyệt'
       cancelText='Đóng'
     >
-      modal xem chi tiết {place?.name}
+      modal xem chi tiết {place?.name}{' '}
     </Modal>
   );
 }

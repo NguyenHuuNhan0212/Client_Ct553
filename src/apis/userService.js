@@ -24,6 +24,12 @@ const userApi = {
   },
   getQuantityAccountAwaitConfirm() {
     return axiosClient.get('/users/upgrade');
+  },
+  confirmUpgradeToProvider(userId) {
+    return axiosClient.post(`/users/upgrade/confirm/${userId}`);
+  },
+  rejectUpgradeToProvider(userId) {
+    return axiosClient.post(`/users/upgrade/reject/${userId}`);
   }
 };
 export default userApi;

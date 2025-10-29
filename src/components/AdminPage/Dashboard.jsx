@@ -1,4 +1,4 @@
-import { Card, Divider, Typography } from 'antd';
+import { Card, Col, Divider, Row, Typography } from 'antd';
 import Overview from './DashboardComponents/Overview';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -7,6 +7,10 @@ import placeApi from '../../apis/placeService';
 import { motion } from 'motion/react'; //eslint-disable-line
 import ListPlaceAwaitingApprove from './DashboardComponents/ListPlaceAwaitingApprove';
 import ListUser from './DashboardComponents/ListUser';
+import { AlertOutlined } from '@ant-design/icons';
+import statsApi from '../../apis/statsService';
+import PieChartPlaceType from './DashboardComponents/Chart/PieChartPlaceType';
+import LineChartNewUsers from './DashboardComponents/Chart/LineChartNewUsers';
 const { Title, Text } = Typography;
 function Dashboard({
   totalUpgrade,
@@ -20,6 +24,17 @@ function Dashboard({
   const [totalPlace, setTotalPlace] = useState(0);
   const [placesAwaitingApprove, setPlacesAwaitingApprove] = useState([]);
   const [users, setUsers] = useState([]);
+  const [dataStatsPlaceByType, setDataStatsPlaceByType] = useState([]);
+  const [dataStatsNewUses, setDataStatsNewUsers] = useState([]);
+  const dataPieChartPlaceByType = dataStatsPlaceByType?.map((item) => ({
+    name: item._id,
+    value: item.totalPlaces
+  }));
+
+  const dataLineChartNewUsers = dataStatsNewUses?.map((item) => ({
+    date: item._id,
+    newUsers: item.totalUsers
+  }));
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -65,7 +80,28 @@ function Dashboard({
     };
     fetchData();
   }, [onSetAwaitApprove]);
-
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await statsApi.getStatsPlaceByType();
+        setDataStatsPlaceByType(res);
+      } catch (err) {
+        console.log(err.message || 'Lỗi lấy thống kê địa điểm theo loại.');
+      }
+    };
+    fetchData();
+  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await statsApi.getUsersSevenDaysNewest();
+        setDataStatsNewUsers(res);
+      } catch (err) {
+        console.log(err.message || 'Lỗi lấy thống kê người dùng theo vai trò.');
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -78,7 +114,7 @@ function Dashboard({
         </Title>
         {(totalAwaitApprove !== 0 || totalUpgrade !== 0) && (
           <Text type='danger' italic>
-            Hôm nay bạn có
+            <AlertOutlined /> Hôm nay bạn có
             {totalUpgrade !== 0 && ` ${totalUpgrade} nhà cung cấp `}{' '}
             {totalAwaitApprove !== 0 && ` ${totalAwaitApprove} địa điểm`} đang
             chờ duyệt.
@@ -89,10 +125,18 @@ function Dashboard({
           totalPlace={totalPlace}
           totalProvider={totalProvider}
         />
+        <Row gutter={[10, 10]} style={{ marginTop: 10 }}>
+          <Col xs={24} md={12} lg={12}>
+            <PieChartPlaceType data={dataPieChartPlaceByType} />
+          </Col>
+          <Col xs={24} md={12} lg={12}>
+            <LineChartNewUsers data={dataLineChartNewUsers} />
+          </Col>
+        </Row>
 
         <>
           <Divider />
-          <Title level={3}>Danh sách địa điểm chờ duyệt</Title>
+          <Title level={3}>Danh sách địa điểm chờ phê duyệt</Title>
           <ListPlaceAwaitingApprove
             places={placesAwaitingApprove}
             setPlacesAwaitingApprove={setPlacesAwaitingApprove}
@@ -102,11 +146,14 @@ function Dashboard({
 
         <>
           <Divider />
-          <Title level={3}>
-            Danh sách người dùng đăng ký nâng cấp tài khoản
-          </Title>
-          <ListUser users={users} />
+          <Title level={3}>Danh sách tài khoản chờ nâng cấp</Title>
+          <ListUser
+            users={users}
+            setUsers={setUsers}
+            onSetUpgrade={onSetUpgrade}
+          />
         </>
+        <Divider />
       </Card>
     </motion.div>
   );

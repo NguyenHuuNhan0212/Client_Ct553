@@ -48,7 +48,7 @@ const RevenueByLocationBarChart = ({ data }) => {
   return (
     <div style={{ textAlign: 'center' }}>
       <AntTitle level={4}>Doanh thu theo địa điểm (Ngày)</AntTitle>
-      <Bar data={chartData} options={options} />;
+      <Bar data={chartData} options={options} />
     </div>
   );
 };
