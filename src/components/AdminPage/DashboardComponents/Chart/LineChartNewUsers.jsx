@@ -12,7 +12,6 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
-// Đăng ký các thành phần cần thiết cho Line chart
 ChartJS.register(
   LineElement,
   CategoryScale,
@@ -24,7 +23,6 @@ ChartJS.register(
 );
 
 function LineChartNewUsers({ data }) {
-  // Dữ liệu biểu đồ
   const chartData = {
     labels: data.map((item) => item.date),
     datasets: [
@@ -42,7 +40,6 @@ function LineChartNewUsers({ data }) {
     ]
   };
 
-  // Cấu hình hiển thị
   const options = {
     responsive: true,
     plugins: {

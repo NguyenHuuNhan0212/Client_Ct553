@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import ListPlaceAwaitingApprove from './DashboardComponents/ListPlaceAwaitingApprove';
+import ListPlace from './DashboardComponents/ListPlace';
 import placeApi from '../../apis/placeService';
 import { motion } from 'motion/react'; // eslint-disable-line
-import { Card, Typography } from 'antd';
+import { Badge, Button, Card, Space, Typography } from 'antd';
 import SearchBar from '../SearchBar/SearchBar';
 const { Title } = Typography;
-function VerifyPlace({ onSetAwaitApprove }) {
+function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
   const [places, setPlaces] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [filterType, setFilterType] = useState('');
@@ -15,6 +15,23 @@ function VerifyPlace({ onSetAwaitApprove }) {
         item.name.toLowerCase().includes(searchKeyword.toLowerCase())) &&
       (!filterType || item.type === filterType)
   );
+  const handleShowPlacesAwaitApprove = async () => {
+    try {
+      const res = await placeApi.getPlacesAwaitApprove();
+      setPlaces(res.places);
+      onSetAwaitApprove(res.total);
+    } catch (err) {
+      console.log(err.message || 'Lỗi lấy danh sách địa điểm chờ phê duyệt');
+    }
+  };
+  const handleShowAllPlaces = async () => {
+    try {
+      const res = await placeApi.getAllAdmin();
+      setPlaces(res);
+    } catch (err) {
+      console.log(err.message || 'Lỗi lấy danh sách địa điểm');
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -39,17 +56,31 @@ function VerifyPlace({ onSetAwaitApprove }) {
         <div
           style={{
             display: 'flex',
-            justifyContent: 'flex-end',
+            justifyContent: 'space-between',
             marginBottom: 16
           }}
         >
+          <Space>
+            <Button
+              color='cyan'
+              variant='solid'
+              onClick={() => handleShowPlacesAwaitApprove()}
+            >
+              Địa điểm chờ phê duyệt
+              <Badge count={totalAwaitApprove} showZero offset={[10, -25]} />
+            </Button>
+            <Button type='primary' onClick={() => handleShowAllPlaces()}>
+              Tất cả địa điểm
+            </Button>
+          </Space>
+
           <SearchBar
             onFilterType={(type) => setFilterType(type)}
             placeholder='Tìm kiếm theo tên địa điểm...'
             onSearch={setSearchKeyword}
           />
         </div>
-        <ListPlaceAwaitingApprove
+        <ListPlace
           places={filteredPlaces}
           setPlaces={setPlaces}
           onSetAwaitApprove={onSetAwaitApprove}

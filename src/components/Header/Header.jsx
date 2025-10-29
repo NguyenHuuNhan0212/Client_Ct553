@@ -113,7 +113,7 @@ export default function Header() {
         </Link>
       )
     },
-    ...(user?.role !== 'user'
+    ...(user?.role !== 'user' && token
       ? [
           {
             key: 'add-place',

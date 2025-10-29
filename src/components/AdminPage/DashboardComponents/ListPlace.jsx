@@ -5,7 +5,7 @@ import { useState } from 'react';
 import ModalApprove from './ModalApprove';
 import placeApi from '../../../apis/placeService';
 
-function ListPlaceAwaitingApprove({
+function ListPlace({
   places,
   setPlacesAwaitingApprove,
   onSetAwaitApprove,
@@ -146,6 +146,12 @@ function ListPlaceAwaitingApprove({
             render: (value) => capitalizeName(value)
           },
           {
+            title: 'Chủ sở hữu',
+            align: 'center',
+            dataIndex: ['userId', 'fullName'],
+            render: (value) => capitalizeName(value)
+          },
+          {
             title: 'Loại địa điểm',
             align: 'center',
             dataIndex: 'type',
@@ -206,4 +212,4 @@ function ListPlaceAwaitingApprove({
   );
 }
 
-export default ListPlaceAwaitingApprove;
+export default ListPlace;

@@ -5,12 +5,13 @@ import { useEffect, useState } from 'react';
 import userApi from '../../apis/userService';
 import placeApi from '../../apis/placeService';
 import { motion } from 'motion/react'; //eslint-disable-line
-import ListPlaceAwaitingApprove from './DashboardComponents/ListPlaceAwaitingApprove';
+import ListPlace from './DashboardComponents/ListPlace';
 import ListUser from './DashboardComponents/ListUser';
 import { AlertOutlined } from '@ant-design/icons';
 import statsApi from '../../apis/statsService';
 import PieChartPlaceType from './DashboardComponents/Chart/PieChartPlaceType';
 import LineChartNewUsers from './DashboardComponents/Chart/LineChartNewUsers';
+import TopPopularPlacesChart from './DashboardComponents/Chart/BarChartPlacesPopular';
 const { Title, Text } = Typography;
 function Dashboard({
   totalUpgrade,
@@ -26,6 +27,9 @@ function Dashboard({
   const [users, setUsers] = useState([]);
   const [dataStatsPlaceByType, setDataStatsPlaceByType] = useState([]);
   const [dataStatsNewUses, setDataStatsNewUsers] = useState([]);
+  const [dataStatsFivePlacesPopular, setDataStatsFivePlacesPopular] = useState(
+    []
+  );
   const dataPieChartPlaceByType = dataStatsPlaceByType?.map((item) => ({
     name: item._id,
     value: item.totalPlaces
@@ -34,6 +38,11 @@ function Dashboard({
   const dataLineChartNewUsers = dataStatsNewUses?.map((item) => ({
     date: item._id,
     newUsers: item.totalUsers
+  }));
+
+  const dataBarChartPlacesPopular = dataStatsFivePlacesPopular?.map((item) => ({
+    name: item.name,
+    totalBookings: item.bookingCount
   }));
   useEffect(() => {
     const fetchData = async () => {
@@ -102,6 +111,18 @@ function Dashboard({
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await statsApi.getFivePlacesPopular();
+        setDataStatsFivePlacesPopular(res);
+      } catch (err) {
+        console.log(err.message || 'Lỗi lấy thống kê 5 địa điểm phổ biến.');
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -133,11 +154,16 @@ function Dashboard({
             <LineChartNewUsers data={dataLineChartNewUsers} />
           </Col>
         </Row>
+        <Row gutter={[10, 10]} style={{ marginTop: 10 }}>
+          <Col span={24}>
+            <TopPopularPlacesChart data={dataBarChartPlacesPopular} />
+          </Col>
+        </Row>
 
         <>
           <Divider />
           <Title level={3}>Danh sách địa điểm chờ phê duyệt</Title>
-          <ListPlaceAwaitingApprove
+          <ListPlace
             places={placesAwaitingApprove}
             setPlacesAwaitingApprove={setPlacesAwaitingApprove}
             onSetAwaitApprove={onSetAwaitApprove}

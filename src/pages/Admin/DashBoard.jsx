@@ -30,7 +30,6 @@ import { getInfoUser } from '../../redux/slices/userSlice';
 import Dashboard from '../../components/AdminPage/Dashboard';
 import VerifyPlace from '../../components/AdminPage/VerifyPlace';
 import User from '../../components/AdminPage/User';
-import RoleAndPermission from '../../components/AdminPage/RoleAndPermission';
 import Transaction from '../../components/AdminPage/Transaction';
 import Stats from '../../components/AdminPage/Stats';
 const { Header, Sider, Content, Footer } = Layout;
@@ -68,25 +67,20 @@ const App = () => {
     {
       key: '3',
       icon: <UserOutlined />,
-      label: 'Người dùng'
-    },
-    {
-      key: '4',
-      icon: <TeamOutlined />,
       label: (
         <Space>
-          Vai trò & Phân quyền
+          Quản lý người dùng
           <Badge count={totalUpgrade} showZero color='#faad14' />
         </Space>
       )
     },
     {
-      key: '5',
+      key: '4',
       icon: <TransactionOutlined />,
       label: 'Giao dịch'
     },
     {
-      key: '6',
+      key: '5',
       icon: <BarChartOutlined />,
       label: 'Thống kê'
     }
@@ -130,12 +124,12 @@ const App = () => {
           />
         );
       case '3':
-        return <User />;
+        return (
+          <User onSetUpgrade={setTotalUpgrade} totalUpgrade={totalUpgrade} />
+        );
       case '4':
-        return <RoleAndPermission />;
-      case '5':
         return <Transaction />;
-      case '6':
+      case '5':
         return <Stats />;
       default:
         return <Dashboard />;

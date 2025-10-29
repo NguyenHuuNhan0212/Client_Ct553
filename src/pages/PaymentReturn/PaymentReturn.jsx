@@ -14,7 +14,7 @@ const PaymentResult = () => {
   const status = params.get('status');
   const amount = Number(params.get('amount')) || 0;
   const [showConfetti, setShowConfetti] = useState(false);
-  const { user } = useSelector((state) => state.user);
+  const { token } = useSelector((state) => state.auth);
   useEffect(() => {
     if (status === 'success') setShowConfetti(true);
 
@@ -80,10 +80,10 @@ const PaymentResult = () => {
     }
   };
   useEffect(() => {
-    if (!user) {
+    if (!token) {
       navigate('/login');
     }
-  }, [user, navigate]);
+  }, [token, navigate]);
   return (
     <>
       <Header />

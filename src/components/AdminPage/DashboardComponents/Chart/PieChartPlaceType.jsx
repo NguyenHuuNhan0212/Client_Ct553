@@ -4,11 +4,9 @@ import { Card } from 'antd';
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
-// Đăng ký các thành phần cần dùng
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function PieChartPlaceType({ data }) {
-  // Chuẩn bị dữ liệu cho Chart.js
   const chartData = {
     labels: data.map((item) => item.name),
     datasets: [
@@ -40,7 +38,8 @@ function PieChartPlaceType({ data }) {
       },
       tooltip: {
         callbacks: {
-          label: (context) => `${context.label}: ${context.formattedValue}`
+          label: (context) =>
+            `Số lượng ${context.label}: ${context.formattedValue}`
         }
       }
     }
@@ -51,7 +50,15 @@ function PieChartPlaceType({ data }) {
       title='Tỷ lệ địa điểm theo loại'
       style={{ borderRadius: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}
     >
-      <div style={{ width: '100%', height: 320 }}>
+      <div
+        style={{
+          width: '100%',
+          height: 320,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
         <Pie data={chartData} options={options} />
       </div>
     </Card>

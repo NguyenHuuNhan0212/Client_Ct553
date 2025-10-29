@@ -5,6 +5,9 @@ const statsApi = {
   },
   getUsersSevenDaysNewest() {
     return axiosClient.get('/stats/admin/users-newest');
+  },
+  getFivePlacesPopular() {
+    return axiosClient.get('/stats/admin/five-places-popular');
   }
 };
 export default statsApi;

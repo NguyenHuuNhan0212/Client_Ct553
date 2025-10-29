@@ -30,6 +30,9 @@ const userApi = {
   },
   rejectUpgradeToProvider(userId) {
     return axiosClient.post(`/users/upgrade/reject/${userId}`);
+  },
+  getAllUser() {
+    return axiosClient.get('/users');
   }
 };
 export default userApi;

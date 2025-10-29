@@ -5,7 +5,7 @@ import ModalDetailUser from './ModalSeenDetailUser';
 import { useState } from 'react';
 import userApi from '../../../apis/userService';
 
-function ListUser({ users, setUsers, onSetUpgrade }) {
+function ListUser({ users, setUsers, onSetUpgrade, isUserManagement = false }) {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -71,26 +71,41 @@ function ListUser({ users, setUsers, onSetUpgrade }) {
           >
             Xem chi tiết
           </Button>
-
-          <Button
-            size='small'
-            color='green'
-            variant='solid'
-            onClick={() => handleShowIsOpenModalConfirm(record)}
-          >
-            Chấp nhận
-          </Button>
-          <Button
-            size='small'
-            color='danger'
-            variant='solid'
-            onClick={() => handleShowIsOpenModalReject(record)}
-          >
-            Từ chối
-          </Button>
+          {!isUserManagement && (
+            <>
+              <Button
+                size='small'
+                color='green'
+                variant='solid'
+                onClick={() => handleShowIsOpenModalConfirm(record)}
+              >
+                Chấp nhận
+              </Button>
+              <Button
+                size='small'
+                color='danger'
+                variant='solid'
+                onClick={() => handleShowIsOpenModalReject(record)}
+              >
+                Từ chối
+              </Button>
+            </>
+          )}
         </Space>
       </>
     );
+  };
+  const renderRole = (role) => {
+    switch (role) {
+      case 'admin':
+        return 'Quản trị viên';
+      case 'provider':
+        return 'Nhà cung cấp';
+      case 'user':
+        return 'Người dùng';
+      default:
+        return '—';
+    }
   };
   if (!users?.length) {
     return <Empty description={'Không có người dùng nào.'} />;
@@ -117,7 +132,7 @@ function ListUser({ users, setUsers, onSetUpgrade }) {
             title: 'Vai trò',
             align: 'center',
             dataIndex: 'role',
-            render: (value) => capitalizeName(value)
+            render: (value) => renderRole(value)
           },
           {
             title: 'Số điện thoại',
@@ -152,6 +167,7 @@ function ListUser({ users, setUsers, onSetUpgrade }) {
         onOk={() => handleConfirm(selectedUser)}
         onCancel={setIsOpenModal}
         user={selectedUser}
+        isManage={isUserManagement}
       />
 
       <Modal
