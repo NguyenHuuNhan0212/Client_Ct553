@@ -189,7 +189,7 @@ const App = () => {
               />
             </Tooltip>
 
-            <Title level={2}>Trang quản trị</Title>
+            <Title level={1}>Trang quản trị</Title>
             <Dropdown
               menu={{
                 items: itemDropdowns

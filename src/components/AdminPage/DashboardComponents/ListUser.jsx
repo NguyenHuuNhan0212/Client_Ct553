@@ -160,7 +160,7 @@ function ListUser({ users, setUsers, onSetUpgrade, isUserManagement = false }) {
             render: (record) => renderAction(record)
           }
         ]}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 7 }}
       />
       <ModalDetailUser
         open={isOpenModal}

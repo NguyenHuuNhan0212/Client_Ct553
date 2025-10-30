@@ -7,7 +7,10 @@ const statsApi = {
     return axiosClient.get('/stats/admin/users-newest');
   },
   getFivePlacesPopular() {
-    return axiosClient.get('/stats/admin/five-places-popular');
+    return axiosClient.get('/stats/admin/five-places-booking');
+  },
+  getFivePlacesHaveInItinerary() {
+    return axiosClient.get('/stats/admin/five-places-itinerary');
   }
 };
 export default statsApi;

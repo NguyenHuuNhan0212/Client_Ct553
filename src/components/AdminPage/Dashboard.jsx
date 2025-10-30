@@ -30,6 +30,10 @@ function Dashboard({
   const [dataStatsFivePlacesPopular, setDataStatsFivePlacesPopular] = useState(
     []
   );
+  const [
+    dataStatsFivePlacesHaveInItinerary,
+    setDataStatsFivePlacesHaveInItinerary
+  ] = useState([]);
   const dataPieChartPlaceByType = dataStatsPlaceByType?.map((item) => ({
     name: item._id,
     value: item.totalPlaces
@@ -42,8 +46,14 @@ function Dashboard({
 
   const dataBarChartPlacesPopular = dataStatsFivePlacesPopular?.map((item) => ({
     name: item.name,
-    totalBookings: item.bookingCount
+    value: item.bookingCount
   }));
+  const dataBarChartPlacesItinerary = dataStatsFivePlacesHaveInItinerary?.map(
+    (item) => ({
+      name: item.name,
+      value: item.total
+    })
+  );
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -123,6 +133,20 @@ function Dashboard({
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await statsApi.getFivePlacesHaveInItinerary();
+        setDataStatsFivePlacesHaveInItinerary(res);
+      } catch (err) {
+        console.log(
+          err.message ||
+            'Lỗi lấy thống kê 5 địa điểm có trong lịch trình nhiều nhất.'
+        );
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -155,8 +179,19 @@ function Dashboard({
           </Col>
         </Row>
         <Row gutter={[10, 10]} style={{ marginTop: 10 }}>
-          <Col span={24}>
-            <TopPopularPlacesChart data={dataBarChartPlacesPopular} />
+          <Col xs={24} md={12} lg={12}>
+            <TopPopularPlacesChart
+              data={dataBarChartPlacesPopular}
+              title={'Top 5 địa điểm có đơn đặt nhiều nhất'}
+              unit={'lượt đặt'}
+            />
+          </Col>
+          <Col xs={24} md={12} lg={12}>
+            <TopPopularPlacesChart
+              data={dataBarChartPlacesItinerary}
+              title={'Top 5 địa điểm có trong lịch trình nhiều nhất'}
+              unit={'lịch trình'}
+            />
           </Col>
         </Row>
 

@@ -50,7 +50,7 @@ function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
       transition={{ duration: 0.8, ease: 'easeOut' }}
     >
       <Card>
-        <Title level={1} style={{ textAlign: 'center', marginTop: 5 }}>
+        <Title level={2} style={{ textAlign: 'center', marginTop: 5 }}>
           Quản lý và kiểm duyệt địa điểm
         </Title>
         <div

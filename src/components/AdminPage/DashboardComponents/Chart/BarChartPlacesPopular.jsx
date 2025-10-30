@@ -21,13 +21,13 @@ ChartJS.register(
   Legend
 );
 
-function TopPopularPlacesChart({ data }) {
+function TopPopularPlacesChart({ data, title, unit }) {
   const chartData = {
     labels: data.map((item) => item.name),
     datasets: [
       {
         label: 'Số lượt đặt',
-        data: data.map((item) => item.totalBookings),
+        data: data.map((item) => item.value),
         backgroundColor: ['#4F46E5', '#22C55E', '#F97316', '#EAB308', '#3B82F6']
       }
     ]
@@ -39,13 +39,13 @@ function TopPopularPlacesChart({ data }) {
       legend: { display: false },
       title: {
         display: true,
-        text: 'Top 5 địa điểm phổ biến nhất',
+        text: title,
         font: { size: 16, weight: 'bold' },
         color: '#111827'
       },
       tooltip: {
         callbacks: {
-          label: (context) => ` ${context.parsed.y} lượt đặt`
+          label: (context) => ` ${context.parsed.y} ${unit || ''}`
         }
       }
     },
@@ -64,13 +64,13 @@ function TopPopularPlacesChart({ data }) {
 
   return (
     <Card
-      title='Top 5 địa điểm phổ biến nhất'
+      title={title}
       style={{
         borderRadius: 16,
         boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
       }}
     >
-      <Bar data={chartData} options={options} height={100} />
+      <Bar data={chartData} options={options} />
     </Card>
   );
 }

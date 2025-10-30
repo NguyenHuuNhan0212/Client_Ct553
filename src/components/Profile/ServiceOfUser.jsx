@@ -24,9 +24,11 @@ import FormUpdatePlace from '../FormPlace/FormUpdatePlace';
 import { capitalizeName } from '../../utils/capitalize';
 import SearchBar from '../SearchBar/SearchBar';
 import InternalBookingForm from './BookingComponents/FormBookingInternal';
+import PlaceDetailModal from './Place/PlaceDetailForAdminAndSupplier';
 const { Title, Text } = Typography;
 function ServiceProvide() {
   const [open, setOpen] = useState(false);
+  const [isOpenDetail, setIsOpenDetail] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [openEdit, setOpenEdit] = useState(false);
   const [openCreateBooking, setOpenCreateBooking] = useState(false);
@@ -57,11 +59,8 @@ function ServiceProvide() {
     setOpenEdit(false);
   };
   const handleClickSeeDetail = (record) => {
-    if (record.type === 'hotel') {
-      return navigate(`/hotel/${record._id}`);
-    } else {
-      return navigate(`/place/${record._id}`);
-    }
+    setSelectedPlace(record);
+    setIsOpenDetail(true);
   };
 
   const showModal = (record) => {
@@ -181,25 +180,29 @@ function ServiceProvide() {
             title: 'Cập nhật trạng thái hoạt động',
             dataIndex: 'isActive',
             align: 'center',
-            render: (value, record) => (
-              <Tooltip
-                title={
-                  value
-                    ? 'Nhấn để cập nhật trạng thái ngừng hoạt động'
-                    : 'Nhấn để cập nhật trạng thái hoạt động trở lại'
-                }
-              >
-                <Button
-                  type={value ? 'default' : 'primary'}
-                  color={value ? 'danger' : ''}
-                  variant={value ? 'solid' : ''}
-                  size='small'
-                  onClick={() => handleToggleStatus(record)}
-                >
-                  {value ? 'Ngưng' : 'Kích hoạt'}
-                </Button>
-              </Tooltip>
-            )
+            render: (value, record) => {
+              return (
+                record.isApprove && (
+                  <Tooltip
+                    title={
+                      value
+                        ? 'Nhấn để cập nhật trạng thái ngừng hoạt động'
+                        : 'Nhấn để cập nhật trạng thái hoạt động trở lại'
+                    }
+                  >
+                    <Button
+                      type={value ? 'default' : 'primary'}
+                      color={value ? 'danger' : ''}
+                      variant={value ? 'solid' : ''}
+                      size='small'
+                      onClick={() => handleToggleStatus(record)}
+                    >
+                      {value ? 'Ngưng' : 'Kích hoạt'}
+                    </Button>
+                  </Tooltip>
+                )
+              );
+            }
           },
           {
             title: 'Trạng thái phê duyệt',
@@ -255,6 +258,12 @@ function ServiceProvide() {
                 )}
                 {!record.isApprove && (
                   <Space size={'large'} style={{ fontSize: 20 }}>
+                    <Tooltip title={'Xem chi tiết địa điểm'}>
+                      <EyeOutlined
+                        style={{ color: 'blue', cursor: 'pointer' }}
+                        onClick={() => handleClickSeeDetail(record)}
+                      />
+                    </Tooltip>
                     <Tooltip title={'Xóa địa điểm'}>
                       <DeleteOutlined
                         style={{ color: 'red', cursor: 'pointer' }}
@@ -290,6 +299,12 @@ function ServiceProvide() {
           Tổng số địa điểm: {services?.length || 0}
         </div>
       </div>
+
+      <PlaceDetailModal
+        open={isOpenDetail}
+        onClose={() => setIsOpenDetail(false)}
+        place={selectedPlace}
+      />
       <Modal
         title='Xác nhận xóa địa điểm'
         open={open}
@@ -306,7 +321,6 @@ function ServiceProvide() {
       </Modal>
 
       <Modal
-        title='Cập nhật địa điểm'
         open={openEdit}
         onCancel={handleCloseEdit}
         footer={null}

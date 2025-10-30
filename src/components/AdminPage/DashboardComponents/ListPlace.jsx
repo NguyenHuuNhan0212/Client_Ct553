@@ -2,8 +2,8 @@ import { Button, Empty, message, Modal, Space, Table, Tag } from 'antd';
 import { capitalizeName } from '../../../utils/capitalize';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import ModalApprove from './ModalApprove';
 import placeApi from '../../../apis/placeService';
+import PlaceDetailModal from '../../Profile/Place/PlaceDetailForAdminAndSupplier';
 
 function ListPlace({
   places,
@@ -12,7 +12,7 @@ function ListPlace({
   setPlaces,
   isVerifyPlace = false
 }) {
-  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isOpenDetail, setIsOpenDetail] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [isShowModalApprove, setIsShowModalApprove] = useState(false);
   const [isShowModalReject, setIsShowModalReject] = useState(false);
@@ -40,7 +40,7 @@ function ListPlace({
   };
   const handleSeenDetail = (record) => {
     setSelectedPlace(record);
-    setIsOpenModal(true);
+    setIsOpenDetail(true);
   };
   const handleShowApproveModal = (record) => {
     setSelectedPlace(record);
@@ -55,7 +55,7 @@ function ListPlace({
         setPlacesAwaitingApprove(res.places);
       }
       onSetAwaitApprove(res.total);
-      setIsOpenModal(false);
+      setIsOpenDetail(false);
       setIsShowModalApprove(false);
       if (isVerifyPlace) {
         const resPlace = await placeApi.getAllAdmin();
@@ -177,13 +177,14 @@ function ListPlace({
             render: (record) => renderAction(record)
           }
         ]}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 7 }}
       />
-      <ModalApprove
-        open={isOpenModal}
-        onOk={() => handleApprove(selectedPlace)}
-        onCancel={setIsOpenModal}
+      <PlaceDetailModal
+        open={isOpenDetail}
+        onClose={() => setIsOpenDetail(false)}
         place={selectedPlace}
+        onApprove={handleApprove}
+        isAdmin
       />
       <Modal
         title={'Xác nhận phê duyệt địa điểm'}
