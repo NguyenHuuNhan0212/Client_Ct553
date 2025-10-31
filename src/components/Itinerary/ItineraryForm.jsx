@@ -74,7 +74,7 @@ export default function ItineraryForm({
           value={form.title}
           onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
-        <Text strong>Chọn địa điểm đến</Text>
+        <Text strong>Chọn điểm đến</Text>
 
         <Select
           showSearch
@@ -112,7 +112,7 @@ export default function ItineraryForm({
           format='DD-MM-YYYY'
           style={{ width: '100%' }}
           disabledDate={(current) => {
-            return current && current < dayjs().startOf('day');
+            return current && current < dayjs().endOf('day');
           }}
         />
         {form.numDays > 0 && (

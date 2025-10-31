@@ -33,7 +33,7 @@ const PlaceDetailModal = ({
       restaurant: {
         color: 'orange',
         icon: <CoffeeOutlined />,
-        text: 'Nhà hàng'
+        text: 'Nhà hàng, quán ăn'
       },
       cafe: { color: 'cyan', icon: <CoffeeOutlined />, text: 'Quán cafe' },
       touristSpot: {
@@ -41,7 +41,11 @@ const PlaceDetailModal = ({
         icon: <EnvironmentOutlined />,
         text: 'Địa điểm du lịch'
       },
-      hotel: { color: 'green', icon: <HomeOutlined />, text: 'Khách sạn' }
+      hotel: {
+        color: 'green',
+        icon: <HomeOutlined />,
+        text: 'Khách sạn, nhà nghĩ'
+      }
     };
     const { color, icon, text } = map[type] || {};
     return (

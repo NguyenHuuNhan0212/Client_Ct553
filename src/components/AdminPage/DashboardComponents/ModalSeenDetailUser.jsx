@@ -1,4 +1,4 @@
-import { Descriptions, Modal } from 'antd';
+import { Descriptions, Divider, Modal } from 'antd';
 import dayjs from 'dayjs';
 
 function ModalDetailUser({ open, onOk, onCancel, user, isManage }) {
@@ -35,9 +35,18 @@ function ModalDetailUser({ open, onOk, onCancel, user, isManage }) {
         <Descriptions.Item label='Ngày tạo tài khoản'>
           {dayjs(user?.registerDate).format('DD/MM/YYYY HH:mm')}
         </Descriptions.Item>
-        {(!isManage || user?.isProviderApproved) && (
-          <>
-            <Descriptions.Item label='Ngày đăng ký nâng cấp tài khoản'>
+      </Descriptions>
+
+      {(!isManage || user?.isProviderApproved) && (
+        <>
+          <Divider> Thông tin nhà cung cấp</Divider>
+          <Descriptions
+            bordered
+            size='middle'
+            column={1}
+            labelStyle={{ fontWeight: 600, width: '40%' }}
+          >
+            <Descriptions.Item label='Ngày đăng ký tài khoản nhà cung cấp'>
               {dayjs(user?.upgradeDate).format('DD/MM/YYYY HH:mm')}
             </Descriptions.Item>
             <Descriptions.Item label='Số thẻ đăng ký'>
@@ -52,9 +61,9 @@ function ModalDetailUser({ open, onOk, onCancel, user, isManage }) {
             <Descriptions.Item label='Tên ngân hàng'>
               {user?.bankName || '—'}
             </Descriptions.Item>{' '}
-          </>
-        )}
-      </Descriptions>
+          </Descriptions>
+        </>
+      )}
     </Modal>
   );
 }

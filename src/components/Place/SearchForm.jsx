@@ -68,7 +68,7 @@ export default function SearchForm({ onSearch }) {
         <Row gutter={16} align='middle'>
           <Col xs={24} md={8}>
             <Title level={4} style={{ marginBottom: 10 }}>
-              Chọn địa điểm đến
+              Chọn điểm đến
             </Title>
             <Select
               showSearch

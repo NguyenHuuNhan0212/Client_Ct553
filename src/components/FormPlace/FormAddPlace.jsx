@@ -65,7 +65,7 @@ const FormAddPlace = () => {
     formData.append('services', JSON.stringify(services));
 
     try {
-      await placeApi.addPlace(formData); // dùng chung addPlace
+      await placeApi.addPlace(formData);
       form.resetFields();
       setRoomTypes([]);
       setServices([]);

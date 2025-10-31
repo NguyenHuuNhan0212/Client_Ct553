@@ -26,7 +26,10 @@ const GeneralInfoTab = ({
           <Form.Item
             name='name'
             label='Tên địa điểm'
-            rules={[{ required: true }]}
+            rules={[
+              { required: true, message: 'Vui lòng nhập tên địa điểm' },
+              { min: 3, message: 'Tên địa điểm quá ngắn' }
+            ]}
           >
             <Input placeholder='Nhập tên địa điểm' />
           </Form.Item>

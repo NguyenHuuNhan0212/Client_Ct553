@@ -78,7 +78,9 @@ function EditItineraryByChatbot({ isTripPlan = false }) {
     if (!form.title || !form.creatorName || !form.startDate || !form.endDate) {
       return message.error('Vui lòng nhập đầy đủ thông tin!');
     }
-
+    if (form.details.some((d) => d.activities.length === 0)) {
+      return message.error('Mỗi ngày phải có ít nhất 1 địa điểm!');
+    }
     const details = form.details.flatMap((d) =>
       d.activities.map((a, actIndex) => ({
         placeId: a.placeId,
