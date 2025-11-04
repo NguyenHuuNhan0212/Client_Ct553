@@ -29,7 +29,7 @@ const RevenueByLocationBarChart = ({ data }) => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'top'
+        display: false
       },
       title: {
         display: false

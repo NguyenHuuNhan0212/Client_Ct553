@@ -26,7 +26,8 @@ import {
   FormOutlined,
   DeleteOutlined,
   CheckCircleOutlined,
-  ArrowLeftOutlined
+  ArrowLeftOutlined,
+  AlignCenterOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -75,7 +76,7 @@ export default function ItineraryDetail({
   const handleSubmit = async (data) => {
     try {
       await itineraryApi.addPriceAndPeople(data);
-      message.success('Thêm chi phí và số người thành công.');
+      message.success('Cập nhật thành công.');
       dispatch(getItineraryDetail(data.itineraryId));
     } catch (err) {
       message.error(err.response?.data?.message || 'Có lỗi xảy ra.');
@@ -157,6 +158,10 @@ export default function ItineraryDetail({
             </div>
             <div style={{ color: '#9333ea', fontWeight: 500 }}>
               <UserOutlined /> Người tạo: {currentItinerary?.creatorName}
+            </div>
+            <div style={{ color: '#18110cff', fontWeight: 500 }}>
+              <AlignCenterOutlined /> Mô tả lịch trình (các dịch vụ sử dụng):{' '}
+              {currentItinerary?.description || 'Chưa có mô tả'}
             </div>
             {!isTemplate && (
               <div style={{ fontWeight: 500 }}>
@@ -317,7 +322,9 @@ export default function ItineraryDetail({
               items={day.places?.map((p) => ({
                 dot: <ClockCircleOutlined />,
 
-                children: <PlaceItineraryDetail place={p} />
+                children: (
+                  <PlaceItineraryDetail place={p} isTemplate={isTemplate} />
+                )
               }))}
             />
           </div>
@@ -340,7 +347,7 @@ export default function ItineraryDetail({
         <Typography.Text>
           Bạn có chắc chắn muốn xóa lịch trình có tiêu đề{' '}
           <Typography.Text type={'danger'} style={{ fontWeight: 500 }}>
-            {currentItinerary?.itinerary?.title}{' '}
+            {currentItinerary?.title}{' '}
           </Typography.Text>{' '}
           không?
         </Typography.Text>

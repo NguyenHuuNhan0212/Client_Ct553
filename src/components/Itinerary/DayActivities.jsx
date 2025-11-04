@@ -9,7 +9,8 @@ import {
   TimePicker,
   Empty,
   Tag,
-  Typography
+  Typography,
+  Tooltip
 } from 'antd';
 import { DeleteOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -39,19 +40,26 @@ export default function DayActivities({ form, setForm, removeActivity }) {
               background: '#fafafa'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-              {/* Hình ảnh */}
+            <div style={{ display: 'flex', gap: 12 }}>
               {act.image ? (
-                <img
-                  src={`http://localhost:3000/${act.image}`}
-                  alt={act.placeName}
+                <div
                   style={{
-                    width: 90,
-                    height: 90,
-                    objectFit: 'cover',
-                    borderRadius: 10
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
                   }}
-                />
+                >
+                  <img
+                    src={`http://localhost:3000/${act.image}`}
+                    alt={act.placeName}
+                    style={{
+                      width: 100,
+                      height: 90,
+                      objectFit: 'cover',
+                      borderRadius: 10
+                    }}
+                  />
+                </div>
               ) : (
                 <div
                   style={{
@@ -82,12 +90,14 @@ export default function DayActivities({ form, setForm, removeActivity }) {
                   <Text strong style={{ fontSize: 15 }}>
                     {act.placeName}
                   </Text>
-                  <Button
-                    type='text'
-                    danger
-                    icon={<DeleteOutlined />}
-                    onClick={() => removeActivity(dayIndex, actIndex)}
-                  />
+                  <Tooltip title='Xóa địa điểm khỏi lịch trình'>
+                    <Button
+                      type='text'
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => removeActivity(dayIndex, actIndex)}
+                    />
+                  </Tooltip>
                 </div>
 
                 {act.address && (
@@ -124,20 +134,31 @@ export default function DayActivities({ form, setForm, removeActivity }) {
                   <TimePicker
                     placeholder='Bắt đầu'
                     format='HH:mm'
-                    value={act.startTime ? dayjs(act.startTime, 'HH:mm') : null}
+                    value={
+                      act.startTime && dayjs(act.startTime, 'HH:mm').isValid()
+                        ? dayjs(act.startTime, 'HH:mm')
+                        : undefined
+                    }
                     onChange={(t, str) => {
                       const updated = [...form.details];
-                      updated[dayIndex].activities[actIndex].startTime = str;
+                      updated[dayIndex].activities[actIndex].startTime =
+                        str || null;
                       setForm({ ...form, details: updated });
                     }}
                   />
+
                   <TimePicker
                     placeholder='Kết thúc'
                     format='HH:mm'
-                    value={act.endTime ? dayjs(act.endTime, 'HH:mm') : null}
+                    value={
+                      act.endTime && dayjs(act.endTime, 'HH:mm').isValid()
+                        ? dayjs(act.endTime, 'HH:mm')
+                        : undefined
+                    }
                     onChange={(t, str) => {
                       const updated = [...form.details];
-                      updated[dayIndex].activities[actIndex].endTime = str;
+                      updated[dayIndex].activities[actIndex].endTime =
+                        str || null;
                       setForm({ ...form, details: updated });
                     }}
                   />

@@ -1,4 +1,4 @@
-import { Modal, Form, InputNumber, Button } from 'antd';
+import { Modal, Form, InputNumber, Button, Input, Descriptions } from 'antd';
 
 export default function ItineraryPriceModal({
   open,
@@ -42,7 +42,8 @@ export default function ItineraryPriceModal({
         layout='vertical'
         initialValues={{
           priceForItinerary: itinerary?.priceForItinerary,
-          people: itinerary?.people
+          people: itinerary?.people,
+          description: itinerary?.description
         }}
       >
         <Form.Item
@@ -67,6 +68,16 @@ export default function ItineraryPriceModal({
           rules={[{ required: true, message: 'Vui lòng nhập số người' }]}
         >
           <InputNumber min={1} style={{ width: '100%' }} placeholder='VD: 4' />
+        </Form.Item>
+        <Form.Item
+          name='description'
+          label='Mô tả thêm về các dịch vụ đã sử dụng cho lịch trình (nếu có)'
+        >
+          <Input.TextArea
+            rows={4}
+            placeholder='Nhập mô tả thêm về các dịch vụ đã sử dụng cho lịch trình...'
+            maxLength={500}
+          />
         </Form.Item>
       </Form>
     </Modal>

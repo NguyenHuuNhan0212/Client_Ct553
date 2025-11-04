@@ -50,7 +50,6 @@ export default function HotelCard({ hotel }) {
   useEffect(() => {
     if (placesFavorite && placesFavorite.length > 0) {
       const favoriteIds = placesFavorite.map((f) => f.placeId?._id.toString());
-      console.log(favoriteIds);
       setIsFavorite(favoriteIds.includes(hotel.hotelId.toString()));
     } else {
       setIsFavorite(false);

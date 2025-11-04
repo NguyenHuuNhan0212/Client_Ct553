@@ -83,7 +83,7 @@ function Booking() {
       setOpenModalCancel(false);
       message.success(`Đã hủy đơn đặt thành công`);
     } catch (err) {
-      setOpenModalDelete(false);
+      setOpenModalCancel(false);
       message.error(err?.response?.data?.message);
     }
   };
@@ -177,16 +177,15 @@ function Booking() {
             />
           </Tooltip>
 
-          {(record.status !== 'cancelled' &&
-            Number(record.totalPrice) !== Number(record.paymentInfo?.amount)) ||
-            (dayjs().isBefore(dayjs(record.checkInDate), 'day') && (
+          {record.status !== 'cancelled' &&
+            dayjs().isBefore(dayjs(record.checkInDate), 'day') && (
               <Tooltip title={'Hủy đơn đặt'}>
                 <CloseCircleOutlined
                   style={{ color: 'red', cursor: 'pointer' }}
                   onClick={() => showModalCancel(record)}
                 />
               </Tooltip>
-            ))}
+            )}
 
           {record.status === 'cancelled' && (
             <Tooltip title={'Xóa đơn đặt'}>
@@ -255,6 +254,9 @@ function Booking() {
             >
               <Descriptions.Item label='Địa điểm'>
                 {currentBooking.place?.name}
+              </Descriptions.Item>
+              <Descriptions.Item label='Ngày đặt dịch vụ'>
+                {dayjs(currentBooking.createdAt).format('DD/MM/YYYY')}
               </Descriptions.Item>
               <Descriptions.Item label='Ngày check in'>
                 {/* {new Date(currentBooking.checkInDate).toLocaleDateString()} */}

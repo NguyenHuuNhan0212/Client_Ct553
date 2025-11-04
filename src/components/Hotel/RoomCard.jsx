@@ -113,7 +113,7 @@ const RoomCard = ({ room, onBook, facilities = [] }) => {
             <FaBed className={roomIcon} />
             <div className={roomOverlay} onClick={(e) => e.stopPropagation()}>
               <Button type='primary' onClick={() => setBookingOpen(true)}>
-                Đặt ngay
+                Đặt phòng
               </Button>
             </div>
           </div>

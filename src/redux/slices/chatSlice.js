@@ -46,15 +46,31 @@ const chatSlice = createSlice({
       })
       .addCase(sendMessageToAI.fulfilled, (state, action) => {
         state.loading = false;
-        state.chat.push({
-          sender: 'bot',
-          text: action.payload.answer,
-          isTripPlan: action.payload.isTripPlan ? true : false
-        });
-        state.tripPlan = action.payload.tripPlan
-          ? action.payload.tripPlan
-          : null;
+        const payload = action.payload;
+        state.tripPlan = payload.tripPlan ? action.payload.tripPlan : null;
         state.city = action.payload.city ? action.payload.city : null;
+
+        if (payload.type === 'places') {
+          state.chat.push({
+            sender: 'bot',
+            type: 'places',
+            placeType: payload.placeType,
+            city: payload.city,
+            data: payload.data
+          });
+        } else if (payload.type === 'place_info') {
+          state.chat.push({
+            sender: 'bot',
+            type: 'place_info',
+            data: payload.data
+          });
+        } else {
+          state.chat.push({
+            sender: 'bot',
+            text: payload.answer,
+            isTripPlan: payload.isTripPlan ? true : false
+          });
+        }
       })
       .addCase(sendMessageToAI.rejected, (state, action) => {
         state.loading = false;

@@ -22,6 +22,8 @@ import {
   sendMessageToAI
 } from '../../redux/slices/chatSlice';
 import { useNavigate } from 'react-router-dom';
+import RenderPlaces from './RenderListPlaces';
+import PlaceInfoDetail from './PlaceInfoDetail';
 
 const { Text } = Typography;
 
@@ -140,21 +142,27 @@ export default function Chatbot() {
                     </span>
                   </>
                 )}
-                <div
-                  style={{
-                    background:
-                      msg.sender === 'user'
-                        ? 'linear-gradient(135deg, #1677ff, #4096ff)'
-                        : 'white',
-                    color: msg.sender === 'user' ? 'white' : '#333',
-                    padding: '10px 14px',
-                    borderRadius: 16,
-                    maxWidth: '75%',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-                    animation: 'slideIn 0.3s ease'
-                  }}
-                  dangerouslySetInnerHTML={{ __html: msg.text }}
-                />
+                {msg.type === 'places' ? (
+                  <RenderPlaces msg={msg} />
+                ) : msg.type === 'place_info' ? (
+                  <PlaceInfoDetail p={msg?.data} />
+                ) : (
+                  <div
+                    style={{
+                      background:
+                        msg.sender === 'user'
+                          ? 'linear-gradient(135deg, #1677ff, #4096ff)'
+                          : 'white',
+                      color: msg.sender === 'user' ? 'white' : '#333',
+                      padding: '10px 14px',
+                      borderRadius: 16,
+                      maxWidth: '75%',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                      animation: 'slideIn 0.3s ease'
+                    }}
+                    dangerouslySetInnerHTML={{ __html: msg.text }}
+                  />
+                )}
                 {msg.sender === 'user' && (
                   <img
                     src={`http://localhost:3000${user?.avatarUrl}`}

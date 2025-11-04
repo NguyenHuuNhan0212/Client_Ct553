@@ -116,7 +116,12 @@ export default function ItineraryForm({
           }}
         />
         {form.numDays > 0 && (
-          <Tag color='blue'>Tổng số ngày: {form.numDays}</Tag>
+          <>
+            <Tag color='blue'>Tổng số ngày: {form.numDays}</Tag>
+            <Text type='danger' italic>
+              Tùy chỉnh lịch trình để chuyến đi của bạn trở nên hoàn hảo hơn.
+            </Text>
+          </>
         )}
       </Space>
 

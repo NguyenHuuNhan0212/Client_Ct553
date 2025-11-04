@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Spin, Layout, Row, Col, Select, Space } from 'antd';
+import {
+  Typography,
+  Spin,
+  Layout,
+  Row,
+  Col,
+  Select,
+  Space,
+  InputNumber
+} from 'antd';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import Chatbot from '../../components/Chatbot/Chatbot';
@@ -10,7 +19,12 @@ import {
 } from '../../redux/slices/itinerarySlice';
 import ItineraryList from '../../components/Profile/ItineraryComponents/ItineraryList';
 import { motion } from 'motion/react'; //eslint-disable-line
-import { ContainerOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import {
+  ClockCircleFilled,
+  ClockCircleOutlined,
+  ContainerOutlined,
+  EnvironmentOutlined
+} from '@ant-design/icons';
 import ItineraryDetail from '../../components/Profile/ItineraryComponents/ItineraryDetail';
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -20,6 +34,7 @@ export default function ItineraryExplore() {
   const [selectedItinerary, setSelectedItinerary] = useState(null);
   const [cities, setCities] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState('');
+  const [duration, setDuration] = useState(null);
   const { loading, itinerariesTemplate } = useSelector(
     (state) => state.itinerary
   );
@@ -30,13 +45,20 @@ export default function ItineraryExplore() {
     : itinerariesTemplate.filter((i) => {
         return i.userId?.toString() !== user?._id?.toString();
       });
-  const filteredItinerary = !selectedLocation
-    ? itineraries
-    : itineraries.filter((i) => {
-        return selectedLocation
+  const filteredItinerary = itineraries.filter((itinerary) => {
+    const matchLocation = selectedLocation
+      ? selectedLocation
           .toLocaleLowerCase()
-          .includes(i.destination.toLowerCase());
-      });
+          .includes(itinerary.destination.toLocaleLowerCase())
+      : true;
+    const matchDuration = duration
+      ? Number(itinerary.numDays) === Number(duration)
+      : true;
+    return matchLocation && matchDuration;
+  });
+  const onChangeDuration = (value) => {
+    setDuration(value);
+  };
 
   useEffect(() => {
     dispatch(getAllItineraryTemplate());
@@ -74,7 +96,7 @@ export default function ItineraryExplore() {
               <Col>
                 <Space>
                   <Text strong>
-                    <EnvironmentOutlined /> Địa điểm:
+                    <EnvironmentOutlined /> Điểm đến:
                   </Text>
                   <Select
                     showSearch
@@ -93,6 +115,18 @@ export default function ItineraryExplore() {
                     style={{ width: '220px' }}
                     value={selectedLocation || undefined}
                     onChange={(value) => setSelectedLocation(value)}
+                  />
+
+                  <Text strong>
+                    <ClockCircleOutlined /> Thời gian
+                  </Text>
+                  <InputNumber
+                    size='large'
+                    style={{ width: 170 }}
+                    min={1}
+                    value={duration || undefined}
+                    onChange={onChangeDuration}
+                    placeholder='Số ngày dự kiến'
                   />
                 </Space>
               </Col>

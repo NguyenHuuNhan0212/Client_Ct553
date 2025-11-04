@@ -30,6 +30,11 @@ const itineraryApi = {
   },
   createItineraryWithAI(data) {
     return axiosClient.post('/itinerary/trip-plan', data);
+  },
+  updateNoteForItineraryDetail(data) {
+    return axiosClient.patch(`/itinerary/note/${data.itineraryDetailId}`, {
+      note: data.note
+    });
   }
 };
 export default itineraryApi;

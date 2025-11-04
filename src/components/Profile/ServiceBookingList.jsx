@@ -29,7 +29,6 @@ function BookingList() {
   const dispatch = useDispatch();
   const { bookingsOfSupplier } = useSelector((state) => state.booking);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isOpenCancelBookingModal, setIsOpenCancelBookingModal] =
@@ -94,10 +93,6 @@ function BookingList() {
     setIsOpenModal(true);
     setSelectedBooking(record);
   };
-  const handleShowModalDelete = (record) => {
-    setSelectedBooking(record);
-    setIsOpenDeleteModal(true);
-  };
   const handleShowModalConfirmPayment = (record) => {
     setIsOpenConfirmPaymentModal(true);
     setSelectedBooking(record);
@@ -132,18 +127,7 @@ function BookingList() {
       message.error(err.message);
     }
   };
-  const handleRemovePlace = async () => {
-    if (!selectedBooking) return;
-    try {
-      await bookingApi.deleteBookingForSupplier(selectedBooking._id);
-      await dispatch(getAllForSupplier()).unwrap();
-      message.success('Đã xóa đơn đặt thành công');
-      setIsOpenDeleteModal(false);
-    } catch (err) {
-      setIsOpenDeleteModal(false);
-      message.error(err.response?.data || 'Xóa đơn đặt thất bại');
-    }
-  };
+
   const onChangeDate = (_, dateString) => {
     if (!dateString) {
       setSelectedDate(null);
@@ -234,14 +218,6 @@ function BookingList() {
               />
             </Tooltip>
 
-            {record.deleted && (
-              <Tooltip title={'Xóa đơn đặt'}>
-                <DeleteOutlined
-                  style={{ color: '#ff4d4f', cursor: 'pointer' }}
-                  onClick={() => handleShowModalDelete(record)}
-                />
-              </Tooltip>
-            )}
             {Number(record.totalPrice) !== Number(record.paymentAmount) &&
               record.status !== 'cancelled' && (
                 <Tooltip title={'Xác nhận đã thu tiền đầy đủ'}>
@@ -447,17 +423,6 @@ function BookingList() {
             </Descriptions>
           </>
         )}
-      </Modal>
-
-      <Modal
-        title='Xác nhận xóa đơn đặt'
-        open={isOpenDeleteModal}
-        onOk={handleRemovePlace}
-        onCancel={() => setIsOpenDeleteModal(false)}
-        okText={'Xác nhận xóa'}
-        cancelText={'Hủy'}
-      >
-        <p>Bạn chắc chắn muốn xóa đơn đặt này!!!</p>
       </Modal>
 
       <Modal

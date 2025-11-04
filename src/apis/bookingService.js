@@ -19,9 +19,7 @@ const bookingApi = {
   getAllServiceBookingsOfSupplier() {
     return axiosClient.get('/bookings/supplier');
   },
-  deleteBookingForSupplier(bookingId) {
-    return axiosClient.delete(`/bookings/supplier/${bookingId}`);
-  },
+
   confirmPayment(bookingId) {
     return axiosClient.patch(`bookings/confirm-payment/${bookingId}`);
   },

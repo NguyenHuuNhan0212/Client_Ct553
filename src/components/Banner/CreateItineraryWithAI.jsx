@@ -144,7 +144,7 @@ const TripPlanFormWithAI = ({ open, onClose }) => {
         >
           <Input
             size='large'
-            placeholder='Ví dụ: Hành trình khám phá Đà Lạt 3N2Đ'
+            placeholder='Ví dụ: Hành trình khám phá Cần Thơ 3N2Đ'
             prefix={<SendOutlined style={{ color: '#1677ff' }} />}
             style={{ borderRadius: 8 }}
           />
