@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Badge, Layout, Menu, Typography } from 'antd';
+import { BackTop, Badge, Layout, Menu, Tooltip, Typography } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react'; // eslint-disable-line
 import {
@@ -140,6 +140,24 @@ export default function Profile() {
           </Content>
         </Layout>
       </Layout>
+      <BackTop visibilityHeight={200}>
+        <Tooltip title='Về đầu trang'>
+          <div
+            style={{
+              height: 40,
+              width: 40,
+              lineHeight: '40px',
+              borderRadius: '50%',
+              backgroundColor: 'gray',
+              color: '#fff',
+              textAlign: 'center',
+              fontSize: 18
+            }}
+          >
+            ↑
+          </div>
+        </Tooltip>
+      </BackTop>
     </>
   );
 }

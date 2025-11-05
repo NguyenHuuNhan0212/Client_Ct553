@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons';
 import {
   Avatar,
+  BackTop,
   Badge,
   Button,
   Dropdown,
@@ -205,6 +206,25 @@ const App = () => {
           <Content className={container}>{renderContent(selectedMenu)}</Content>
         </Layout>
       </Layout>
+      <BackTop visibilityHeight={200}>
+        <Tooltip title='Về đầu trang'>
+          <div
+            style={{
+              height: 40,
+              width: 40,
+              lineHeight: '40px',
+              borderRadius: '50%',
+              backgroundColor: 'gray',
+              color: '#fff',
+              textAlign: 'center',
+              fontSize: 18,
+              fontWeight: 700
+            }}
+          >
+            ↑
+          </div>
+        </Tooltip>
+      </BackTop>
       <Footer className={footer}>
         © 2025 Vigo Travel. Mọi quyền được bảo lưu.
       </Footer>
