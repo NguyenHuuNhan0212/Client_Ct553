@@ -291,6 +291,14 @@ function HotelDetail() {
             Liên hệ: {currentHotel?.ownerInfo?.userId?.phone}
           </Paragraph>
           <Paragraph>
+            Trạng thái hoạt động:{' '}
+            {currentHotel?.isActive ? (
+              <Tag color='green'>Đang hoạt động</Tag>
+            ) : (
+              <Tag color='error'>Ngừng hoạt động</Tag>
+            )}
+          </Paragraph>
+          <Paragraph>
             Giá chỉ từ:{' '}
             <b style={{ color: 'red', fontSize: '20px' }}>
               {currentHotel?.minPricePerNight.toLocaleString() || 0}VNĐ / đêm

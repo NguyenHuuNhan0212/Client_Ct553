@@ -133,7 +133,7 @@ export default function Chatbot() {
                         borderRadius: '50%',
                         width: 25,
                         marginTop: -15,
-                        paddingTop: 5,
+                        padding: 5,
                         textAlign: 'center',
                         height: 25
                       }}

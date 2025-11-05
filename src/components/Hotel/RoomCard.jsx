@@ -25,7 +25,6 @@ import PaymentMethodSelect from '../PaymentMethod/PaymentMethod';
 import CancelPolicy from '../Profile/BookingComponents/CancelPolicy';
 
 const RoomCard = ({ room, onBook, facilities = [] }) => {
-  console.log(room);
   const { roomCard, roomCover, roomIcon, roomOverlay, amenitiesWrap } = styles;
   const [open, setOpen] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);

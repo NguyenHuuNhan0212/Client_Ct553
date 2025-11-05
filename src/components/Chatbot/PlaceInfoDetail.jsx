@@ -47,13 +47,32 @@ function PlaceInfoDetail({ p }) {
           <EnvironmentOutlined /> {p.address || 'Địa chỉ chưa cập nhật'}
         </Text>
 
-        <Divider style={{ margin: '10px 0' }} />
+        <Divider style={{ margin: '0' }} />
 
         <div dangerouslySetInnerHTML={{ __html: p.description }} />
-
+        {p.hotelDetail && (
+          <>
+            <Divider style={{ margin: '0' }} />
+            <Title level={5} style={{ marginBottom: 8 }}>
+              Các loại phòng
+            </Title>
+            <Space wrap>
+              {p.hotelDetail.roomTypes.map((rt, idx) => (
+                <Tooltip
+                  title={`Gía ${rt.pricePerNight.toLocaleString()}/đêm`}
+                  key={idx}
+                >
+                  <Tag color='purple' icon={<CheckCircleOutlined />}>
+                    {rt.name}
+                  </Tag>
+                </Tooltip>
+              ))}
+            </Space>
+          </>
+        )}
         {p.services && p.services.length > 0 && (
           <>
-            <Divider style={{ margin: '12px 0' }} />
+            <Divider style={{ margin: '0' }} />
             <Title level={5} style={{ marginBottom: 8 }}>
               Dịch vụ nổi bật
             </Title>

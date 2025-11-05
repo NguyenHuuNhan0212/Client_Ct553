@@ -10,7 +10,7 @@ import styles from './style.module.css';
 const { Title } = Typography;
 const BASE_URL = 'http://localhost:3000';
 const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
-  const { container, btn } = styles;
+  const { containerUpdate, btn } = styles;
   const [form] = Form.useForm();
   const [type, setType] = useState(typeCurrent);
   const [roomTypes, setRoomTypes] = useState([]);
@@ -163,7 +163,7 @@ const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
   }
 
   return (
-    <Card className={container}>
+    <Card className={containerUpdate}>
       <Title level={2} style={{ textAlign: 'center' }}>
         Cập nhật địa điểm
       </Title>

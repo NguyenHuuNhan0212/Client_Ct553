@@ -1,5 +1,11 @@
+import OverviewTransaction from './TransactionComponents/Overview';
+
 function Transaction() {
-  return <div>This is transaction page.</div>;
+  return (
+    <>
+      <OverviewTransaction />
+    </>
+  );
 }
 
 export default Transaction;

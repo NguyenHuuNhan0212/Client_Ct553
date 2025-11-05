@@ -11,6 +11,9 @@ const statsApi = {
   },
   getFivePlacesHaveInItinerary() {
     return axiosClient.get('/stats/admin/five-places-itinerary');
+  },
+  getStatsRevenueAndTransaction() {
+    return axiosClient.get('/stats/admin/revenue-and-transaction');
   }
 };
 export default statsApi;
