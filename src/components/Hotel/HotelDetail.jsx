@@ -210,7 +210,6 @@ function HotelDetail() {
       )
     }
   ];
-
   return (
     <Layout style={{ background: '#fff', padding: '20px', height: '100%' }}>
       <Row gutter={16}>
@@ -292,7 +291,7 @@ function HotelDetail() {
           </Paragraph>
           <Paragraph>
             Trạng thái hoạt động:{' '}
-            {currentHotel?.isActive ? (
+            {currentHotel?.info?.isActive ? (
               <Tag color='green'>Đang hoạt động</Tag>
             ) : (
               <Tag color='error'>Ngừng hoạt động</Tag>

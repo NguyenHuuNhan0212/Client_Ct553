@@ -124,6 +124,14 @@ function ListPlace({
       </>
     );
   };
+
+  const renderStatusActive = (value) => {
+    if (!value) {
+      return <Tag color='error'>Ngừng hoạt động</Tag>;
+    } else {
+      return <Tag color='green'>Đang hoạt động</Tag>;
+    }
+  };
   if (!places.length) {
     return <Empty description={'Không có địa điểm nào.'} />;
   }
@@ -150,6 +158,12 @@ function ListPlace({
             align: 'center',
             dataIndex: ['userId', 'fullName'],
             render: (value) => capitalizeName(value)
+          },
+          {
+            title: 'Trạng thái hoạt động',
+            align: 'center',
+            dataIndex: 'isActive',
+            render: (value) => renderStatusActive(value)
           },
           {
             title: 'Loại địa điểm',

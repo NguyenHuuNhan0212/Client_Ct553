@@ -87,19 +87,27 @@ function PlaceItineraryDetail({ place, isTemplate }) {
             flexDirection: 'column'
           }}
         >
-          <Link
-            to={
-              place.placeId?.type === 'hotel'
-                ? `/hotel/${place?.placeId?._id}`
-                : `/place/${place?.placeId?._id}`
-            }
-          >
-            <Tooltip title={'Nhấn để xem chi tiết địa điểm'}>
+          {place.placeId?.deleted ? (
+            <Tooltip title={'Địa điểm không còn.'}>
               <Title level={5} style={{ marginTop: -3 }}>
                 {place.name}
               </Title>
             </Tooltip>
-          </Link>
+          ) : (
+            <Link
+              to={
+                place.placeId?.type === 'hotel'
+                  ? `/hotel/${place?.placeId?._id}`
+                  : `/place/${place?.placeId?._id}`
+              }
+            >
+              <Tooltip title={'Nhấn để xem chi tiết địa điểm'}>
+                <Title level={5} style={{ marginTop: -3 }}>
+                  {place.name}
+                </Title>
+              </Tooltip>
+            </Link>
+          )}
 
           <Space size='small' align='center' style={{ marginBottom: 6 }}>
             <EnvironmentOutlined style={{ color: '#52c41a' }} />

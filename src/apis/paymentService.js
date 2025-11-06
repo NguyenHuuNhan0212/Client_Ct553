@@ -6,6 +6,12 @@ const paymentApi = {
   },
   getAllTransaction() {
     return axiosClient.get('/payment/admin');
+  },
+  getAllTransactionCancelled() {
+    return axiosClient.get('/payment/admin/transaction-cancelled');
+  },
+  getAllTransactionSuccess() {
+    return axiosClient.get('/payment/admin/transaction-success');
   }
 };
 export default paymentApi;
