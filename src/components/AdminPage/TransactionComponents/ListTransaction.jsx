@@ -110,7 +110,10 @@ function ListTransaction({ transactions }) {
             title: 'Ngày',
             dataIndex: 'paymentDate',
             align: 'center',
-            render: (value) => dayjs(value).format('DD/MM/YYYY')
+            render: (value) => dayjs(value).format('DD/MM/YYYY'),
+            sorter: (a, b) =>
+              dayjs(a.paymentDate).valueOf() - dayjs(b.paymentDate).valueOf(),
+            sortDirections: ['ascend', 'descend']
           },
           {
             title: 'Trạng thái',

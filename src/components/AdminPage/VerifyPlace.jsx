@@ -4,7 +4,7 @@ import placeApi from '../../apis/placeService';
 import { motion } from 'motion/react'; // eslint-disable-line
 import { Badge, Button, Card, Space, Typography } from 'antd';
 import SearchBar from '../SearchBar/SearchBar';
-const { Title } = Typography;
+const { Title, Text } = Typography;
 function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
   const [places, setPlaces] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -16,6 +16,8 @@ function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
       (!filterType || item.type === filterType)
   );
   const handleShowPlacesAwaitApprove = async () => {
+    setFilterType('');
+    setSearchKeyword('');
     try {
       const res = await placeApi.getPlacesAwaitApprove();
       setPlaces(res.places);
@@ -25,6 +27,8 @@ function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
     }
   };
   const handleShowAllPlaces = async () => {
+    setFilterType('');
+    setSearchKeyword('');
     try {
       const res = await placeApi.getAllAdmin();
       setPlaces(res);
@@ -75,6 +79,8 @@ function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
           </Space>
 
           <SearchBar
+            type={filterType}
+            searchKeyword={searchKeyword}
             onFilterType={(type) => setFilterType(type)}
             placeholder='Tìm kiếm theo tên địa điểm...'
             onSearch={setSearchKeyword}
@@ -86,6 +92,12 @@ function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
           onSetAwaitApprove={onSetAwaitApprove}
           isVerifyPlace
         />
+        <div style={{ textAlign: 'right', marginRight: 10 }}>
+          <Space>
+            <Text type='secondary'>Tổng số địa điểm:</Text>
+            <Text strong>{filteredPlaces.length || 0}</Text>
+          </Space>
+        </div>
       </Card>
     </motion.div>
   );

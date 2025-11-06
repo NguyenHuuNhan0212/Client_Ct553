@@ -185,6 +185,23 @@ export default function ItineraryDetail({
                 </Tag>
               </div>
             )}
+            {!isTemplate &&
+              currentItinerary?.status === 'completed' &&
+              !currentItinerary.priceForItinerary && (
+                <div>
+                  <Typography.Text type={'danger'} italic>
+                    Bạn có thể cung cấp thêm thông tin về chi phí, số người và
+                    mô tả lịch trình bằng cách nhấn nút{'   '}
+                  </Typography.Text>
+                  <Typography.Text italic type={'danger'} strong>
+                    Cập nhật chi phí và số người
+                  </Typography.Text>
+                  <Typography.Text type={'danger'} italic>
+                    {' '}
+                    để những người khác có thể tham khảo lịch trình của bạn.
+                  </Typography.Text>
+                </div>
+              )}
           </Col>
           <Col
             span={8}

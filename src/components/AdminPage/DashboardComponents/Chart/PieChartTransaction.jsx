@@ -1,26 +1,17 @@
-// src/components/charts/PieChartPlaceType.jsx
 import React from 'react';
-import { Card } from 'antd';
 import { Pie } from 'react-chartjs-2';
+import { Card } from 'antd';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function PieChartPlaceType({ data }) {
+function PieChartTransactionStats({ data, title }) {
   const chartData = {
-    labels: data.map((item) => item.name),
+    labels: data.map((item) => item.label),
     datasets: [
       {
-        label: 'Số lượng địa điểm',
         data: data.map((item) => item.value),
-        backgroundColor: [
-          '#0088FE',
-          '#00C49F',
-          '#FFBB28',
-          '#FF8042',
-          '#9E4AFF'
-        ],
-        borderColor: '#fff',
+        backgroundColor: ['#22C55E', '#EF4444'],
         borderWidth: 1,
         hoverOffset: 8
       }
@@ -29,11 +20,13 @@ function PieChartPlaceType({ data }) {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'bottom',
         labels: {
-          boxWidth: 15,
+          boxWidth: 14,
+          color: '#374151',
           font: { size: 13 }
         }
       },
@@ -55,26 +48,18 @@ function PieChartPlaceType({ data }) {
 
   return (
     <Card
-      title='Tỷ lệ địa điểm theo loại'
+      title={title}
       style={{
         borderRadius: 16,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
         height: '100%'
       }}
     >
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}
-      >
+      <div style={{ width: '100%', height: 300 }}>
         <Pie data={chartData} options={options} />
       </div>
     </Card>
   );
 }
 
-export default PieChartPlaceType;
+export default PieChartTransactionStats;

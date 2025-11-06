@@ -12,6 +12,8 @@ import statsApi from '../../apis/statsService';
 import PieChartPlaceType from './DashboardComponents/Chart/PieChartPlaceType';
 import LineChartNewUsers from './DashboardComponents/Chart/LineChartNewUsers';
 import TopPopularPlacesChart from './DashboardComponents/Chart/BarChartPlacesPopular';
+import PieChartTransactionStats from './DashboardComponents/Chart/PieChartTransaction';
+import dayjs from 'dayjs';
 const { Title, Text } = Typography;
 function Dashboard({
   totalUpgrade,
@@ -27,6 +29,7 @@ function Dashboard({
   const [users, setUsers] = useState([]);
   const [dataStatsPlaceByType, setDataStatsPlaceByType] = useState([]);
   const [dataStatsNewUses, setDataStatsNewUsers] = useState([]);
+  const [statsTransaction, setStatsTransaction] = useState(null);
   const [dataStatsFivePlacesPopular, setDataStatsFivePlacesPopular] = useState(
     []
   );
@@ -54,6 +57,18 @@ function Dashboard({
       value: item.total
     })
   );
+  const dataPieChartTransaction = [
+    {
+      label: 'Giao dịch thành công',
+      value:
+        Number(statsTransaction?.totalTransactions) -
+        Number(statsTransaction?.totalTransactionsRefunded)
+    },
+    {
+      label: 'Giao dịch bị hủy / hoàn tiền',
+      value: Number(statsTransaction?.totalTransactionsRefunded)
+    }
+  ];
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -147,6 +162,18 @@ function Dashboard({
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await statsApi.getStatsRevenueAndTransaction();
+        setStatsTransaction(res);
+      } catch (err) {
+        console.log(err.message || 'Lỗi khi lấy thông kê giao dịch');
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -170,28 +197,50 @@ function Dashboard({
           totalPlace={totalPlace}
           totalProvider={totalProvider}
         />
+        <div style={{ marginLeft: 10 }}>
+          <Text type='secondary' style={{ fontSize: 12 }}>
+            Cập nhật: {dayjs().format('DD/MM/YYYY HH:mm')}
+          </Text>
+        </div>
         <Row gutter={[10, 10]} style={{ marginTop: 10 }}>
-          <Col xs={24} md={12} lg={12}>
-            <PieChartPlaceType data={dataPieChartPlaceByType} />
+          <Col xs={24} md={24} lg={8}>
+            <div style={{ height: '100%' }}>
+              <PieChartPlaceType data={dataPieChartPlaceByType} />
+            </div>
           </Col>
-          <Col xs={24} md={12} lg={12}>
-            <LineChartNewUsers data={dataLineChartNewUsers} />
+          <Col xs={24} md={24} lg={8}>
+            <div style={{ height: '100%' }}>
+              <TopPopularPlacesChart
+                data={dataBarChartPlacesPopular}
+                title='Top 5 địa điểm có đơn đặt nhiều nhất'
+                unit='lượt đặt'
+              />
+            </div>
+          </Col>
+          <Col xs={24} md={24} lg={8}>
+            <div style={{ height: '100%' }}>
+              <TopPopularPlacesChart
+                data={dataBarChartPlacesItinerary}
+                title='Top 5 địa điểm có trong lịch trình nhiều nhất'
+                unit='lịch trình'
+              />
+            </div>
           </Col>
         </Row>
+
         <Row gutter={[10, 10]} style={{ marginTop: 10 }}>
-          <Col xs={24} md={12} lg={12}>
-            <TopPopularPlacesChart
-              data={dataBarChartPlacesPopular}
-              title={'Top 5 địa điểm có đơn đặt nhiều nhất'}
-              unit={'lượt đặt'}
-            />
+          <Col xs={24} md={24} lg={12}>
+            <div style={{ height: '100%' }}>
+              <LineChartNewUsers data={dataLineChartNewUsers} />
+            </div>
           </Col>
-          <Col xs={24} md={12} lg={12}>
-            <TopPopularPlacesChart
-              data={dataBarChartPlacesItinerary}
-              title={'Top 5 địa điểm có trong lịch trình nhiều nhất'}
-              unit={'lịch trình'}
-            />
+          <Col xs={24} md={24} lg={12}>
+            <div style={{ height: '100%' }}>
+              <PieChartTransactionStats
+                data={dataPieChartTransaction}
+                title={'Tỷ lệ giao dịch'}
+              />
+            </div>
           </Col>
         </Row>
 

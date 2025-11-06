@@ -34,6 +34,8 @@ function User({ onSetUpgrade, totalUpgrade }) {
     setValue(keyword);
   };
   const handleClickAccountAwaitUpgrade = async () => {
+    setSelectedType('');
+    setValue('');
     try {
       const res = await userApi.getQuantityAccountAwaitConfirm();
       setUsers(res.usersUpgrade);
@@ -45,6 +47,8 @@ function User({ onSetUpgrade, totalUpgrade }) {
   };
 
   const handleShowAllUser = async () => {
+    setSelectedType('');
+    setValue('');
     try {
       const res = await userApi.getAllUser();
       setUsers(res);

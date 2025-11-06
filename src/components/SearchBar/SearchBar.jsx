@@ -1,13 +1,19 @@
 // src/components/SearchBar/SearchBar.jsx
 import { Input, Select, Space, Typography } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const { Option } = Select;
 const { Text } = Typography;
-function SearchBar({ placeholder = 'Tìm kiếm...', onSearch, onFilterType }) {
-  const [value, setValue] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+function SearchBar({
+  placeholder = 'Tìm kiếm...',
+  onSearch,
+  onFilterType,
+  type = '',
+  searchKeyword = ''
+}) {
+  const [value, setValue] = useState(searchKeyword);
+  const [selectedType, setSelectedType] = useState(type);
 
   const handleSearchChange = (e) => {
     const keyword = e.target.value;
@@ -37,6 +43,14 @@ function SearchBar({ placeholder = 'Tìm kiếm...', onSearch, onFilterType }) {
       label: '🏝️ Địa điểm du lịch'
     }
   ];
+  useEffect(() => {
+    setValue(searchKeyword);
+  }, [searchKeyword]);
+
+  useEffect(() => {
+    setSelectedType(type);
+  }, [type]);
+
   return (
     <Space>
       <Text strong>Chọn loại địa điểm: </Text>

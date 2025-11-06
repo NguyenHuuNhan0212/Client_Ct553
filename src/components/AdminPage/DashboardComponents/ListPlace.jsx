@@ -163,7 +163,9 @@ function ListPlace({
             title: 'Trạng thái hoạt động',
             align: 'center',
             dataIndex: 'isActive',
-            render: (value) => renderStatusActive(value)
+            render: (value) => renderStatusActive(value),
+            sorter: (a, b) => a.isActive - b.isActive,
+            sortDirections: ['ascend', 'descend']
           },
           {
             title: 'Loại địa điểm',

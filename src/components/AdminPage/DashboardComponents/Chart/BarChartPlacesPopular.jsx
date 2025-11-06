@@ -67,10 +67,21 @@ function TopPopularPlacesChart({ data, title, unit }) {
       title={title}
       style={{
         borderRadius: 16,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+        height: '100%'
       }}
     >
-      <Bar data={chartData} options={options} />
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Bar data={chartData} height={300} options={options} />
+      </div>
     </Card>
   );
 }

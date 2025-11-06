@@ -32,7 +32,6 @@ import Dashboard from '../../components/AdminPage/Dashboard';
 import VerifyPlace from '../../components/AdminPage/VerifyPlace';
 import User from '../../components/AdminPage/User';
 import Transaction from '../../components/AdminPage/Transaction';
-import Stats from '../../components/AdminPage/Stats';
 const { Header, Sider, Content, Footer } = Layout;
 const { Text, Title } = Typography;
 const App = () => {
@@ -79,11 +78,6 @@ const App = () => {
       key: '4',
       icon: <TransactionOutlined />,
       label: 'Giao dịch'
-    },
-    {
-      key: '5',
-      icon: <BarChartOutlined />,
-      label: 'Thống kê'
     }
   ];
   const itemDropdowns = [
@@ -130,8 +124,6 @@ const App = () => {
         );
       case '4':
         return <Transaction />;
-      case '5':
-        return <Stats />;
       default:
         return <Dashboard />;
     }

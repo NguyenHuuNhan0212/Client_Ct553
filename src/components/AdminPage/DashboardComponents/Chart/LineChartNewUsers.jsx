@@ -72,9 +72,13 @@ function LineChartNewUsers({ data }) {
   return (
     <Card
       title='Người dùng mới trong 7 ngày qua'
-      style={{ borderRadius: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}
+      style={{
+        borderRadius: 16,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+        height: '100%'
+      }}
     >
-      <div style={{ width: '100%', height: 320 }}>
+      <div style={{ width: '100%', height: '100%' }}>
         <Line data={chartData} options={options} />
       </div>
     </Card>
