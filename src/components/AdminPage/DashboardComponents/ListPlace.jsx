@@ -4,11 +4,13 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import placeApi from '../../../apis/placeService';
 import PlaceDetailModal from '../../Profile/Place/PlaceDetailForAdminAndSupplier';
+import statsApi from '../../../apis/statsService';
 
 function ListPlace({
   places,
   setPlacesAwaitingApprove,
   onSetAwaitApprove,
+  onSetStatsPlaceStatus,
   setPlaces,
   isVerifyPlace = false
 }) {
@@ -60,6 +62,8 @@ function ListPlace({
       if (isVerifyPlace) {
         const resPlace = await placeApi.getAllAdmin();
         setPlaces(resPlace);
+        const res = await statsApi.getStatsPlaceStatus();
+        onSetStatsPlaceStatus(res);
       }
     } catch (err) {
       message.error(err?.message || 'Có lỗi khi phê duyệt');
@@ -83,6 +87,8 @@ function ListPlace({
       if (isVerifyPlace) {
         const resPlace = await placeApi.getAllAdmin();
         setPlaces(resPlace);
+        const res = await statsApi.getStatsPlaceStatus();
+        onSetStatsPlaceStatus(res);
       }
     } catch (err) {
       message.error(err?.message || 'Có lỗi khi phê duyệt');

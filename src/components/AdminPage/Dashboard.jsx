@@ -9,10 +9,9 @@ import ListPlace from './DashboardComponents/ListPlace';
 import ListUser from './DashboardComponents/ListUser';
 import { AlertOutlined } from '@ant-design/icons';
 import statsApi from '../../apis/statsService';
-import PieChartPlaceType from './DashboardComponents/Chart/PieChartPlaceType';
+import PieChart from './DashboardComponents/Chart/PieChart';
 import LineChartNewUsers from './DashboardComponents/Chart/LineChartNewUsers';
-import TopPopularPlacesChart from './DashboardComponents/Chart/BarChartPlacesPopular';
-import PieChartTransactionStats from './DashboardComponents/Chart/PieChartTransaction';
+import TopPopularPlacesChart from './DashboardComponents/Chart/BarChart';
 import dayjs from 'dayjs';
 const { Title, Text } = Typography;
 function Dashboard({
@@ -59,13 +58,13 @@ function Dashboard({
   );
   const dataPieChartTransaction = [
     {
-      label: 'Giao dịch thành công',
+      name: 'Giao dịch thành công',
       value:
         Number(statsTransaction?.totalTransactions) -
         Number(statsTransaction?.totalTransactionsRefunded)
     },
     {
-      label: 'Giao dịch bị hủy / hoàn tiền',
+      name: 'Giao dịch bị hủy / hoàn tiền',
       value: Number(statsTransaction?.totalTransactionsRefunded)
     }
   ];
@@ -205,7 +204,10 @@ function Dashboard({
         <Row gutter={[10, 10]} style={{ marginTop: 10 }}>
           <Col xs={24} md={24} lg={8}>
             <div style={{ height: '100%' }}>
-              <PieChartPlaceType data={dataPieChartPlaceByType} />
+              <PieChart
+                data={dataPieChartPlaceByType}
+                title={'Tỷ lệ địa điểm theo loại'}
+              />
             </div>
           </Col>
           <Col xs={24} md={24} lg={8}>
@@ -230,13 +232,13 @@ function Dashboard({
 
         <Row gutter={[10, 10]} style={{ marginTop: 10 }}>
           <Col xs={24} md={24} lg={12}>
-            <div style={{ height: '100%' }}>
+            <div style={{ height: '450px' }}>
               <LineChartNewUsers data={dataLineChartNewUsers} />
             </div>
           </Col>
           <Col xs={24} md={24} lg={12}>
-            <div style={{ height: '100%' }}>
-              <PieChartTransactionStats
+            <div style={{ height: '450px' }}>
+              <PieChart
                 data={dataPieChartTransaction}
                 title={'Tỷ lệ giao dịch'}
               />

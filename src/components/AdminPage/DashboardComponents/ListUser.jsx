@@ -5,7 +5,13 @@ import ModalDetailUser from './ModalSeenDetailUser';
 import { useState } from 'react';
 import userApi from '../../../apis/userService';
 
-function ListUser({ users, setUsers, onSetUpgrade, isUserManagement = false }) {
+function ListUser({
+  users,
+  setUsers,
+  onSetUpgrade,
+  isUserManagement = false,
+  onSetTotalProvider
+}) {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -27,6 +33,7 @@ function ListUser({ users, setUsers, onSetUpgrade, isUserManagement = false }) {
       onSetUpgrade(res.total);
       setIsOpenModal(false);
       setIsOpenModalConfirm(false);
+      if (onSetTotalProvider) onSetTotalProvider(true);
     } catch (error) {
       message.error(
         error?.message || 'Xác nhận nâng cấp thất bại. Vui lòng thử lại.'

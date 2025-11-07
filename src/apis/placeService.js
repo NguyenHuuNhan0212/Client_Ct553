@@ -69,6 +69,9 @@ const placeApi = {
   },
   rejectPlace(placeId) {
     return axiosClient.patch(`/places/reject/${placeId}`);
+  },
+  getAllPlaceRejected() {
+    return axiosClient.get('places/rejected');
   }
 };
 export default placeApi;

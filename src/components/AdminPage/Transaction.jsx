@@ -23,7 +23,7 @@ function Transaction() {
   const [isLoading, setIsLoading] = useState(false);
   const [date, setDate] = useState(null);
   const [value, setValue] = useState('');
-
+  const [title, setTitle] = useState('Tất cả giao dịch');
   const filteredTransactions = transactions.filter((t) => {
     const matchKeyword = value
       ? t.userBooking?.toLowerCase().includes(value.toLowerCase())
@@ -45,6 +45,7 @@ function Transaction() {
     setDate(null);
     setValue('');
     setIsLoading(true);
+    setTitle('Giao dịch bị hủy / hoàn tiền');
     try {
       const res = await paymentApi.getAllTransactionCancelled();
       setTransactions(res.transactions);
@@ -58,6 +59,7 @@ function Transaction() {
     setDate(null);
     setValue('');
     setIsLoading(true);
+    setTitle('Tất cả giao dịch');
     try {
       const res = await paymentApi.getAllTransaction();
       setTransactions(res.transactions);
@@ -71,6 +73,7 @@ function Transaction() {
     setDate(null);
     setValue('');
     setIsLoading(true);
+    setTitle('Giao dịch thành công');
     try {
       const res = await paymentApi.getAllTransactionSuccess();
       setTransactions(res.transactions);
@@ -119,18 +122,18 @@ function Transaction() {
               Tất cả giao dịch
             </Button>
             <Button
-              color='danger'
-              variant='outlined'
-              onClick={() => handleGetAllTransactionCancelled()}
-            >
-              Giao dịch bị hủy
-            </Button>
-            <Button
               color='cyan'
               variant='outlined'
               onClick={() => handleGetAllTransactionSuccess()}
             >
               Giao dịch thành công
+            </Button>{' '}
+            <Button
+              color='danger'
+              variant='outlined'
+              onClick={() => handleGetAllTransactionCancelled()}
+            >
+              Giao dịch bị hủy
             </Button>
           </div>
           <div>
@@ -155,6 +158,7 @@ function Transaction() {
             </Space>
           </div>
         </div>
+        <Text type='secondary'>{title}</Text>
         <div style={{ position: 'relative' }}>
           <Spin spinning={isLoading}>
             <ListTransaction transactions={filteredTransactions} />

@@ -2,8 +2,11 @@ import {
   Badge,
   Button,
   Card,
+  Col,
+  Divider,
   Input,
   List,
+  Row,
   Select,
   Space,
   Typography
@@ -13,19 +16,33 @@ import { useEffect, useState } from 'react';
 import userApi from '../../apis/userService';
 import ListUser from './DashboardComponents/ListUser';
 import { SearchOutlined } from '@ant-design/icons';
+import PieChart from './DashboardComponents/Chart/PieChart';
 const { Title, Text } = Typography;
 function User({ onSetUpgrade, totalUpgrade }) {
   const [users, setUsers] = useState([]);
   const [selectedType, setSelectedType] = useState('');
   const [value, setValue] = useState('');
   const [isManage, setIsManage] = useState(true);
-
+  const [title, setTitle] = useState('Tất cả người dùng');
+  const [totalUser, setTotalUser] = useState(0);
+  const [totalProvider, setTotalProvider] = useState(0);
+  const [isUpdateTotalProvider, setIsUpdateTotalProvider] = useState(false);
   const filteredUsers = users?.filter(
     (item) =>
       (!value || item.fullName.toLowerCase().includes(value.toLowerCase())) &&
       (!selectedType || item.role === selectedType)
   );
 
+  const dataPieChart = [
+    {
+      name: 'Người dùng',
+      value: totalUser
+    },
+    {
+      name: 'Nhà cung cấp',
+      value: totalProvider
+    }
+  ];
   const handleTypeChange = (value) => {
     setSelectedType(value);
   };
@@ -36,6 +53,7 @@ function User({ onSetUpgrade, totalUpgrade }) {
   const handleClickAccountAwaitUpgrade = async () => {
     setSelectedType('');
     setValue('');
+    setTitle('Người dùng chờ phê duyệt đăng ký tài khoản nhà cung cấp');
     try {
       const res = await userApi.getQuantityAccountAwaitConfirm();
       setUsers(res.usersUpgrade);
@@ -49,6 +67,7 @@ function User({ onSetUpgrade, totalUpgrade }) {
   const handleShowAllUser = async () => {
     setSelectedType('');
     setValue('');
+    setTitle('Tất cả người dùng');
     try {
       const res = await userApi.getAllUser();
       setUsers(res);
@@ -68,6 +87,50 @@ function User({ onSetUpgrade, totalUpgrade }) {
     };
     fetchUsers();
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resUser = await userApi.getStatsUser();
+        if (resUser?.userGroupByRole && resUser?.userGroupByRole?.length > 0) {
+          if (resUser.userGroupByRole[0]._id === 'user') {
+            setTotalUser(resUser.userGroupByRole[0]?.totalUser || 0);
+            setTotalProvider(resUser.userGroupByRole[1]?.totalUser || 0);
+          } else {
+            setTotalProvider(resUser.userGroupByRole[0]?.totalUser || 0);
+            setTotalUser(resUser.userGroupByRole[1]?.totalUser || 0);
+          }
+        }
+      } catch (err) {
+        console.log(err.message || 'Lỗi khi lấy stats user');
+      }
+    };
+    fetchData();
+  }, []);
+  useEffect(() => {
+    if (isUpdateTotalProvider) {
+      const fetchData = async () => {
+        try {
+          const resUser = await userApi.getStatsUser();
+          if (
+            resUser?.userGroupByRole &&
+            resUser?.userGroupByRole?.length > 0
+          ) {
+            if (resUser.userGroupByRole[0]._id === 'user') {
+              setTotalUser(resUser.userGroupByRole[0]?.totalUser || 0);
+              setTotalProvider(resUser.userGroupByRole[1]?.totalUser || 0);
+            } else {
+              setTotalProvider(resUser.userGroupByRole[0]?.totalUser || 0);
+              setTotalUser(resUser.userGroupByRole[1]?.totalUser || 0);
+            }
+          }
+          setIsUpdateTotalProvider(false);
+        } catch (err) {
+          console.log(err.message || 'Lỗi khi lấy stats user');
+        }
+      };
+      fetchData();
+    }
+  }, [isUpdateTotalProvider]);
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -78,6 +141,22 @@ function User({ onSetUpgrade, totalUpgrade }) {
         <Title level={2} style={{ textAlign: 'center', marginTop: 5 }}>
           Quản lý người dùng
         </Title>
+
+        <Row gutter={[10, 10]}>
+          <Col xs={24} md={24} lg={12}>
+            <div style={{ height: '450px' }}>
+              <PieChart
+                data={dataPieChart}
+                title={'Tỷ lệ người dùng và nhà cung cấp'}
+              />
+            </div>
+          </Col>
+          <Col xs={24} md={24} lg={12}>
+            <div style={{ height: '450px' }}></div>
+          </Col>
+        </Row>
+        <Divider />
+        <Title level={3}>Danh sách người dùng</Title>
         <div
           style={{
             display: 'flex',
@@ -87,24 +166,22 @@ function User({ onSetUpgrade, totalUpgrade }) {
           }}
         >
           <Space>
+            <Button type='primary' onClick={() => handleShowAllUser()}>
+              Tất cả người dùng
+            </Button>
             <Button
               color='cyan'
-              variant='solid'
+              variant='outlined'
               onClick={() => handleClickAccountAwaitUpgrade()}
             >
               Tài khoản chờ nâng cấp
               <Badge count={totalUpgrade} showZero offset={[10, -25]} />
             </Button>
-            <Button type='primary' onClick={() => handleShowAllUser()}>
-              Tất cả người dùng
-            </Button>
           </Space>
 
           <Space>
-            <Text strong>Chọn vai trò người dùng: </Text>
             <Select
               placeholder='Chọn vai trò người dùng'
-              // style={{ width: 200 }}
               allowClear
               value={selectedType || undefined}
               onChange={handleTypeChange}
@@ -113,8 +190,6 @@ function User({ onSetUpgrade, totalUpgrade }) {
                 { value: 'provider', label: 'Nhà cung cấp' }
               ]}
             />
-
-            <Text strong>Nhập từ khóa: </Text>
             <Input
               prefix={<SearchOutlined />}
               placeholder={'Nhập tên người dùng...'}
@@ -125,17 +200,21 @@ function User({ onSetUpgrade, totalUpgrade }) {
             />
           </Space>
         </div>
+        <Text type='secondary'>{title}</Text>
         {isManage ? (
-          <ListUser
-            users={filteredUsers}
-            setUsers={setUsers}
-            isUserManagement={isManage}
-          />
+          <>
+            <ListUser
+              users={filteredUsers}
+              setUsers={setUsers}
+              isUserManagement={isManage}
+            />
+          </>
         ) : (
           <ListUser
             users={filteredUsers}
             setUsers={setUsers}
             onSetUpgrade={onSetUpgrade}
+            onSetTotalProvider={(value) => setIsUpdateTotalProvider(value)}
           />
         )}
       </Card>

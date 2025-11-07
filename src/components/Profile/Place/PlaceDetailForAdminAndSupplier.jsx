@@ -7,7 +7,8 @@ import {
   Table,
   Divider,
   Button,
-  Space
+  Space,
+  Typography
 } from 'antd';
 import {
   CheckCircleOutlined,
@@ -18,6 +19,7 @@ import {
   AppstoreOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { capitalizeName } from '../../../utils/capitalize';
 
 const PlaceDetailModal = ({
   open,
@@ -96,6 +98,7 @@ const PlaceDetailModal = ({
         <Space>
           {isAdmin &&
             !place.isApprove &&
+            !place.deleted &&
             place.createdAt === place.updatedAt && (
               <Button
                 type='primary'
@@ -128,6 +131,14 @@ const PlaceDetailModal = ({
         </Carousel>
       )}
       <Descriptions bordered column={2}>
+        {isAdmin && (
+          <Descriptions.Item label='Chủ sở hữu' span={2}>
+            <Typography.Text strong>
+              {capitalizeName(place.userId?.fullName)}
+            </Typography.Text>
+          </Descriptions.Item>
+        )}
+
         <Descriptions.Item label='Loại'>
           {renderTypeTag(place.type)}
         </Descriptions.Item>

@@ -9,11 +9,16 @@ const statsApi = {
   getFivePlacesPopular() {
     return axiosClient.get('/stats/admin/five-places-booking');
   },
-  getFivePlacesHaveInItinerary() {
-    return axiosClient.get('/stats/admin/five-places-itinerary');
+  getFivePlacesHaveInItinerary(params) {
+    const location =
+      params && params.location ? `?location=${params.location}` : '';
+    return axiosClient.get(`/stats/admin/five-places-itinerary${location}`);
   },
   getStatsRevenueAndTransaction() {
     return axiosClient.get('/stats/admin/revenue-and-transaction');
+  },
+  getStatsPlaceStatus() {
+    return axiosClient.get('/stats/admin/place-status-approved');
   }
 };
 export default statsApi;

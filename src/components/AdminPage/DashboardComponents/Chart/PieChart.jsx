@@ -1,17 +1,27 @@
+// src/components/charts/PieChartPlaceType.jsx
 import React from 'react';
-import { Pie } from 'react-chartjs-2';
 import { Card } from 'antd';
+import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function PieChartTransactionStats({ data, title }) {
+function PieChart({ data, title }) {
   const chartData = {
-    labels: data.map((item) => item.label),
+    labels: data.map((item) => item.name),
     datasets: [
       {
         data: data.map((item) => item.value),
-        backgroundColor: ['#22C55E', '#EF4444'],
+        backgroundColor: [
+          '#22C55E',
+          '#EF4444',
+          '#0088FE',
+          '#00C49F',
+          '#FFBB28',
+          '#FF8042',
+          '#9E4AFF'
+        ],
+        borderColor: '#fff',
         borderWidth: 1,
         hoverOffset: 8
       }
@@ -20,13 +30,11 @@ function PieChartTransactionStats({ data, title }) {
 
   const options = {
     responsive: true,
-    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'bottom',
         labels: {
-          boxWidth: 14,
-          color: '#374151',
+          boxWidth: 15,
           font: { size: 13 }
         }
       },
@@ -51,15 +59,23 @@ function PieChartTransactionStats({ data, title }) {
       title={title}
       style={{
         borderRadius: 16,
-        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
         height: '100%'
       }}
     >
-      <div style={{ width: '100%', height: 300 }}>
-        <Pie data={chartData} options={options} />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <div style={{ width: 350, height: 350 }}>
+          <Pie data={chartData} options={options} />
+        </div>
       </div>
     </Card>
   );
 }
 
-export default PieChartTransactionStats;
+export default PieChart;
