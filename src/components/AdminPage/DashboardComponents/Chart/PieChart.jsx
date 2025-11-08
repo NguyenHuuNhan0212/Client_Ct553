@@ -38,6 +38,12 @@ function PieChart({ data, title }) {
           font: { size: 13 }
         }
       },
+      title: {
+        display: true,
+        text: title,
+        font: { size: 16, weight: 'bold' },
+        color: '#111827'
+      },
       tooltip: {
         callbacks: {
           label: (context) => {

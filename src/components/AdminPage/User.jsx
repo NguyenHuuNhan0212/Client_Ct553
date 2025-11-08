@@ -17,6 +17,9 @@ import userApi from '../../apis/userService';
 import ListUser from './DashboardComponents/ListUser';
 import { SearchOutlined } from '@ant-design/icons';
 import PieChart from './DashboardComponents/Chart/PieChart';
+import statsApi from '../../apis/statsService';
+import BarChart from './DashboardComponents/Chart/BarChart';
+import dayjs from 'dayjs';
 const { Title, Text } = Typography;
 function User({ onSetUpgrade, totalUpgrade }) {
   const [users, setUsers] = useState([]);
@@ -27,6 +30,7 @@ function User({ onSetUpgrade, totalUpgrade }) {
   const [totalUser, setTotalUser] = useState(0);
   const [totalProvider, setTotalProvider] = useState(0);
   const [isUpdateTotalProvider, setIsUpdateTotalProvider] = useState(false);
+  const [suppliersPopular, setSuppliersPopular] = useState([]);
   const filteredUsers = users?.filter(
     (item) =>
       (!value || item.fullName.toLowerCase().includes(value.toLowerCase())) &&
@@ -43,6 +47,11 @@ function User({ onSetUpgrade, totalUpgrade }) {
       value: totalProvider
     }
   ];
+
+  const dataBarChart = suppliersPopular.map((s) => ({
+    name: s.fullName,
+    value: s.totalPlaces
+  }));
   const handleTypeChange = (value) => {
     setSelectedType(value);
   };
@@ -131,6 +140,20 @@ function User({ onSetUpgrade, totalUpgrade }) {
       fetchData();
     }
   }, [isUpdateTotalProvider]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await statsApi.getFiveSupplierHaveManyPlaces();
+        setSuppliersPopular(res);
+      } catch (err) {
+        console.log(
+          err.message || 'Lỗi khi lấy danh sách nhà cung cấp nổi bật.'
+        );
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -152,9 +175,20 @@ function User({ onSetUpgrade, totalUpgrade }) {
             </div>
           </Col>
           <Col xs={24} md={24} lg={12}>
-            <div style={{ height: '450px' }}></div>
+            <div style={{ height: '450px' }}>
+              <BarChart
+                data={dataBarChart}
+                title={'Top nhà cung cấp nhiều địa điểm'}
+                unit={'địa điểm'}
+              />
+            </div>
           </Col>
         </Row>
+        <div style={{ marginLeft: 10 }}>
+          <Text type='secondary' style={{ fontSize: 12 }}>
+            Cập nhật: {dayjs().format('DD/MM/YYYY HH:mm')}
+          </Text>
+        </div>
         <Divider />
         <Title level={3}>Danh sách người dùng</Title>
         <div
@@ -217,6 +251,12 @@ function User({ onSetUpgrade, totalUpgrade }) {
             onSetTotalProvider={(value) => setIsUpdateTotalProvider(value)}
           />
         )}
+        <div style={{ textAlign: 'right', marginRight: 10 }}>
+          <Space>
+            <Text type='secondary'>Tổng số người dùng:</Text>
+            <Text strong>{filteredUsers.length || 0}</Text>
+          </Space>
+        </div>
       </Card>
     </motion.div>
   );

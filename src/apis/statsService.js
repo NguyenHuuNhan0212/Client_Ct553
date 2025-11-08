@@ -19,6 +19,15 @@ const statsApi = {
   },
   getStatsPlaceStatus() {
     return axiosClient.get('/stats/admin/place-status-approved');
+  },
+  getFiveSupplierHaveManyPlaces() {
+    return axiosClient.get('/stats/admin/five-suppliers');
+  },
+  getStatsRevenueChart(params) {
+    const time = params
+      ? `?startMonth=${params.startMonth}&endMonth=${params.endMonth}`
+      : '';
+    return axiosClient.get(`stats/admin/revenue${time}`);
   }
 };
 export default statsApi;

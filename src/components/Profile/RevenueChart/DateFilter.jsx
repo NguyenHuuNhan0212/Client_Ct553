@@ -8,7 +8,7 @@ dayjs.locale('vi');
 const { RangePicker } = DatePicker;
 const { Text } = Typography;
 
-const DateFilter = ({ onChange }) => {
+const DateFilter = ({ onChange, isAdmin = false }) => {
   const handleDateChange = (values) => {
     if (!values || values.length !== 2) {
       onChange(null);
@@ -16,7 +16,6 @@ const DateFilter = ({ onChange }) => {
     }
 
     const [start, end] = values;
-
     onChange({
       from: dayjs(start).startOf('month').toISOString(),
       to: dayjs(end).endOf('month').toISOString()
@@ -26,7 +25,7 @@ const DateFilter = ({ onChange }) => {
   return (
     <ConfigProvider locale={viVN}>
       <Space style={{ width: '100%' }}>
-        <Text strong>Chọn tháng: </Text>
+        {!isAdmin && <Text strong>Chọn tháng: </Text>}
         <RangePicker
           format='MM-YYYY'
           picker='month'

@@ -69,7 +69,8 @@ const Revenue = () => {
     try {
       const res = await bookingApi.getRevenueByLocation({ from, to });
       const raw = res;
-      const months = [...new Set(raw.map((m) => m.month))].sort(
+
+      const months = [...new Set(raw.map((m) => `${m.month}-${m.year}`))].sort(
         (a, b) => a - b
       );
       const locations = [...new Set(raw.map((l) => l.location))];
@@ -77,7 +78,9 @@ const Revenue = () => {
         return {
           label: loc,
           data: months.map((m) => {
-            const item = raw.find((i) => i.month === m && i.location === loc);
+            const item = raw.find(
+              (i) => `${i.month}-${i.year}` === m && i.location === loc
+            );
             return item ? item.totalRevenue : 0;
           }),
           borderColor: randomColor(),

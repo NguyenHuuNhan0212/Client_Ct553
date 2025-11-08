@@ -11,8 +11,8 @@ import { AlertOutlined } from '@ant-design/icons';
 import statsApi from '../../apis/statsService';
 import PieChart from './DashboardComponents/Chart/PieChart';
 import LineChartNewUsers from './DashboardComponents/Chart/LineChartNewUsers';
-import TopPopularPlacesChart from './DashboardComponents/Chart/BarChart';
 import dayjs from 'dayjs';
+import BarChart from './DashboardComponents/Chart/BarChart';
 const { Title, Text } = Typography;
 function Dashboard({
   totalUpgrade,
@@ -212,7 +212,7 @@ function Dashboard({
           </Col>
           <Col xs={24} md={24} lg={8}>
             <div style={{ height: '100%' }}>
-              <TopPopularPlacesChart
+              <BarChart
                 data={dataBarChartPlacesPopular}
                 title='Top 5 địa điểm có đơn đặt nhiều nhất'
                 unit='lượt đặt'
@@ -221,7 +221,7 @@ function Dashboard({
           </Col>
           <Col xs={24} md={24} lg={8}>
             <div style={{ height: '100%' }}>
-              <TopPopularPlacesChart
+              <BarChart
                 data={dataBarChartPlacesItinerary}
                 title='Top 5 địa điểm có trong lịch trình nhiều nhất'
                 unit='lịch trình'

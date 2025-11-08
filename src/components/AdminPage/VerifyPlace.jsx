@@ -17,7 +17,8 @@ import SearchBar from '../SearchBar/SearchBar';
 import OverviewPlace from './VerifyPlace/OverviewPlace';
 import statsApi from '../../apis/statsService';
 import PieChart from './DashboardComponents/Chart/PieChart';
-import TopPopularPlacesChart from './DashboardComponents/Chart/BarChart';
+import BarChart from './DashboardComponents/Chart/BarChart';
+import dayjs from 'dayjs';
 const { Title, Text } = Typography;
 function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
   const [places, setPlaces] = useState([]);
@@ -188,7 +189,7 @@ function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
           </Col>
           <Col xs={24} md={24} lg={12}>
             <div style={{ height: '450px' }}>
-              <TopPopularPlacesChart
+              <BarChart
                 isManage
                 data={dataBarChartPlacesItinerary}
                 title='Top 5 địa điểm có trong lịch trình nhiều nhất'
@@ -200,6 +201,11 @@ function VerifyPlace({ onSetAwaitApprove, totalAwaitApprove }) {
             </div>
           </Col>
         </Row>
+        <div style={{ marginLeft: 10 }}>
+          <Text type='secondary' style={{ fontSize: 12 }}>
+            Cập nhật: {dayjs().format('DD/MM/YYYY HH:mm')}
+          </Text>
+        </div>
         <Divider />
         <Title level={3}>Danh sách địa điểm</Title>
         <div

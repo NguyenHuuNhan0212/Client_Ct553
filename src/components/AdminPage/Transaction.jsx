@@ -17,6 +17,8 @@ import paymentApi from '../../apis/paymentService';
 import ListTransaction from './TransactionComponents/ListTransaction';
 import { SearchOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import BarChartTwo from './TransactionComponents/BarChartTwoData';
+import statsApi from '../../apis/statsService';
 const { Title, Text } = Typography;
 function Transaction() {
   const [transactions, setTransactions] = useState([]);
@@ -24,6 +26,7 @@ function Transaction() {
   const [date, setDate] = useState(null);
   const [value, setValue] = useState('');
   const [title, setTitle] = useState('Tất cả giao dịch');
+  const [revenues, setRevenues] = useState([]);
   const filteredTransactions = transactions.filter((t) => {
     const matchKeyword = value
       ? t.userBooking?.toLowerCase().includes(value.toLowerCase())
@@ -34,7 +37,11 @@ function Transaction() {
       : true;
     return matchKeyword && matchDate;
   });
-
+  const dataBarChart = revenues.map((r) => ({
+    name: `Tháng ${r._id.month}-${r._id.year}`,
+    valueTotalTransaction: r.totalTransaction,
+    valueTotalRevenue: r.totalRevenue
+  }));
   const onChangeKeyWord = (e) => {
     setValue(e.target.value);
   };
@@ -97,6 +104,17 @@ function Transaction() {
     };
     fetchData();
   }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await statsApi.getStatsRevenueChart();
+        setRevenues(res);
+      } catch (err) {
+        console.log(err.message || 'Lỗi khi lấy thống kê doanh thu.');
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -108,6 +126,27 @@ function Transaction() {
           Quản lý giao dịch
         </Title>
         <OverviewTransaction />
+
+        <Row gutter={[10, 10]}>
+          <Col xs={24} md={24} lg={12}>
+            <div style={{ height: '450px' }}>
+              <BarChartTwo
+                data={dataBarChart}
+                title={'Thống kê doanh thu và giao dịch'}
+                unitTransaction={'giao dịch'}
+                unitRevenue={'doanh thu'}
+              />
+            </div>
+          </Col>
+          <Col xs={24} md={24} lg={12}>
+            <div style={{ height: '450px' }}></div>
+          </Col>
+        </Row>
+        <div style={{ marginLeft: 10 }}>
+          <Text type='secondary' style={{ fontSize: 12 }}>
+            Cập nhật: {dayjs().format('DD/MM/YYYY HH:mm')}
+          </Text>
+        </div>
         <Divider />
         <Title level={3}>Danh sách chi tiết giao dịch</Title>
         <div

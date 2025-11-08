@@ -21,7 +21,7 @@ ChartJS.register(
   Legend
 );
 
-function TopPopularPlacesChart({
+function BarChart({
   data,
   title,
   unit,
@@ -125,7 +125,12 @@ function TopPopularPlacesChart({
           {!data.length ? (
             <Empty description={'Không có địa điểm nào'} />
           ) : (
-            <Bar data={chartData} height={300} options={options}></Bar>
+            <Bar
+              data={chartData}
+              height={350}
+              width={350}
+              options={options}
+            ></Bar>
           )}
         </div>
       </div>
@@ -133,4 +138,4 @@ function TopPopularPlacesChart({
   );
 }
 
-export default TopPopularPlacesChart;
+export default BarChart;
