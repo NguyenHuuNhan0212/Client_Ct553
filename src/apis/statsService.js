@@ -28,6 +28,20 @@ const statsApi = {
       ? `?startMonth=${params.startMonth}&endMonth=${params.endMonth}`
       : '';
     return axiosClient.get(`stats/admin/revenue${time}`);
+  },
+  getFiveSupplierHaveRevenueHigh(params) {
+    const { month, location } = params
+      ? params
+      : { month: null, location: null };
+    const url =
+      month && location
+        ? `?month=${month}&location=${location}`
+        : month && !location
+        ? `?month=${month}`
+        : !month && location
+        ? `?location=${location}`
+        : '';
+    return axiosClient.get(`/stats/admin/five-supplier-revenue-high${url}`);
   }
 };
 export default statsApi;

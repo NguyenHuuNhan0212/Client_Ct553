@@ -22,7 +22,7 @@ ChartJS.register(
   Legend
 );
 
-function BarChartTwo({ data, title, unitTransaction, unitRevenue }) {
+function BarChartTwo({ data, title, unitTransaction, unitRevenue, onChange }) {
   const chartData = {
     labels: data.map((item) => item.name),
     datasets: [
@@ -85,7 +85,6 @@ function BarChartTwo({ data, title, unitTransaction, unitRevenue }) {
       }
     }
   };
-
   return (
     <Card
       title={title}
@@ -94,7 +93,7 @@ function BarChartTwo({ data, title, unitTransaction, unitRevenue }) {
         boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
         height: '100%'
       }}
-      extra={<DateFilter isAdmin />}
+      extra={<DateFilter isAdmin onChange={onChange} />}
     >
       <div
         style={{
@@ -105,7 +104,7 @@ function BarChartTwo({ data, title, unitTransaction, unitRevenue }) {
       >
         <div>
           {!data.length ? (
-            <Empty description={'Không có địa điểm nào'} />
+            <Empty description={'Không có thống kê'} />
           ) : (
             <Bar data={chartData} height={350} width={500} options={options} />
           )}

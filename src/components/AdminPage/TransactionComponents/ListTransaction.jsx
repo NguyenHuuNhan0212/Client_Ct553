@@ -116,7 +116,7 @@ function ListTransaction({ transactions }) {
             sortDirections: ['ascend', 'descend']
           },
           {
-            title: 'Trạng thái',
+            title: 'Trạng thái thanh toán',
             align: 'center',
             render: (record) => renderStatus(record)
           }

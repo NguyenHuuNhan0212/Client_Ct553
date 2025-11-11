@@ -19,6 +19,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import BarChartTwo from './TransactionComponents/BarChartTwoData';
 import statsApi from '../../apis/statsService';
+import BarChart from './DashboardComponents/Chart/BarChart';
 const { Title, Text } = Typography;
 function Transaction() {
   const [transactions, setTransactions] = useState([]);
@@ -27,6 +28,10 @@ function Transaction() {
   const [value, setValue] = useState('');
   const [title, setTitle] = useState('Tất cả giao dịch');
   const [revenues, setRevenues] = useState([]);
+  const [changeDate, setChangeDate] = useState(null);
+  const [suppliers, setSuppliers] = useState([]);
+  const [location, setLocation] = useState(null);
+  const [month, setMonth] = useState(null);
   const filteredTransactions = transactions.filter((t) => {
     const matchKeyword = value
       ? t.userBooking?.toLowerCase().includes(value.toLowerCase())
@@ -41,6 +46,11 @@ function Transaction() {
     name: `Tháng ${r._id.month}-${r._id.year}`,
     valueTotalTransaction: r.totalTransaction,
     valueTotalRevenue: r.totalRevenue
+  }));
+
+  const dataBarChartSupplier = suppliers?.map((s) => ({
+    name: s.supplierName,
+    value: Number(s.totalRevenue)
   }));
   const onChangeKeyWord = (e) => {
     setValue(e.target.value);
@@ -105,16 +115,66 @@ function Transaction() {
     fetchData();
   }, []);
   useEffect(() => {
+    if (changeDate) {
+      const fetchData = async () => {
+        try {
+          const params = {
+            startMonth: changeDate.from,
+            endMonth: changeDate.to
+          };
+          const res = await statsApi.getStatsRevenueChart(params);
+          setRevenues(res);
+        } catch (err) {
+          console.log(err.message || 'Lỗi khi lấy thống kê doanh thu.');
+        }
+      };
+      fetchData();
+    } else {
+      const fetchData = async () => {
+        try {
+          const res = await statsApi.getStatsRevenueChart();
+          setRevenues(res);
+        } catch (err) {
+          console.log(err.message || 'Lỗi khi lấy thống kê doanh thu.');
+        }
+      };
+      fetchData();
+    }
+  }, [changeDate]);
+
+  useEffect(() => {
+    let params;
+    if (month && location) {
+      params = {
+        month: month,
+        location: location
+      };
+    } else if (!month && location) {
+      params = {
+        month: null,
+        location: location
+      };
+    } else if (month && !location) {
+      params = {
+        month: month,
+        location: null
+      };
+    } else {
+      params = {
+        month: null,
+        location: null
+      };
+    }
     const fetchData = async () => {
       try {
-        const res = await statsApi.getStatsRevenueChart();
-        setRevenues(res);
+        const res = await statsApi.getFiveSupplierHaveRevenueHigh(params);
+        setSuppliers(res);
       } catch (err) {
-        console.log(err.message || 'Lỗi khi lấy thống kê doanh thu.');
+        console.log(err.message || 'Lỗi khi fetch five supplier revenue high');
       }
     };
     fetchData();
-  }, []);
+  }, [location, month]);
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -127,7 +187,7 @@ function Transaction() {
         </Title>
         <OverviewTransaction />
 
-        <Row gutter={[10, 10]}>
+        <Row gutter={[10, 10]} style={{ marginTop: 10 }}>
           <Col xs={24} md={24} lg={12}>
             <div style={{ height: '450px' }}>
               <BarChartTwo
@@ -135,11 +195,22 @@ function Transaction() {
                 title={'Thống kê doanh thu và giao dịch'}
                 unitTransaction={'giao dịch'}
                 unitRevenue={'doanh thu'}
+                onChange={(value) => setChangeDate(value)}
               />
             </div>
           </Col>
           <Col xs={24} md={24} lg={12}>
-            <div style={{ height: '450px' }}></div>
+            <div style={{ height: '450px' }}>
+              <BarChart
+                isManage
+                title={'5 nhà cung cấp có doanh thu cao nhất'}
+                unit={'doanh thu'}
+                isManageTransaction
+                data={dataBarChartSupplier}
+                onSetSelectedLocation={(value) => setLocation(value)}
+                onSetSelectedMonth={(value) => setMonth(value)}
+              />
+            </div>
           </Col>
         </Row>
         <div style={{ marginLeft: 10 }}>

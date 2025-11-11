@@ -30,7 +30,9 @@ const DateFilter = ({ onChange, isAdmin = false }) => {
           format='MM-YYYY'
           picker='month'
           onChange={handleDateChange}
-          disabledDate={(current) => current && current > dayjs().endOf('day')}
+          disabledDate={(current) =>
+            current && current >= dayjs().startOf('month')
+          }
           style={{ width: '100%' }}
         />
       </Space>

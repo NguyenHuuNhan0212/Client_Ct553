@@ -187,14 +187,20 @@ function BookingList() {
       align: 'center',
       dataIndex: 'createdAt',
       key: 'bookingDate',
-      render: (createdAt) => dayjs(createdAt).format('DD-MM-YYYY')
+      render: (createdAt) => dayjs(createdAt).format('DD-MM-YYYY'),
+      sorter: (a, b) =>
+        dayjs(a.createdAt).valueOf() - dayjs(b.createdAt).valueOf(),
+      sortDirections: ['descend', 'ascend']
     },
     {
       title: 'Ngày check in',
       align: 'center',
       dataIndex: 'checkInDate',
       key: 'checkIn',
-      render: (checkInDate) => dayjs(checkInDate).format('DD-MM-YYYY')
+      render: (checkInDate) => dayjs(checkInDate).format('DD-MM-YYYY'),
+      sorter: (a, b) =>
+        dayjs(a.checkInDate).valueOf() - dayjs(b.checkInDate).valueOf(),
+      sortDirections: ['descend', 'ascend']
     },
     {
       title: 'Trạng thái thanh toán',
@@ -219,7 +225,9 @@ function BookingList() {
             </Tooltip>
 
             {Number(record.totalPrice) !== Number(record.paymentAmount) &&
-              record.status !== 'cancelled' && (
+              record.status !== 'cancelled' &&
+              (dayjs().isAfter(dayjs(record.checkInDate), 'day') ||
+                dayjs().isSame(dayjs(record.checkInDate), 'day')) && (
                 <Tooltip title={'Xác nhận đã thu tiền đầy đủ'}>
                   <Button
                     color='cyan'

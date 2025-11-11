@@ -148,7 +148,7 @@ function ServiceProvide() {
             title: 'Tên địa điểm',
             align: 'center',
             dataIndex: 'name',
-            render: (value) => <Title level={5}>{capitalizeName(value)}</Title>
+            render: (value) => <Text strong>{capitalizeName(value)}</Text>
           },
           {
             title: 'Loại địa điểm',

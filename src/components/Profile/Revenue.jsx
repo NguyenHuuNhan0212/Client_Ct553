@@ -162,7 +162,7 @@ const Revenue = () => {
         <Col span={8}>
           <Card>
             <Statistic
-              title={<Text strong>Tổng lượt đặt</Text>}
+              title={<Text strong>Tổng lượt đặt mang đến doanh thu</Text>}
               value={revenueSummary.totalBookings}
               prefix={<ContainerOutlined />}
               valueStyle={{ color: '#865e00ff' }}
