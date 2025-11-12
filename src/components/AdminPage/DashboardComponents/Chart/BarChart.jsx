@@ -35,7 +35,7 @@ function BarChart({
 }) {
   const [cities, setCities] = useState([]);
   const [location, setLocation] = useState(null);
-  const [month, setMonth] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const chartData = {
     labels: data.map((item) => item.name),
     datasets: [
@@ -50,9 +50,11 @@ function BarChart({
     if (onSetSelectedLocation) onSetSelectedLocation(value);
   };
   const handleChangeMonth = (date) => {
+    setSelectedDate(date);
     const selectedMonth = date ? dayjs(date).month() + 1 : null;
-    setMonth(selectedMonth);
-    if (onSetSelectedMonth) onSetSelectedMonth(selectedMonth);
+    const selectedYear = date ? dayjs(date).year() : null;
+    if (onSetSelectedMonth)
+      onSetSelectedMonth({ month: selectedMonth, year: selectedYear });
   };
   const options = {
     responsive: true,
@@ -129,7 +131,7 @@ function BarChart({
                   <DatePicker
                     format='MM-YYYY'
                     picker='month'
-                    value={month ? dayjs().month(month - 1) : null}
+                    value={selectedDate}
                     onChange={handleChangeMonth}
                     disabledDate={(current) =>
                       current && current >= dayjs().startOf('month')

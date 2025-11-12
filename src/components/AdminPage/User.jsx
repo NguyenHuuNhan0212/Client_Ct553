@@ -219,6 +219,7 @@ function User({ onSetUpgrade, totalUpgrade }) {
               allowClear
               value={selectedType || undefined}
               onChange={handleTypeChange}
+              style={{ width: 200 }}
               options={[
                 { value: 'user', label: 'Người dùng' },
                 { value: 'provider', label: 'Nhà cung cấp' }

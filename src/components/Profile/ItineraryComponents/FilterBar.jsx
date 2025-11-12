@@ -6,15 +6,14 @@ import {
   PlusCircleOutlined,
   SearchOutlined
 } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
 
 export default function FilterBar({
   selectedFilter,
   setSelectedFilter,
   searchQuery,
-  setSearchQuery
+  setSearchQuery,
+  onClickCreateItinerary
 }) {
-  const navigate = useNavigate();
   return (
     <div
       style={{
@@ -25,7 +24,7 @@ export default function FilterBar({
       }}
     >
       <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-        <Button type='primary' onClick={() => navigate('/itinerary')}>
+        <Button type='primary' onClick={() => onClickCreateItinerary(true)}>
           <PlusCircleOutlined /> Tạo lịch trình ngay
         </Button>
         <Input

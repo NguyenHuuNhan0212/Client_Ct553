@@ -9,6 +9,8 @@ import {
 } from '../../redux/slices/itinerarySlice';
 import { Button, Empty, Typography } from 'antd';
 import ItineraryDetail from './ItineraryComponents/ItineraryDetail';
+import CreateItineraryChoiceModal from '../Banner/CreateItineraryModal';
+import TripPlanFormWithAI from '../Banner/CreateItineraryWithAI';
 
 const { Title } = Typography;
 export default function ItineraryComponent() {
@@ -18,6 +20,12 @@ export default function ItineraryComponent() {
   );
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isOpenModalCreateItinerary, setIsOpenModalCreateItinerary] =
+    useState(false);
+  const [
+    isOpenModalCreateItineraryWithAI,
+    setIsOpenModalCreateItineraryWithAI
+  ] = useState(false);
 
   const [selectedItinerary, setSelectedItinerary] = useState(null);
   const dispatch = useDispatch();
@@ -30,7 +38,15 @@ export default function ItineraryComponent() {
     return matchFilter && matchSearch;
   });
   const handleCreateItinerary = () => {
-    navigate('/itinerary');
+    setIsOpenModalCreateItinerary(true);
+  };
+  const handleSelectOption = (type) => {
+    setIsOpenModalCreateItinerary(false);
+    if (type === 'manual') {
+      navigate('/itinerary');
+    } else {
+      setIsOpenModalCreateItineraryWithAI(true);
+    }
   };
   useEffect(() => {
     dispatch(getAllItineraryByUserId());
@@ -64,12 +80,15 @@ export default function ItineraryComponent() {
             setSelectedFilter={setSelectedFilter}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            onClickCreateItinerary={(value) =>
+              setIsOpenModalCreateItinerary(value)
+            }
           />
           {!itineraries.length ? (
             <>
               <Empty description={'Bạn chưa tạo lịch trình du lịch nào.'} />{' '}
               <div style={{ textAlign: 'center', marginTop: 10 }}>
-                <Button type='primary' onClick={handleCreateItinerary}>
+                <Button type='primary' onClick={() => handleCreateItinerary()}>
                   Tạo lịch trình ngay
                 </Button>
               </div>
@@ -90,6 +109,15 @@ export default function ItineraryComponent() {
           }}
         />
       )}
+      <CreateItineraryChoiceModal
+        open={isOpenModalCreateItinerary}
+        onCancel={() => setIsOpenModalCreateItinerary(false)}
+        onSelect={handleSelectOption}
+      />
+      <TripPlanFormWithAI
+        open={isOpenModalCreateItineraryWithAI}
+        onClose={() => setIsOpenModalCreateItineraryWithAI(false)}
+      />
     </div>
   );
 }

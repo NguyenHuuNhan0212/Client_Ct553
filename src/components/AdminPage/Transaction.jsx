@@ -144,17 +144,17 @@ function Transaction() {
 
   useEffect(() => {
     let params;
-    if (month && location) {
+    if (month?.month && month?.year && location) {
       params = {
         month: month,
         location: location
       };
-    } else if (!month && location) {
+    } else if (!month?.month && !month?.year && location) {
       params = {
         month: null,
         location: location
       };
-    } else if (month && !location) {
+    } else if (month?.month && month?.year && !location) {
       params = {
         month: month,
         location: null

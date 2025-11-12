@@ -35,9 +35,9 @@ const statsApi = {
       : { month: null, location: null };
     const url =
       month && location
-        ? `?month=${month}&location=${location}`
+        ? `?month=${month.month}&year=${month.year}&location=${location}`
         : month && !location
-        ? `?month=${month}`
+        ? `?month=${month.month}&year=${month.year}`
         : !month && location
         ? `?location=${location}`
         : '';
