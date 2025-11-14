@@ -95,12 +95,12 @@ const RoomTypeTab = ({
               />
             </Col>
             <Col span={8}>
-              <Text strong>Giá thuê VND (Giá/đêm)</Text>
+              <Text strong>Giá thuê VND (Gía/đêm)</Text>
               <InputNumber
                 placeholder='Giá/đêm'
                 min={0}
                 style={{ width: '100%' }}
-                value={rt.pricePerNight}
+                value={rt.pricePerNight.toLocaleString()}
                 onChange={(val) => updateRoomType(i, 'pricePerNight', val)}
               />
             </Col>

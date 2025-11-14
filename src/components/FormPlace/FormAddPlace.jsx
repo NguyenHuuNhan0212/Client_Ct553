@@ -70,7 +70,7 @@ const FormAddPlace = () => {
       setRoomTypes([]);
       setServices([]);
       toast.success('Thêm địa điểm thành công!');
-      navigate('/');
+      navigate('/profile?tab=5');
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Ảnh không hợp lệ!!');
@@ -91,7 +91,7 @@ const FormAddPlace = () => {
   const addRoomType = () =>
     setRoomTypes([
       ...roomTypes,
-      { name: '', capacity: 1, totalRooms: 1, pricePerNight: 100 }
+      { name: '', capacity: 1, totalRooms: 1, pricePerNight: 100000 }
     ]);
   const updateRoomType = (i, field, value) => {
     const newRooms = [...roomTypes];
