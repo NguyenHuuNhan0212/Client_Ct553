@@ -40,7 +40,7 @@ const GeneralInfoTab = ({
             name='type'
             label='Loại địa điểm'
             initialValue={type}
-            rules={[{ required: true }]}
+            rules={[{ required: true, message: 'Vui lòng chọn loại địa điểm' }]}
           >
             <Select onChange={(val) => setType(val)}>
               <Option value='hotel'>Khách sạn/nhà nghỉ</Option>

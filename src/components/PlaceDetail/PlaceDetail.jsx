@@ -9,7 +9,8 @@ import {
   Layout,
   Tag,
   message,
-  Tooltip
+  Tooltip,
+  Button
 } from 'antd';
 import { capitalizeName } from '../../utils/capitalize';
 import PlaceRelative from './PlaceRelative';
@@ -20,6 +21,7 @@ import placeApi from '../../apis/placeService';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
+import ChatBox from '../ChatBox/ChatBox';
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
@@ -27,6 +29,7 @@ function PlaceDetail({ currentPlace }) {
   const [mainImage, setMainImage] = useState(null);
   const { user } = useSelector((state) => state.user);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isChat, setIsChat] = useState(false);
   const { placesFavorite } = useSelector((state) => state.place);
   const dispatch = useDispatch();
   const { info, services, ownerInfo } = currentPlace;
@@ -57,7 +60,15 @@ function PlaceDetail({ currentPlace }) {
       message.error(err.response?.data?.message || 'Có lỗi xảy ra');
     }
   };
-
+  const handleChat = () => {
+    if (!user) {
+      message.info('Đăng nhập để nhắn tin với quản lý.');
+      navigate('/login');
+      return;
+    } else {
+      setIsChat(true);
+    }
+  };
   useEffect(() => {
     if (user?._id) {
       dispatch(getPlacesFavorite());
@@ -206,6 +217,20 @@ function PlaceDetail({ currentPlace }) {
           </Paragraph>
           <Paragraph style={{ fontSize: '16px' }}>
             <b>Số điện thoại:</b> {ownerInfo?.userId?.phone || 'Chưa cập nhật'}
+          </Paragraph>
+          <Paragraph style={{ fontSize: '16px' }}>
+            <Button type='primary' onClick={() => handleChat()}>
+              Nhắn tin với quản lý
+            </Button>
+          </Paragraph>
+          <Paragraph>
+            {isChat && (
+              <ChatBox
+                userId={user?._id}
+                friends={ownerInfo}
+                friendId={ownerInfo?.userId?._id}
+              />
+            )}
           </Paragraph>
         </Col>
       </Row>
