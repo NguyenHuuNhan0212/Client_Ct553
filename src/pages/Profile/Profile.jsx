@@ -9,7 +9,8 @@ import {
   AppstoreOutlined,
   BarChartOutlined,
   HeartOutlined,
-  UnorderedListOutlined
+  UnorderedListOutlined,
+  MessageOutlined
 } from '@ant-design/icons';
 
 import Info from '../../components/Profile/Info';
@@ -23,6 +24,8 @@ import styles from './style.module.css';
 import { getInfoUser } from '../../redux/slices/userSlice';
 import PlaceFavorite from '../../components/Profile/Favorite';
 import Revenue from '../../components/Profile/Revenue';
+import Message from '../../components/Profile/Message';
+import MessageOptionChoice from '../../components/Profile/MessageOptionChoice';
 const { Content, Sider } = Layout;
 
 export default function Profile() {
@@ -44,29 +47,34 @@ export default function Profile() {
     { key: '3', icon: <ShoppingCartOutlined />, label: 'Lịch sử đặt dịch vụ' },
     {
       key: '4',
-      icon: <HeartOutlined />,
-      label: (
-        <Badge count={placesFavorite.length} offset={[20, 0]} showZero>
-          <span>Địa điểm yêu thích </span>
+      icon: (
+        <Badge count={placesFavorite.length} offset={[150, 5]} size='small'>
+          <HeartOutlined />
         </Badge>
-      )
+      ),
+      label: 'Địa điểm yêu thích'
+    },
+    {
+      key: `5`,
+      icon: <MessageOutlined />,
+      label: 'Tin nhắn'
     }
   ];
 
   if (user?.role !== 'user') {
     menuItems.push(
       {
-        key: '5',
+        key: '6',
         icon: <AppstoreOutlined />,
         label: 'Quản lý địa điểm/dịch vụ'
       },
       {
-        key: '6',
+        key: '7',
         icon: <UnorderedListOutlined />,
         label: 'Danh sách đặt dịch vụ'
       },
       {
-        key: '7',
+        key: '8',
         icon: <BarChartOutlined />,
         label: 'Thống kê địa điểm'
       }
@@ -84,10 +92,13 @@ export default function Profile() {
       case '4':
         return <PlaceFavorite />;
       case '5':
-        return <ServiceProvide />;
+        return user?.role === 'user' ? <Message /> : <MessageOptionChoice />;
+
       case '6':
-        return <BookingList />;
+        return <ServiceProvide />;
       case '7':
+        return <BookingList />;
+      case '8':
         return <Revenue />;
       default:
         return null;

@@ -21,7 +21,7 @@ import placeApi from '../../apis/placeService';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { HeartFilled, HeartOutlined } from '@ant-design/icons';
-import ChatBox from '../ChatBox/ChatBox';
+import ChatBox from '../Profile/Message/ChatBox';
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
@@ -66,7 +66,7 @@ function PlaceDetail({ currentPlace }) {
       navigate('/login');
       return;
     } else {
-      setIsChat(true);
+      setIsChat(!isChat);
     }
   };
   useEffect(() => {
@@ -227,7 +227,8 @@ function PlaceDetail({ currentPlace }) {
             {isChat && (
               <ChatBox
                 userId={user?._id}
-                friends={ownerInfo}
+                name={info?.name}
+                placeId={info?._id}
                 friendId={ownerInfo?.userId?._id}
               />
             )}

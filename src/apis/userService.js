@@ -36,6 +36,12 @@ const userApi = {
   },
   getAllSupplier() {
     return axiosClient.get('/users/supplier');
+  },
+  getAllPlacesChat() {
+    return axiosClient.get('/places/chat');
+  },
+  getAllChatUserToProvider(placeId) {
+    return axiosClient.get(`/chat/user-to-provider/${placeId}`);
   }
 };
 export default userApi;

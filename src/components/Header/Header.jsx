@@ -17,7 +17,8 @@ import {
   CalendarOutlined,
   PlusCircleOutlined,
   HeartOutlined,
-  UnorderedListOutlined
+  UnorderedListOutlined,
+  MessageOutlined
 } from '@ant-design/icons';
 import styles from './style.module.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -159,23 +160,28 @@ export default function Header() {
           </Link>
         )
       },
+      {
+        key: 'message',
+        icon: <MessageOutlined />,
+        label: <Link to='/profile?tab=5'>Tin nhắn</Link>
+      },
 
       ...(user?.role !== 'user'
         ? [
             {
               key: 'services',
               icon: <AppstoreOutlined />,
-              label: <Link to='/profile?tab=5'>Quản lý địa điểm</Link>
+              label: <Link to='/profile?tab=6'>Quản lý địa điểm</Link>
             },
             {
               key: 'listBookingService',
               icon: <UnorderedListOutlined />,
-              label: <Link to='/profile?tab=6'>Danh sách đặt dịch vụ</Link>
+              label: <Link to='/profile?tab=7'>Danh sách đặt dịch vụ</Link>
             },
             {
               key: 'stats',
               icon: <BarChartOutlined />,
-              label: <Link to='/profile?tab=7'>Thống kê địa điểm</Link>
+              label: <Link to='/profile?tab=8'>Thống kê địa điểm</Link>
             }
           ]
         : []),
