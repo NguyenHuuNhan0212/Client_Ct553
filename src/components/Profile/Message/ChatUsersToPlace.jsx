@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import userApi from '../../../apis/userService';
-import { Avatar, Badge, List } from 'antd';
+import { Avatar, Badge, List, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { capitalizeName } from '../../../utils/capitalize';
 
 function ChatUsersToPlace({ selectedPlace, setSelectedUser }) {
   const [usersByPlace, setUsersByPlace] = useState([]);
@@ -44,12 +45,20 @@ function ChatUsersToPlace({ selectedPlace, setSelectedUser }) {
               <Badge count={userItem.unread || 0} showZero size='small'>
                 <Avatar
                   icon={<UserOutlined />}
-                  src={`http://localhost:3000/${userItem.images?.[0]}`}
-                  style={{ backgroundColor: '#1677ff' }}
+                  src={`http://localhost:3000${userItem?.avatarUrl}`}
+                  style={{ backgroundColor: '#040505ff' }}
                 />
               </Badge>
             }
-            title={userItem.fullName}
+            title={
+              <Tooltip
+                title={`Nhấn để trò chuyện với ${capitalizeName(
+                  userItem.fullName
+                )}`}
+              >
+                {capitalizeName(userItem.fullName)}
+              </Tooltip>
+            }
           />
         </List.Item>
       )}

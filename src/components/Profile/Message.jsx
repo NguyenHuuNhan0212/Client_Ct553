@@ -1,26 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { List, Avatar, Badge, Button, Tooltip, Typography } from 'antd';
 import { ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
-import userApi from '../../apis/userService';
 import ChatBox from './Message/ChatBox';
 import { useSelector } from 'react-redux';
+import ListMessage from './Message/ListMessage';
 
 export default function Message({ onBack, isProvider = false }) {
   const [selectedPlace, setSelectedPlace] = useState(null);
-  const [conversations, setConversations] = useState([]);
+
   const { user } = useSelector((state) => state.user);
-  useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const res = await userApi.getAllPlacesChat();
-        setConversations(res);
-      } catch (err) {
-        console.log(err.message || 'Lỗi khi lấy danh sách địa điểm chat.');
-      }
-    };
-    fetchConversations();
-  }, []);
-  console.log(selectedPlace);
+
   return (
     <>
       {isProvider && !selectedPlace && (
@@ -33,44 +22,12 @@ export default function Message({ onBack, isProvider = false }) {
         </Tooltip>
       )}
       {!selectedPlace ? (
-        <List
-          itemLayout='horizontal'
-          dataSource={conversations}
-          renderItem={(item) => {
-            return (
-              <List.Item
-                onClick={() => setSelectedPlace(item)}
-                style={{
-                  cursor: 'pointer',
-                  padding: '12px',
-                  borderRadius: '6px',
-                  marginBottom: '6px',
-                  transition: '0.2s'
-                }}
-              >
-                <List.Item.Meta
-                  avatar={
-                    <Badge count={item.unread || 0} showZero size='small'>
-                      <Avatar
-                        icon={<UserOutlined />}
-                        src={`http://localhost:3000/${item.images[0]}`}
-                        style={{ backgroundColor: '#1677ff' }}
-                      />
-                    </Badge>
-                  }
-                  title={
-                    <span style={{ fontWeight: 'normal' }}>{item.name}</span>
-                  }
-                  description={
-                    <span style={{ color: '#888', fontSize: '13px' }}>
-                      {item.lastMessage || 'Chưa có tin nhắn'}
-                    </span>
-                  }
-                />
-              </List.Item>
-            );
-          }}
-        />
+        <>
+          <Typography.Title level={3} style={{ textAlign: 'center' }}>
+            Danh sách địa điểm bạn đã trò chuyện
+          </Typography.Title>
+          <ListMessage setSelectedPlace={(value) => setSelectedPlace(value)} />
+        </>
       ) : (
         <ChatBox
           userId={user?._id}

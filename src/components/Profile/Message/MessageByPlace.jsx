@@ -9,17 +9,15 @@ import { useSelector } from 'react-redux';
 import ChatBox from './ChatBox';
 import PlaceList from './ListPlace';
 import ChatUsersToPlace from './ChatUsersToPlace';
+import { capitalizeName } from '../../../utils/capitalize';
 
 export default function MessageByPlace({ onBack }) {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const { user } = useSelector((state) => state.user);
 
-  // Lấy danh sách địa điểm mà user đã chat
-
   return (
     <>
-      {/* Back button khi là provider hoặc đang xem danh sách user */}
       {!selectedUser && selectedPlace && (
         <Tooltip title={'Trở lại'}>
           <Button
@@ -45,17 +43,27 @@ export default function MessageByPlace({ onBack }) {
         </Tooltip>
       )}
 
-      {/* Danh sách địa điểm */}
       {!selectedPlace && (
-        <PlaceList setSelectedPlace={(value) => setSelectedPlace(value)} />
+        <>
+          <Typography.Title level={3} style={{ textAlign: 'center' }}>
+            Danh sách địa điểm có người nhắn tin đến
+          </Typography.Title>
+          <PlaceList setSelectedPlace={(value) => setSelectedPlace(value)} />
+        </>
       )}
 
       {/* Danh sách user đã nhắn đến địa điểm */}
       {selectedPlace && !selectedUser && (
-        <ChatUsersToPlace
-          selectedPlace={selectedPlace}
-          setSelectedUser={(value) => setSelectedUser(value)}
-        />
+        <>
+          <Typography.Title level={3} style={{ textAlign: 'center' }}>
+            Danh sách người dùng đã nhắn tin đến{' '}
+            {capitalizeName(selectedPlace?.name)}
+          </Typography.Title>
+          <ChatUsersToPlace
+            selectedPlace={selectedPlace}
+            setSelectedUser={(value) => setSelectedUser(value)}
+          />
+        </>
       )}
 
       {/* ChatBox */}

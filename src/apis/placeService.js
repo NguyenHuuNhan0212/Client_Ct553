@@ -71,7 +71,10 @@ const placeApi = {
     return axiosClient.patch(`/places/reject/${placeId}`);
   },
   getAllPlaceRejected() {
-    return axiosClient.get('places/rejected');
+    return axiosClient.get('/places/rejected');
+  },
+  getAllPlaceHaveMessage() {
+    return axiosClient.get('/places/chats');
   }
 };
 export default placeApi;

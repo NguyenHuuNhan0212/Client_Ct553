@@ -108,7 +108,7 @@ export default function ChatBox({
         >
           <div
             style={{
-              height: '8%',
+              height: '5%',
               background: '#8ba0b4ff',
               fontSize: 18,
               fontWeight: 700,

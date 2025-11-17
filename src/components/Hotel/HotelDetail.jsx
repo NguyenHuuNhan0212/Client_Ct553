@@ -7,7 +7,8 @@ import {
   Image,
   message,
   Tag,
-  Tooltip
+  Tooltip,
+  Button
 } from 'antd';
 import {
   EnvironmentOutlined,
@@ -30,6 +31,7 @@ import { createBooking } from '../../redux/slices/bookingSlice';
 import paymentApi from '../../apis/paymentService';
 import placeApi from '../../apis/placeService';
 import { getPlacesFavorite } from '../../redux/slices/placeSlice';
+import ChatBox from '../Profile/Message/ChatBox';
 const { Title, Paragraph } = Typography;
 
 function HotelDetail() {
@@ -41,6 +43,7 @@ function HotelDetail() {
   const { id } = useParams();
   const { user } = useSelector((state) => state.user);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isChat, setIsChat] = useState(false);
   const { placesFavorite } = useSelector((state) => state.place);
   const navigate = useNavigate();
   const toggleFavorite = async (e) => {
@@ -111,7 +114,15 @@ function HotelDetail() {
       })
       .catch((err) => message.error(err?.message || 'Đặt phòng thất bại'));
   };
-
+  const handleChat = () => {
+    if (!user) {
+      message.info('Đăng nhập để nhắn tin với quản lý.');
+      navigate('/login');
+      return;
+    } else {
+      setIsChat(!isChat);
+    }
+  };
   useEffect(() => {
     if (checkIn && checkOut && guests) {
       const data = {
@@ -302,6 +313,24 @@ function HotelDetail() {
             <b style={{ color: 'red', fontSize: '20px' }}>
               {currentHotel?.minPricePerNight.toLocaleString() || 0}VNĐ / đêm
             </b>
+          </Paragraph>
+          <Paragraph>
+            {user?._id !== currentHotel?.info?.userId && (
+              <Button type='primary' onClick={() => handleChat()}>
+                Nhắn tin với quản lý
+              </Button>
+            )}
+          </Paragraph>
+
+          <Paragraph>
+            {isChat && (
+              <ChatBox
+                userId={user?._id}
+                name={currentHotel?.info?.name}
+                placeId={currentHotel?.info?._id}
+                friendId={currentHotel?.ownerInfo?.userId?._id}
+              />
+            )}
           </Paragraph>
         </Col>
       </Row>

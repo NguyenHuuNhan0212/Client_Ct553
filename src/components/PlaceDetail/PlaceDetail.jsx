@@ -219,9 +219,11 @@ function PlaceDetail({ currentPlace }) {
             <b>Số điện thoại:</b> {ownerInfo?.userId?.phone || 'Chưa cập nhật'}
           </Paragraph>
           <Paragraph style={{ fontSize: '16px' }}>
-            <Button type='primary' onClick={() => handleChat()}>
-              Nhắn tin với quản lý
-            </Button>
+            {user?._id !== info?.userId && (
+              <Button type='primary' onClick={() => handleChat()}>
+                Nhắn tin với quản lý
+              </Button>
+            )}
           </Paragraph>
           <Paragraph>
             {isChat && (
