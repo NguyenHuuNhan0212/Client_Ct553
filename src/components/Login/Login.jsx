@@ -110,13 +110,14 @@ export default function Login() {
             htmlType='submit'
             size='large'
             block
+            loading={loading}
             style={{
               borderRadius: 10,
               fontWeight: 600,
               background: 'linear-gradient(90deg, #3b82f6, #2563eb)'
             }}
           >
-            {loading ? <Spin size='small' /> : 'Đăng nhập'}
+            Đăng nhập
           </Button>
         </Form.Item>
       </Form>
