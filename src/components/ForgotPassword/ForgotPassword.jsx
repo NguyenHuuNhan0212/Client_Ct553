@@ -4,7 +4,6 @@ import { MailOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import styles from './style.module.css';
 import authApi from '../../apis/authService';
-import Loading from '../Loading/Loading';
 import { toast } from 'react-toastify';
 
 const { Title } = Typography;
