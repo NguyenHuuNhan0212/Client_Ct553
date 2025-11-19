@@ -8,7 +8,8 @@ import {
   Typography,
   Spin,
   Layout,
-  Tooltip
+  Tooltip,
+  Divider
 } from 'antd';
 import {
   SendOutlined,
@@ -16,9 +17,9 @@ import {
   GlobalOutlined,
   ArrowLeftOutlined
 } from '@ant-design/icons';
-import axios from 'axios';
 import dayjs from 'dayjs';
 import styles from './style.module.css';
+import messageApi from '../../../apis/message';
 
 const { Sider, Content } = Layout;
 
@@ -28,13 +29,23 @@ export default function ChatBox({
   placeId,
   name,
   onBack,
+  urlImage,
+  isPlace = false,
   isBack = false
 }) {
   const { myMessage, otherMessage, textStyle, time } = styles;
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
+  const [isHover, setIsHover] = useState(null);
   const bottomRef = useRef(null);
+
+  const isNewDay = (currentMsg, prevMsg) => {
+    if (!prevMsg) return true;
+    const currentDay = dayjs(currentMsg.createdAt).format('YYYY-MM-DD');
+    const prevDay = dayjs(prevMsg.createdAt).format('YYYY-MM-DD');
+    return currentDay !== prevDay;
+  };
 
   // Kết nối socket.io
   useEffect(() => {
@@ -53,6 +64,16 @@ export default function ChatBox({
         setMessages((prev) => [...prev, msg]);
       }
     });
+    s.on('messagesRead', () => {
+      setMessages((prev) =>
+        prev.map((msg) => {
+          if (msg.sender === userId) {
+            return { ...msg, isRead: true };
+          }
+          return msg;
+        })
+      );
+    });
 
     return () => s.disconnect();
   }, [userId, friendId, placeId]);
@@ -60,10 +81,8 @@ export default function ChatBox({
   // Lấy tin nhắn cũ
   useEffect(() => {
     const fetch = async () => {
-      const res = await axios.get(
-        `http://localhost:3000/api/messages/${placeId}/${userId}/${friendId}`
-      );
-      setMessages(res.data);
+      const res = await messageApi.getMessages({ placeId, friendId });
+      setMessages(res);
     };
     fetch();
   }, [userId, friendId, placeId]);
@@ -84,10 +103,9 @@ export default function ChatBox({
     };
 
     socket.emit('sendMessage', msg);
-    setMessages((prev) => [...prev, msg]);
+    // setMessages((prev) => [...prev, msg]);
     setText('');
   };
-
   return (
     <>
       {isBack && (
@@ -99,7 +117,15 @@ export default function ChatBox({
           </Button>
         </Tooltip>
       )}
-      <Layout style={{ height: '80vh', background: '#f0f8ff' }}>
+      <Layout
+        style={{
+          height: '80vh',
+          background: '#e6f0ff',
+          borderRadius: 10,
+          overflow: 'hidden',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+        }}
+      >
         <Content
           style={{
             display: 'flex',
@@ -109,11 +135,14 @@ export default function ChatBox({
           <div
             style={{
               height: '5%',
-              background: '#8ba0b4ff',
+              background: '#0052cc',
               fontSize: 18,
               fontWeight: 700,
-              padding: 5,
-              color: '#464b4fff'
+              padding: '8px 16px',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}
           >
             {name}
@@ -126,17 +155,57 @@ export default function ChatBox({
               backdropFilter: 'blur(3px)'
             }}
           >
-            {messages?.map((msg, i) => (
-              <div
-                key={i}
-                className={msg.sender === userId ? myMessage : otherMessage}
-              >
-                <div className={textStyle}>{msg.text}</div>
-                <div className={time}>
-                  {dayjs(msg.createdAt || new Date()).format('HH:mm')}
+            {messages?.map((msg, i) => {
+              const showDate = isNewDay(msg, messages[i - 1]);
+              const isLast = i === messages.length - 1;
+              return (
+                <div key={i}>
+                  {showDate && (
+                    <Divider>
+                      {dayjs(msg.createdAt).format('DD/MM/YYYY')}
+                    </Divider>
+                  )}
+
+                  <div
+                    className={msg.sender === userId ? myMessage : otherMessage}
+                  >
+                    <div
+                      className={textStyle}
+                      onMouseEnter={() => setIsHover(msg._id)}
+                      onMouseLeave={() => setIsHover(null)}
+                    >
+                      {msg.text}
+                    </div>
+                    <div className={time}>
+                      <span>
+                        {dayjs(msg.createdAt || new Date()).format('HH:mm')}{' '}
+                      </span>
+                      {msg.sender === userId &&
+                        (isLast || isHover === msg._id ? ( // hover hoặc tin nhắn cuối
+                          msg.isRead ? (
+                            <img
+                              src={
+                                !isPlace
+                                  ? `http://localhost:3000${urlImage}`
+                                  : `http://localhost:3000/${urlImage}`
+                              }
+                              style={{
+                                width: 15,
+                                height: 15,
+                                borderRadius: '50%'
+                              }}
+                            />
+                          ) : (
+                            'Đã gửi'
+                          )
+                        ) : (
+                          ''
+                        ))}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             <div ref={bottomRef}></div>
           </div>

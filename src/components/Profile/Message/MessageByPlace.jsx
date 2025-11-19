@@ -15,7 +15,6 @@ export default function MessageByPlace({ onBack }) {
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const { user } = useSelector((state) => state.user);
-
   return (
     <>
       {!selectedUser && selectedPlace && (
@@ -72,6 +71,7 @@ export default function MessageByPlace({ onBack }) {
           userId={user?._id}
           placeId={selectedPlace?._id}
           friendId={selectedUser?._id}
+          urlImage={selectedUser?.avatarUrl}
           name={selectedUser?.fullName}
           onBack={() => setSelectedUser(null)}
           isBack

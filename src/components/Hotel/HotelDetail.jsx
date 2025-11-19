@@ -327,6 +327,8 @@ function HotelDetail() {
               <ChatBox
                 userId={user?._id}
                 name={currentHotel?.info?.name}
+                isPlace
+                urlImage={currentHotel?.info?.images[0]}
                 placeId={currentHotel?.info?._id}
                 friendId={currentHotel?.ownerInfo?.userId?._id}
               />

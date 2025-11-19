@@ -230,6 +230,8 @@ function PlaceDetail({ currentPlace }) {
               <ChatBox
                 userId={user?._id}
                 name={info?.name}
+                isPlace
+                urlImage={info?.images[0]}
                 placeId={info?._id}
                 friendId={ownerInfo?.userId?._id}
               />

@@ -33,6 +33,8 @@ export default function Message({ onBack, isProvider = false }) {
           userId={user?._id}
           placeId={selectedPlace?._id}
           friendId={selectedPlace?.userId}
+          urlImage={selectedPlace?.images[0]}
+          isPlace
           name={selectedPlace?.name}
           onBack={() => {
             setSelectedPlace(null);
