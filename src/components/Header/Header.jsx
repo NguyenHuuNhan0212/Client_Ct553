@@ -154,7 +154,12 @@ export default function Header() {
         icon: <HeartOutlined />,
         label: (
           <Link to='/profile?tab=4'>
-            <Badge count={placesFavorite.length} offset={[15, 0]} showZero>
+            <Badge
+              count={placesFavorite.length}
+              offset={[15, 0]}
+              showZero
+              size='small'
+            >
               <span>Địa điểm yêu thích </span>
             </Badge>
           </Link>
