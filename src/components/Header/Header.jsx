@@ -28,6 +28,12 @@ import { logout } from '../../redux/slices/authSlice';
 import { capitalizeName } from '../../utils/capitalize';
 import { getPlacesFavorite, setPlaceType } from '../../redux/slices/placeSlice';
 import logoImage from '../../assets/images/logo.svg';
+import {
+  getAllMessageManage,
+  getAllMessageUser,
+  setTotalMessageUnreadManage,
+  setTotalMessageUnreadUser
+} from '../../redux/slices/messageSlice';
 const { Header: AntHeader } = Layout;
 
 export default function Header() {
@@ -40,7 +46,12 @@ export default function Header() {
   const { placesFavorite } = useSelector((state) => state.place);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 900);
   const [openDrawer, setOpenDrawer] = useState(false);
-
+  const {
+    messagesUser,
+    messagesManage,
+    totalMessageOfUserUnRead,
+    totalMessageOfManagementUnRead
+  } = useSelector((state) => state.message);
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 900);
     window.addEventListener('resize', handleResize);
@@ -168,7 +179,18 @@ export default function Header() {
       {
         key: 'message',
         icon: <MessageOutlined />,
-        label: <Link to='/profile?tab=5'>Tin nhắn</Link>
+        label: (
+          <Link to='/profile?tab=5'>
+            <Badge
+              count={totalMessageOfManagementUnRead + totalMessageOfUserUnRead}
+              offset={[15, 0]}
+              showZero
+              size='small'
+            >
+              <span>Tin nhắn</span>
+            </Badge>
+          </Link>
+        )
       },
 
       ...(user?.role !== 'user'
@@ -205,7 +227,23 @@ export default function Header() {
       dispatch(getPlacesFavorite());
     }
   }, [token, user, dispatch]);
+  useEffect(() => {
+    if (token) {
+      dispatch(getAllMessageManage());
+      dispatch(getAllMessageUser());
+    }
+  }, [token, dispatch]);
+  useEffect(() => {
+    if (messagesManage) {
+      dispatch(setTotalMessageUnreadManage());
+    }
+  }, [messagesManage, dispatch]);
 
+  useEffect(() => {
+    if (messagesUser) {
+      dispatch(setTotalMessageUnreadUser());
+    }
+  }, [messagesUser, dispatch]);
   return (
     <AntHeader
       className={container}

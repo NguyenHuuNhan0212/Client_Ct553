@@ -19,7 +19,12 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import styles from './style.module.css';
-import messageApi from '../../../apis/message';
+import messageApi from '../../../apis/messageService';
+import { useDispatch } from 'react-redux';
+import {
+  getAllMessageManage,
+  getAllMessageUser
+} from '../../../redux/slices/messageSlice';
 
 const { Sider, Content } = Layout;
 
@@ -39,6 +44,7 @@ export default function ChatBox({
   const [text, setText] = useState('');
   const [isHover, setIsHover] = useState(null);
   const bottomRef = useRef(null);
+  const dispatch = useDispatch();
 
   const isNewDay = (currentMsg, prevMsg) => {
     if (!prevMsg) return true;
@@ -49,7 +55,7 @@ export default function ChatBox({
 
   // Kết nối socket.io
   useEffect(() => {
-    const s = io('http://localhost:3000'); // URL backend của bạn
+    const s = io('http://localhost:3000'); // URL backend
     setSocket(s);
 
     // Join room theo userId
@@ -62,6 +68,8 @@ export default function ChatBox({
         (msg.sender === userId && msg.receiver === friendId)
       ) {
         setMessages((prev) => [...prev, msg]);
+        dispatch(getAllMessageManage());
+        dispatch(getAllMessageUser());
       }
     });
     s.on('messagesRead', () => {
@@ -76,7 +84,7 @@ export default function ChatBox({
     });
 
     return () => s.disconnect();
-  }, [userId, friendId, placeId]);
+  }, [userId, friendId, placeId, dispatch]);
 
   // Lấy tin nhắn cũ
   useEffect(() => {

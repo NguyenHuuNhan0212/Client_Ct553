@@ -1,27 +1,28 @@
 import { EnvironmentOutlined } from '@ant-design/icons';
 import { Avatar, Badge, List, Tooltip } from 'antd';
-import { useEffect, useState } from 'react';
-import placeApi from '../../../apis/placeService';
 import { capitalizeName } from '../../../utils/capitalize';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import {
+  getAllMessageManage,
+  setTotalMessageUnreadManage
+} from '../../../redux/slices/messageSlice';
 
 function PlaceList({ setSelectedPlace }) {
-  const [places, setPlaces] = useState([]);
+  const dispatch = useDispatch();
+  const { messagesManage } = useSelector((state) => state.message);
   useEffect(() => {
-    const fetchPlaces = async () => {
-      try {
-        const res = await placeApi.getAllPlaceHaveMessage();
-        setPlaces(res);
-      } catch (err) {
-        console.log(err.message || 'Lỗi khi lấy danh sách địa điểm chat.');
-      }
-    };
-    fetchPlaces();
-  }, []);
-
+    dispatch(getAllMessageManage());
+  }, [dispatch]);
+  useEffect(() => {
+    if (messagesManage) {
+      dispatch(setTotalMessageUnreadManage());
+    }
+  }, [messagesManage, dispatch]);
   return (
     <List
       itemLayout='horizontal'
-      dataSource={places}
+      dataSource={messagesManage}
       renderItem={(place) => (
         <List.Item
           onClick={() => setSelectedPlace(place)}

@@ -40,7 +40,9 @@ export default function Profile() {
   // Lấy key menu từ query
   const defaultKey = params.get('tab') || '1';
   const [selectedKey, setSelectedKey] = useState(defaultKey);
-
+  const [totalMessageUnread, setTotalMessageUnread] = useState(0);
+  const { totalMessageOfUserUnRead, totalMessageOfManagementUnRead } =
+    useSelector((state) => state.message);
   const menuItems = [
     { key: '1', icon: <UserOutlined />, label: 'Thông tin cá nhân' },
     { key: '2', icon: <CalendarOutlined />, label: 'Lịch trình của tôi' },
@@ -56,7 +58,11 @@ export default function Profile() {
     },
     {
       key: `5`,
-      icon: <MessageOutlined />,
+      icon: (
+        <Badge count={totalMessageUnread} offset={[150, 5]} size='small'>
+          <MessageOutlined />
+        </Badge>
+      ),
       label: 'Tin nhắn'
     }
   ];
@@ -123,6 +129,13 @@ export default function Profile() {
       navigate('/login');
     }
   }, [user, navigate, token]);
+  useEffect(() => {
+    const setTotalMessage = (totalUser, totalManage) => {
+      setTotalMessageUnread(totalUser + totalManage);
+    };
+    setTotalMessage(totalMessageOfUserUnRead, totalMessageOfManagementUnRead);
+  }, [totalMessageOfManagementUnRead, totalMessageOfUserUnRead]);
+
   return (
     <>
       <Header />

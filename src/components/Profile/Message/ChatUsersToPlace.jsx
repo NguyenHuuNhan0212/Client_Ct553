@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import userApi from '../../../apis/userService';
 import { Avatar, Badge, List, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { capitalizeName } from '../../../utils/capitalize';
+import messageApi from '../../../apis/messageService';
 
 function ChatUsersToPlace({ selectedPlace, setSelectedUser }) {
   const [usersByPlace, setUsersByPlace] = useState([]);
@@ -10,7 +10,7 @@ function ChatUsersToPlace({ selectedPlace, setSelectedUser }) {
     if (selectedPlace) {
       const fetchUsers = async () => {
         try {
-          const res = await userApi.getAllChatUserToProvider(
+          const res = await messageApi.getAllChatUserToProvider(
             selectedPlace?._id
           );
 

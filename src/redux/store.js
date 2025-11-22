@@ -6,6 +6,7 @@ import hotelReducer from './slices/hotelSlice';
 import bookingReducer from './slices/bookingSlice';
 import itineraryReducer from './slices/itinerarySlice';
 import chatReducer from './slices/chatSlice';
+import messageReducer from './slices/messageSlice';
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -14,7 +15,8 @@ const store = configureStore({
     hotel: hotelReducer,
     booking: bookingReducer,
     itinerary: itineraryReducer,
-    chat: chatReducer
+    chat: chatReducer,
+    message: messageReducer
   }
 });
 export default store;

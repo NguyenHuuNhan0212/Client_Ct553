@@ -1,26 +1,28 @@
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Badge, List, Tooltip } from 'antd';
-import { useEffect, useState } from 'react';
-import userApi from '../../../apis/userService';
 import { capitalizeName } from '../../../utils/capitalize';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import {
+  getAllMessageUser,
+  setTotalMessageUnreadUser
+} from '../../../redux/slices/messageSlice';
 
 function ListMessage({ setSelectedPlace }) {
-  const [conversations, setConversations] = useState([]);
+  const dispatch = useDispatch();
+  const { messagesUser } = useSelector((state) => state.message);
   useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const res = await userApi.getAllPlacesChat();
-        setConversations(res);
-      } catch (err) {
-        console.log(err.message || 'Lỗi khi lấy danh sách địa điểm chat.');
-      }
-    };
-    fetchConversations();
-  }, []);
+    dispatch(getAllMessageUser());
+  }, [dispatch]);
+  useEffect(() => {
+    if (messagesUser) {
+      dispatch(setTotalMessageUnreadUser());
+    }
+  }, [messagesUser, dispatch]);
   return (
     <List
       itemLayout='horizontal'
-      dataSource={conversations}
+      dataSource={messagesUser}
       renderItem={(item) => {
         return (
           <List.Item

@@ -1,42 +1,40 @@
-import { useEffect, useState } from 'react';
-import userApi from '../../../apis/userService';
-import placeApi from '../../../apis/placeService';
+import { useEffect } from 'react';
 import { Badge, Card, Col, Row, Space, Typography } from 'antd';
 import { ShopOutlined, UserOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getAllMessageManage,
+  getAllMessageUser,
+  setTotalMessageUnreadManage,
+  setTotalMessageUnreadUser
+} from '../../../redux/slices/messageSlice';
 const { Title, Text } = Typography;
 function OptionChoice({ setSelectedOption }) {
-  const [messagesReceive, setMessagesReceive] = useState([]);
-  const [conversations, setConversations] = useState([]);
+  const dispatch = useDispatch();
+  const {
+    messagesUser,
+    messagesManage,
+    totalMessageOfUserUnRead,
+    totalMessageOfManagementUnRead
+  } = useSelector((state) => state.message);
 
-  const totalMessagesToMeFromSupplier = conversations?.reduce((acc, crr) => {
-    return acc + crr?.unread;
-  }, 0);
+  useEffect(() => {
+    dispatch(getAllMessageManage());
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(getAllMessageUser());
+  }, [dispatch]);
+  useEffect(() => {
+    if (messagesManage) {
+      dispatch(setTotalMessageUnreadManage());
+    }
+  }, [messagesManage, dispatch]);
+  useEffect(() => {
+    if (messagesUser) {
+      dispatch(setTotalMessageUnreadUser());
+    }
+  }, [messagesUser, dispatch]);
 
-  const totalMessageFromUser = messagesReceive?.reduce((acc, crr) => {
-    return acc + crr?.unread;
-  }, 0);
-  useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const res = await userApi.getAllPlacesChat();
-        setConversations(res);
-      } catch (err) {
-        console.log(err.message || 'Lỗi khi lấy danh sách địa điểm chat.');
-      }
-    };
-    fetchConversations();
-  }, []);
-  useEffect(() => {
-    const fetchPlaces = async () => {
-      try {
-        const res = await placeApi.getAllPlaceHaveMessage();
-        setMessagesReceive(res);
-      } catch (err) {
-        console.log(err.message || 'Lỗi khi lấy danh sách địa điểm chat.');
-      }
-    };
-    fetchPlaces();
-  }, []);
   return (
     <>
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
@@ -61,7 +59,7 @@ function OptionChoice({ setSelectedOption }) {
             styles={{ body: { padding: 24 } }}
           >
             <Space direction='vertical' align='center'>
-              <Badge count={totalMessagesToMeFromSupplier || 0} showZero>
+              <Badge count={totalMessageOfUserUnRead} showZero>
                 <UserOutlined
                   style={{
                     fontSize: 36,
@@ -96,7 +94,7 @@ function OptionChoice({ setSelectedOption }) {
             styles={{ body: { padding: 24 } }}
           >
             <Space direction='vertical' align='center'>
-              <Badge count={totalMessageFromUser || 0} showZero>
+              <Badge count={totalMessageOfManagementUnRead} showZero>
                 <ShopOutlined
                   style={{
                     fontSize: 36,
