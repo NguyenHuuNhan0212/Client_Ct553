@@ -220,9 +220,15 @@ function PlaceDetail({ currentPlace }) {
           </Paragraph>
           <Paragraph style={{ fontSize: '16px' }}>
             {user?._id !== info?.userId && (
-              <Button type='primary' onClick={() => handleChat()}>
-                Nhắn tin với quản lý
-              </Button>
+              <Tooltip
+                title={
+                  isChat ? 'Nhấn để đóng khung chat' : 'Nhấn để mở khung chat'
+                }
+              >
+                <Button type='primary' onClick={() => handleChat()}>
+                  Nhắn tin với quản lý
+                </Button>
+              </Tooltip>
             )}
           </Paragraph>
           <Paragraph>

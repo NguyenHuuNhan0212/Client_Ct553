@@ -87,7 +87,6 @@ const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
     };
     formData.append('hotelDetail', JSON.stringify(hotelDetail));
     formData.append('services', JSON.stringify(services));
-    console.log([...formData]);
     try {
       await placeApi.updatePlace(placeId, formData);
       toast.success('Cập nhật địa điểm thành công!');
@@ -146,7 +145,7 @@ const FormUpdatePlace = ({ placeId, typeCurrent, onSuccess }) => {
           addRoomType={() =>
             setRoomTypes([
               ...roomTypes,
-              { name: '', capacity: 1, totalRooms: 1, pricePerNight: 100 }
+              { name: '', capacity: 1, totalRooms: 1, pricePerNight: 100000 }
             ])
           }
           updateRoomType={(i, field, value) => {

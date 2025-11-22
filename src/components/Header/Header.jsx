@@ -165,12 +165,7 @@ export default function Header() {
         icon: <HeartOutlined />,
         label: (
           <Link to='/profile?tab=4'>
-            <Badge
-              count={placesFavorite.length}
-              offset={[15, 0]}
-              showZero
-              size='small'
-            >
+            <Badge count={placesFavorite.length} offset={[15, 0]} size='small'>
               <span>Địa điểm yêu thích </span>
             </Badge>
           </Link>
@@ -184,7 +179,6 @@ export default function Header() {
             <Badge
               count={totalMessageOfManagementUnRead + totalMessageOfUserUnRead}
               offset={[15, 0]}
-              showZero
               size='small'
             >
               <span>Tin nhắn</span>

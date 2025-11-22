@@ -316,9 +316,15 @@ function HotelDetail() {
           </Paragraph>
           <Paragraph>
             {user?._id !== currentHotel?.info?.userId && (
-              <Button type='primary' onClick={() => handleChat()}>
-                Nhắn tin với quản lý
-              </Button>
+              <Tooltip
+                title={
+                  isChat ? 'Nhấn để đóng khung chat' : 'Nhấn để mở khung chat'
+                }
+              >
+                <Button type='primary' onClick={() => handleChat()}>
+                  Nhắn tin với quản lý
+                </Button>
+              </Tooltip>
             )}
           </Paragraph>
 

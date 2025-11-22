@@ -70,7 +70,7 @@ const FormAddPlace = () => {
       setRoomTypes([]);
       setServices([]);
       toast.success('Thêm địa điểm thành công!');
-      navigate('/profile?tab=5');
+      navigate('/profile?tab=6');
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || 'Ảnh không hợp lệ!!');
