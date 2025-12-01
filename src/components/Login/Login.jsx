@@ -31,7 +31,6 @@ export default function Login() {
         navigate('/login');
       }
     } else if (login.rejected.match(result)) {
-      console.log(result);
       toast.error(result?.payload?.message);
     }
   };

@@ -73,8 +73,6 @@ const placeApi = {
   getAllPlaceRejected() {
     return axiosClient.get('/places/rejected');
   },
-  getAllPlaceHaveMessage() {
-    return axiosClient.get('/places/chats');
-  }
+ 
 };
 export default placeApi;
