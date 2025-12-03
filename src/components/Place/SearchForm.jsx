@@ -32,7 +32,7 @@ export default function SearchForm({ onSearch }) {
 
   const handleSubmit = () => {
     if (!formData.location) {
-      message.error('Vui lòng chọn địa điểm');
+      message.error('Vui lòng chọn điểm đến');
       return;
     }
 
